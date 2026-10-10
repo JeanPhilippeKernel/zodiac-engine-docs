@@ -1,0 +1,3310 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Cross-platform Vulkan engine, editor, and project tooling">
+      
+      
+      
+        <link rel="canonical" href="https://jeanphilippekernel.github.io/zodiac-engine-docs/design/presentations/memory-architecture/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/logo-white.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Memory architecture - Zodiac Engine</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#zengine" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Zodiac Engine" class="md-header__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="../../../assets/logo-white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Zodiac Engine
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Memory architecture
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="light-blue"  aria-label="Use light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Use light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="light-blue"  aria-label="Use dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Use dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../getting-started/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Get ZEngine
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../editor/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Editor
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../development/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Develop
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../reference/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../project/releases/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Project
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../contributing/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Contribute
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Zodiac Engine" class="md-nav__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="../../../assets/logo-white.png" alt="logo">
+
+    </a>
+    Zodiac Engine
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../getting-started/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Get ZEngine
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Get ZEngine
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/install-with-zodiac-engine-hub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install with Zodiac Engine Hub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/first-project/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create your first project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/update-and-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Update and migration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/supported-platforms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Supported platforms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../editor/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Editor
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Editor
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../editor/assets-and-importing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assets and importing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../editor/scenes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scenes and authoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../development/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Develop
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Develop
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/build-from-source/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build from source
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/run-and-debug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run and debug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/project-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../reference/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rendering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/asset-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/memory-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/zui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ZUI system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/containers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Containers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Releases and changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/rfcs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proposals and RFCs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/archive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Historical records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../contributing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribute
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contribute
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/commit-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commit conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/release-process/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release process
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#engine-architecture-memory-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Engine Architecture &amp; Memory Management
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/JeanPhilippeKernel/RendererEngine/edit/develop/docs/design/presentations/memory-architecture.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<!-- _class: title -->
+
+<h1 id="zengine">ZEngine<a class="headerlink" href="#zengine" title="Permanent link">&para;</a></h1>
+<h2 id="engine-architecture-memory-management">Engine Architecture &amp; Memory Management<a class="headerlink" href="#engine-architecture-memory-management" title="Permanent link">&para;</a></h2>
+<p>Archive presentation — concepts and historical TLSF integration plan</p>
+<blockquote>
+<p><strong>Point-in-time material:</strong> implementation status, profile sizes, and roadmap
+dates in the remaining slides are not current. Use <code>docs/design/memory-budget.md</code>,
+<code>docs/reference/memory-management.md</code>, and <code>docs/design/completed/tlsf-allocator-integration.md</code>
+for the maintained contracts. <code>TLSFSlab</code> is implemented and spinlock-protects
+<code>Alloc</code>, <code>Realloc</code>, and <code>Free</code>.</p>
+<p><strong>POSIX correction:</strong> slides below describe a proposed <code>PROT_NONE</code>/<code>mprotect</code>
+reserve-and-commit model. That model is now implemented for independently reserved
+configured owners; the 8 GiB value is a capacity-validation limit rather than one
+writable mapping. The maintained production contract is in
+<code>docs/design/future-plan/memory-budget.md</code>.</p>
+</blockquote>
+<hr />
+<h1 id="agenda">Agenda<a class="headerlink" href="#agenda" title="Permanent link">&para;</a></h1>
+<p><strong>Part I — Context</strong>
+1. Why Custom Memory Management
+2. Engine Memory Architecture · Budget</p>
+<p><strong>Part II — The Allocators</strong>
+3. Lifetime Model · Allocation Flow · Decision Framework
+4. <strong>ArenaAllocator</strong> — Design, API, Performance, Pros &amp; Cons
+5. <strong>PoolAllocator</strong> — Design, API, Performance, Pros &amp; Cons</p>
+<p><strong>Part III — The Gap &amp; TLSF</strong>
+6. The Gap — What Neither Allocator Handles · Fragmentation
+7. <strong>TLSF</strong> — Guarantees, Performance, Internals, Engine Wrapper</p>
+<p><strong>Part IV — Integration Plan</strong>
+8. Upload Pipeline Before/After · Sequence · TextureDeferral · Sizing</p>
+<p><strong>Part V — Future Scope &amp; Roadmap</strong>
+9. AssetManager · ECS Storage · Roadmap</p>
+<p><strong>Part VI — Platform Implications</strong>
+10. Windows · macOS Apple Silicon · Linux x86-64</p>
+<hr />
+<h1 id="why-custom-memory-management">Why Custom Memory Management?<a class="headerlink" href="#why-custom-memory-management" title="Permanent link">&para;</a></h1>
+<div class="columns">
+<div>
+
+### The system heap problem
+
+`malloc` / `new` are **general purpose** — they handle every case adequately, but optimize for none.
+
+- Non-deterministic latency (lock contention, OS page faults)
+- Fragmentation accumulates silently over hours of runtime
+- No visibility — engine cannot inspect, budget, or limit allocations
+- Poor cache locality — related objects land on unrelated pages
+- Per-allocation metadata overhead (~16–32 bytes per block)
+
+</div>
+<div>
+
+### What a game engine needs
+
+- **Frame-rate consistency** — GC pauses and lock spikes are unacceptable at 60+ FPS
+- **Predictable memory use** — OOM at runtime must be detectable at startup
+- **Cache-friendly layout** — hot data lives in sequential memory, not scattered across heap
+- **Debug visibility** — know exactly where every byte came from, and why
+- **Zero hot-path touches** — alloc/free on the render thread is off the table
+
+</div>
+</div>
+
+<blockquote>
+<p>The goal is not to be clever. It is to know exactly what lifetime each allocation has, and pick the cheapest allocator that matches it.</p>
+</blockquote>
+<hr />
+<h1 id="engine-memory-architecture">Engine Memory Architecture<a class="headerlink" href="#engine-memory-architecture" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>Current implementation note:</strong> this presentation's historical root-arena diagrams and
+provisional capacity figures predate #835. Configured application runs now reserve named
+owners independently; the 8 GiB value is a validation limit, not one mapped root arena.
+See <a href="../../memory-budget/"><code>memory-budget.md</code></a> for the current profile and reservation contract.</p>
+</blockquote>
+<pre class="mermaid"><code>graph TD
+    OS["OS — mmap / VirtualAlloc"]
+    ROOT["Root Arena  8 GB virtual reservation"]
+
+    OS --&gt; ROOT
+
+    ROOT --&gt; VD["VulkanDevice  1 GB\nVMA · command pools · descriptor pools"]
+    ROOT --&gt; IP["ImportPipeline  1 GB\nGltf · Assimp · EnvMap importers"]
+    ROOT --&gt; AM["AssetManager  512 MB\nMeshes · Materials · UUID maps"]
+    ROOT --&gt; ECS["ECSScene  512 MB\nComponentStorage · EntityRegistry"]
+    ROOT --&gt; SZ["Serializer  256 MB\nScene file scratch"]
+    ROOT --&gt; AN["AnimationMgr  256 MB\nAnimation clips · blend trees · state machines"]
+    ROOT --&gt; UI["UIContext  128 MB\nImGui · editor components"]
+    ROOT --&gt; VFS["VirtualFS  64 MB\nMount table · scanner · filewatcher"]
+    ROOT --&gt; SC["ShaderCache  64 MB\nSPIR-V · reflection data"]
+    ROOT --&gt; HR["Headroom  ~4.2 GB\nStreaming · Physics · Navigation"]
+
+    style ROOT fill:#1a1a2e,color:#fff
+    style OS   fill:#0f3460,color:#fff
+    style HR   fill:#555,color:#ccc</code></pre>
+<p>Total committed: ~3.8 GB. Virtual: 8 GB. Physical RSS much lower — pages committed via <code>mprotect</code> on demand, then physically backed by OS on first write.</p>
+<hr />
+<h1 id="memory-budget-8-gb-root-arena">Memory Budget — 8 GB Root Arena<a class="headerlink" href="#memory-budget-8-gb-root-arena" title="Permanent link">&para;</a></h1>
+<pre class="mermaid"><code>pie title Committed Budget (~3.8 GB of 8 GB virtual)
+    "VulkanDevice"    : 1024
+    "ImportPipeline"  : 1024
+    "AssetManager"    : 512
+    "ECSScene"        : 512
+    "Serializer"      : 256
+    "AnimationMgr"    : 256
+    "UIContext"       : 128
+    "VirtualFS"       : 64
+    "ShaderCache"     : 64
+    "Other (logging, input, swapchain)" : 20</code></pre>
+<hr />
+<h1 id="memory-budget-key-numbers">Memory Budget — Key Numbers<a class="headerlink" href="#memory-budget-key-numbers" title="Permanent link">&para;</a></h1>
+<table>
+<thead>
+<tr>
+<th>Subsystem</th>
+<th>Budget</th>
+<th>What Lives There</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VulkanDevice</td>
+<td>1 GB</td>
+<td>VMA, descriptor pools, command buffers, swapchain</td>
+</tr>
+<tr>
+<td>ImportPipeline</td>
+<td>1 GB</td>
+<td>GltfImporter (64 MB) + AssimpImporter (128 MB) × 2 instances</td>
+</tr>
+<tr>
+<td>AssetManager</td>
+<td>512 MB</td>
+<td><code>Meshes[]</code>, <code>Materials[]</code>, <code>Textures[]</code>, UUID hash maps (5000-entry cap each)</td>
+</tr>
+<tr>
+<td>ECSScene</td>
+<td>512 MB</td>
+<td><code>ComponentStorage</code> dense arrays, <code>EntityRegistry</code>, <code>ActorManager</code></td>
+</tr>
+<tr>
+<td>Serializer</td>
+<td>256 MB</td>
+<td>EditorSceneSerializer scratch (150 MB sub-arena)</td>
+</tr>
+<tr>
+<td>AnimationMgr</td>
+<td>256 MB</td>
+<td>Animation clips, blend tree nodes, state machine transition data</td>
+</tr>
+<tr>
+<td>UIContext (editor)</td>
+<td>128 MB</td>
+<td>ImguiLayer (64 MB) → DockspaceUI (32 MB) → AssetImporter (8 MB)</td>
+</tr>
+<tr>
+<td>ShaderCache</td>
+<td>64 MB</td>
+<td>SPIR-V, reflection data</td>
+</tr>
+<tr>
+<td>VirtualFS</td>
+<td>64 MB</td>
+<td>Mount table, scanner cache, file watcher events</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Headroom reserved for future systems:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Planned System</th>
+<th>Budget</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>StreamingManager</td>
+<td>2 GB</td>
+<td>Open-world chunk streaming, cleared per region transition</td>
+</tr>
+<tr>
+<td>PhysicsEngine</td>
+<td>512 MB</td>
+<td>Rigid bodies, broad-phase</td>
+</tr>
+<tr>
+<td>NavigationEngine</td>
+<td>256 MB</td>
+<td>NavMesh, pathfinding, agent state</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<!-- _class: center -->
+
+<h1 id="part-ii">Part II<a class="headerlink" href="#part-ii" title="Permanent link">&para;</a></h1>
+<h2 id="the-allocators">The Allocators<a class="headerlink" href="#the-allocators" title="Permanent link">&para;</a></h2>
+<p><em>Lifetime Model · Arena · Pool · Decision Framework</em></p>
+<hr />
+<h1 id="memory-model-lifetime-hierarchy">Memory Model — Lifetime Hierarchy<a class="headerlink" href="#memory-model-lifetime-hierarchy" title="Permanent link">&para;</a></h1>
+<pre class="mermaid"><code>graph LR
+    subgraph Engine["Engine Lifetime — shutdown only"]
+        direction TB
+        VD2["VulkanDevice Arena\nShader cache, VMA, descriptor pools"]
+        ECS2["ECSScene Arena\nArchetype tables, entity registry"]
+        AM2["AssetManager Arena\nMesh / material / texture arrays"]
+    end
+
+    subgraph Scene["Scene Lifetime — scene load/unload"]
+        direction TB
+        ES["EditorScene::LocalArena  200 MB\nInstance arrays, scene graph, strings"]
+    end
+
+    subgraph Task["Per-Task — cleared after task"]
+        direction TB
+        IP["ImportPipeline  1 GB\nGltf + Assimp decode scratch\nCleared after each import session"]
+    end
+
+    subgraph Frame["Per-Frame — reset end of frame"]
+        direction TB
+        AT["ArenaTemp (ZGetScratch)\nBarrier batch, draw list\nCamera UBO staging"]
+    end
+
+    subgraph Object["Per-Object — individual free"]
+        direction TB
+        PA["PoolAllocator\nEntity slots, command buffer handles\nMesh instance slots"]
+    end
+
+    Engine --&gt; Scene --&gt; Task --&gt; Frame
+    Engine --&gt; Object
+
+    style Engine fill:#1a1a2e,color:#fff
+    style Scene  fill:#16213e,color:#fff
+    style Task   fill:#0f3460,color:#fff
+    style Frame  fill:#2ecc71,color:#000
+    style Object fill:#3498db,color:#fff</code></pre>
+<p>Before writing <code>new</code> or <code>std::vector</code>, identify the lifetime. Pick the cheapest allocator that matches it. If nothing fits, the lifetime is unclear — clarify it first.</p>
+<hr />
+<h1 id="memory-model-allocation-flow">Memory Model — Allocation Flow<a class="headerlink" href="#memory-model-allocation-flow" title="Permanent link">&para;</a></h1>
+<pre class="mermaid"><code>graph TD
+    ROOT["Root Arena  8 GB"]
+
+    ROOT --&gt; VD["VulkanDevice  1 GB\n(ArenaAllocator)"]
+    ROOT --&gt; AM["AssetManager  512 MB\n(ArenaAllocator)"]
+    ROOT --&gt; ECS["ECSScene  512 MB\n(ArenaAllocator)"]
+
+    VD  --&gt; RP["AppRenderPipeline\n30 MB sub-arena"]
+    VD  --&gt; TLS["TLSFSlab × N workers\n64–128 MB each\n(Phase 1 target — not yet in codebase)"]
+    RP  --&gt; SC["ZGetScratch\nArenaTemp — reset each frame"]
+
+    AM  --&gt; PM["Array of AssetMesh · Array of AssetMaterial\nbacked by ArenaAllocator (grows → dead blocks)"]
+    AM  --&gt; PH["UnorderedHashMap of uuid to Handle\nbacked by ArenaAllocator (grows → dead blocks)"]
+
+    ECS --&gt; PE["PoolAllocator\nEntitySlots fixed-cap"]
+    ECS --&gt; PC["PoolAllocator\nComponentSlots fixed-cap"]
+
+    style ROOT fill:#1a1a2e,color:#fff
+    style SC   fill:#2ecc71,color:#000
+    style TLS  fill:#e94560,color:#fff</code></pre>
+<p>No allocation escapes its designated arena. The root cursor is monotonic — the only reclamation is arena reset or pool destruction.</p>
+<hr />
+<h1 id="allocation-decision-tree">Allocation Decision Tree<a class="headerlink" href="#allocation-decision-tree" title="Permanent link">&para;</a></h1>
+<pre class="mermaid"><code>flowchart TD
+    START(["New allocation needed"])
+
+    Q1{"Group lifetime?\ne.g. reset each frame\nor after import"}
+    Q1b{"Stable after init?\nno grows once setup is done"}
+    Q2{"Fixed size?\nsame N bytes\nevery time"}
+    Q3{"Variable size +\nindividual lifetime?"}
+    WARN(["Re-examine the lifetime.\nDo NOT use std::vector / new."])
+
+    A1["ArenaAllocator or ArenaTemp\nPick arena whose lifetime matches.\nAlloc: ~3 cycles. No free."]
+    A1g["TLSFSlab  ← Part III\nGroup lifetime but grows unpredictably.\nPre-size OR use slab for realloc.\nAlloc/free: ~30 cycles. O(1)."]
+    A2["PoolAllocator\nCarve from parent arena at init.\nAlloc: ~5 cyc + memset(chunk). Free: ~5 cyc. O(1)."]
+    A3["TLSFSlab  ← Part III\nOne slab carved from arena at init.\nAlloc/free: ~30 cycles. O(1). Variable size."]
+
+    START --&gt; Q1
+    Q1 -- YES --&gt; Q1b
+    Q1b -- YES --&gt; A1
+    Q1b -- NO, grows --&gt; A1g
+    Q1 -- NO  --&gt; Q2
+    Q2 -- YES --&gt; A2
+    Q2 -- NO  --&gt; Q3
+    Q3 -- YES --&gt; A3
+    Q3 -- NO  --&gt; WARN
+
+    style A1   fill:#2ecc71,color:#000
+    style A1g  fill:#e94560,color:#fff
+    style A2   fill:#3498db,color:#fff
+    style A3   fill:#e94560,color:#fff
+    style WARN fill:#e74c3c,color:#fff</code></pre>
+<hr />
+<h1 id="arenaallocator-design">ArenaAllocator — Design<a class="headerlink" href="#arenaallocator-design" title="Permanent link">&para;</a></h1>
+<p>The fundamental primitive. Everything else is built on top of it.</p>
+<div class="columns">
+<div>
+
+### Virtual Reservation
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a> mmap(NULL, ZGiga(8), PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, ...)
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>   │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>   └── PROT_NONE: address space reserved, NO access yet
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>         write to PROT_NONE → SIGSEGV (not a silent page commit)
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a> On each Allocate() call, if cursor crosses a page boundary:
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>   mprotect(base + committed, new_pages, PROT_READ|PROT_WRITE)
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>     │
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>     └── pages now accessible; physical RAM committed on first write
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>           → RSS &lt;&lt; virtual reservation
+</code></pre></div>
+
+The OS reserves the address range immediately. `PROT_NONE` costs only kernel metadata (~a few KB). Each `Allocate()` commits exactly as many pages as needed via `mprotect`, then the OS demand-pages physical RAM on first write to each new page.
+
+### Sub-arenas
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a> parent.CreateSubArena(ZMega(350), &amp;child)
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>   │
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>   └── parent.Allocate(350MB) called internally
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>         → parent cursor advances by 350 MB
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>         → pages committed (mprotect) for the new range
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>       child.m_memory = return value of parent.Allocate()
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>       child.m_size   = 350 MB
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>       child.Allocate() bumps within its own window
+</code></pre></div>
+
+Sub-arenas share the parent's physical pages but track their own cursor. `CreateSubArena` calls `parent.Allocate(size)` — the parent cursor advances atomically with the sub-arena creation, preventing overlap.
+
+</div>
+<div>
+
+### Memory Layout
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a> m_memory (base pointer)
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>   │
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>   ▼
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a> ┌──────────────────────────────────────────┐
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a> │  alloc A  │  alloc B  │  alloc C  │ ... │ committed
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a> └───────────┴───────────┴───────────┴─────┤
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>                          ▲                │
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>                    m_current_offset       │
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>                          ├───────────────►│ m_size
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>                                   uncommitted
+</code></pre></div>
+
+### Alignment
+
+Every allocation is forward-aligned to the requested boundary:
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// precondition (asserted inside memory_align()):</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1">// align &gt; 0 &amp;&amp; (align &amp; (align-1)) == 0  — must be power of two</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">aligned</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">current</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">align</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="o">~</span><span class="p">(</span><span class="n">align</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">next</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">aligned</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">size</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1">// guard: size &gt; m_total_size - aligned  (avoids wrap)</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">m_current_offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">return</span><span class="w"> </span><span class="n">m_memory</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">aligned</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1">// postcondition: returned memory is zeroed (secure_memset)</span>
+</code></pre></div>
+
+</div>
+</div>
+
+<hr />
+<h1 id="arenaallocator-api-surface">ArenaAllocator — API Surface<a class="headerlink" href="#arenaallocator-api-surface" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">struct</span><span class="w"> </span><span class="nc">ArenaAllocator</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">Initialize</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">);</span><span class="w">            </span><span class="c1">// mmap / VirtualAlloc reservation</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">Shutdown</span><span class="p">();</span><span class="w">                         </span><span class="c1">// munmap / VirtualFree</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="nf">Allocate</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w">              </span><span class="c1">// bump forward, align, return pointer</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">                   </span><span class="kt">size_t</span><span class="w"> </span><span class="n">alignment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DEFAULT_ALIGNMENT</span><span class="p">);</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="nf">Resize</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">old_size</span><span class="p">,</span><span class="w"> </span><span class="c1">// extend in-place if last alloc,</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">                 </span><span class="kt">size_t</span><span class="w"> </span><span class="n">new_size</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">alignment</span><span class="p">);</span><span class="w"> </span><span class="c1">// else new alloc + copy</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="kt">void</span><span class="w">  </span><span class="nf">Clear</span><span class="p">();</span><span class="w">                           </span><span class="c1">// reset cursor to initial offset</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="kt">void</span><span class="w">  </span><span class="nf">CreateSubArena</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="n">ArenaAllocator</span><span class="o">*</span><span class="w"> </span><span class="n">out</span><span class="p">);</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="p">};</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="c1">// Scratch (temp) arena — LIFO pairing</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="n">ArenaTemp</span><span class="w"> </span><span class="n">scratch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ZGetScratch</span><span class="p">(</span><span class="n">arena</span><span class="p">);</span><span class="w">   </span><span class="c1">// saves current cursor</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="c1">// ... transient allocations ...</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="n">ZReleaseScratch</span><span class="p">(</span><span class="n">scratch</span><span class="p">);</span><span class="w">                 </span><span class="c1">// restores cursor to saved position</span>
+</code></pre></div>
+<h3 id="key-invariant">Key invariant<a class="headerlink" href="#key-invariant" title="Permanent link">&para;</a></h3>
+<p><code>Resize</code> on the <strong>last</strong> allocation in the arena extends it in-place (cursor rewind + rebump). On any other allocation it allocates a new block forward and copies — <strong>the old block becomes permanently dead weight</strong>.</p>
+<p>This is safe and correct for scratch arenas. It is a slow memory leak for long-lived growing containers.</p>
+<blockquote>
+<p><strong>Detection caveat:</strong> "last allocation" is detected via <code>m_memory + m_previous_offset == old_ptr</code> (using <code>m_previous_offset</code>, not a computed size). The caller does not need to pass the aligned size — the implementation uses the stored previous-offset directly.</p>
+<p><strong>Resize copy semantics:</strong> copies <code>min(old_size, new_size)</code> bytes. Shrink zeroes the freed tail. Old block abandoned in place on slow-path (not zeroed). OOM on slow-path asserts via <code>ZENGINE_VALIDATE_ASSERT</code> (always-on crash handler) — never returns null.</p>
+</blockquote>
+<h3 id="scratch-scope-constraint">Scratch scope constraint<a class="headerlink" href="#scratch-scope-constraint" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// CORRECT — flat scratch, or nested with LIFO release</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">ArenaTemp</span><span class="w"> </span><span class="n">outer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ZGetScratch</span><span class="p">(</span><span class="n">arena</span><span class="p">);</span><span class="w">          </span><span class="c1">// saves cursor A</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1">// ... outer allocations (cursor → B) ...</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">ArenaTemp</span><span class="w"> </span><span class="n">inner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ZGetScratch</span><span class="p">(</span><span class="n">arena</span><span class="p">);</span><span class="w">          </span><span class="c1">// saves cursor B</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="c1">// ... inner allocations (cursor → C) ...</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">ZReleaseScratch</span><span class="p">(</span><span class="n">inner</span><span class="p">);</span><span class="w">                        </span><span class="c1">// cursor → B  ✓</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">ZReleaseScratch</span><span class="p">(</span><span class="n">outer</span><span class="p">);</span><span class="w">                        </span><span class="c1">// cursor → A  ✓</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="c1">// INCORRECT — releasing outer before inner</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="n">ArenaTemp</span><span class="w"> </span><span class="n">outer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ZGetScratch</span><span class="p">(</span><span class="n">arena</span><span class="p">);</span><span class="w">          </span><span class="c1">// saves cursor A</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="n">ArenaTemp</span><span class="w"> </span><span class="n">inner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ZGetScratch</span><span class="p">(</span><span class="n">arena</span><span class="p">);</span><span class="w">          </span><span class="c1">// saves cursor B &gt; A</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="n">ZReleaseScratch</span><span class="p">(</span><span class="n">outer</span><span class="p">);</span><span class="w">                        </span><span class="c1">// cursor → A  — inner's save point (B) now stale!</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="c1">// arena cursor is at A; inner.CurrentOffset = B &gt; A</span>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="c1">// any new allocation overwrites B..C that inner "thinks" it owns</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="n">ZReleaseScratch</span><span class="p">(</span><span class="n">inner</span><span class="p">);</span><span class="w">                        </span><span class="c1">// cursor → B  — unwinds forward past A — corrupt</span>
+</code></pre></div>
+<p><code>ZGetScratch</code> / <code>ZReleaseScratch</code> must be released in <strong>strict LIFO order</strong>. Releasing an outer scratch while an inner scratch is still live leaves the inner's save point above the current cursor — its subsequent release unwinds in the wrong direction. The common footgun is passing the same arena to two independent functions that each call <code>ZGetScratch</code> without knowing the other holds a live scratch.</p>
+<h3 id="thread-safety">Thread safety<a class="headerlink" href="#thread-safety" title="Permanent link">&para;</a></h3>
+<p><code>ArenaAllocator</code> is <strong>not thread-safe</strong>. All arenas are carved on the main thread at engine startup before any worker starts. Workers receive pre-carved <code>TLSFSlab</code> handles — they never call <code>ArenaAllocator::Allocate</code> after init. <code>CreateSubArena</code> must not be called concurrently.</p>
+<hr />
+<h1 id="arenaallocator-performance">ArenaAllocator — Performance<a class="headerlink" href="#arenaallocator-performance" title="Permanent link">&para;</a></h1>
+<div class="columns">
+<div>
+
+### Allocation cost
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a> Allocate(n, align):
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>   aligned   = memory_align(cur, align)        // 2 ops + is_power_of_two assert
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>   if n &gt; m_total_size - aligned: return null  // overflow-safe OOM check
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>   if aligned+n &gt; committed: mprotect(...)     // OS call only on page boundary cross
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>   cur       = aligned + n                     // 1 store
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>   memset(base+aligned, 0, n)                  // O(n) zeroing — dominates for large n
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>   return    base + aligned                    // 1 add
+</code></pre></div>
+
+**~3–5 CPU cycles bookkeeping (cache-warm) + `memset(n)` zeroing cost.**
+
+No lock. No metadata write. No tree traversal. Just arithmetic on a single pointer. If the arena struct itself is cold (e.g. a scratch arena not used this frame), the first access pays a cache-miss penalty of 10–200 cycles — same caveat applies to all allocators.
+
+> **Zeroing cost:** every `Allocate(n)` calls `secure_memset(ptr, 0, n)` unconditionally. For small objects this is absorbed into cache-line writes. For large allocations (e.g. a 16 MB decode buffer) the zeroing dominates — at ~40 GB/s memory bandwidth that is ~0.4 ms. This cost is not shown in the cycle table, which covers bookkeeping only.
+
+### Comparison
+
+| Allocator | Alloc cost | Free cost |
+|---|---|---|
+| ArenaAllocator | **3–5 cycles** (cache-warm) + memset(n) | N/A |
+| PoolAllocator | 5–8 cycles + memset(chunk) | 5–8 cycles |
+| TLSF | ~20–40 cycles (cache-warm) | ~20–40 cycles |
+| jemalloc (system) | 50–300 cycles | 50–300 cycles |
+| ptmalloc (glibc) | 100–500 cycles | 100–500 cycles |
+
+</div>
+<div>
+
+### Cache behavior
+
+Sequential allocations land in sequential addresses. For objects processed together (e.g. all `MeshInstance` structs during a frame), the entire working set fits in a predictable number of cache lines.
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a> Arena layout for one frame:
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a> ┌────┬────┬────┬────┬────┬────┐
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a> │ M0 │ M1 │ M2 │ M3 │ M4 │M5 │
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a> └────┴────┴────┴────┴────┴───┘
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    one cache line (64 bytes) per mesh instance
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a> System heap for one frame:
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a> ┌────┐          ┌────┐     ┌────┐
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a> │ M0 │          │ M1 │     │ M2 │  ... scattered across pages
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a> └────┘          └────┘     └────┘
+</code></pre></div>
+
+On a CPU with a 64-byte cache line, processing 100 sequentially-arena-allocated objects touches 100 cache lines. The same objects on the system heap may touch up to 100 different pages.
+
+</div>
+</div>
+
+<hr />
+<h1 id="arenaallocator-pros">ArenaAllocator — Pros<a class="headerlink" href="#arenaallocator-pros" title="Permanent link">&para;</a></h1>
+<div class="columns3">
+<div class="card green">
+
+### Fastest possible allocation
+
+3–5 cycles bookkeeping — pointer bump, alignment, OOM check. No lock, no metadata write, no free-list search. Add `memset(n)` zeroing on top: negligible for small structs, dominant for large buffers.
+
+</div>
+<div class="card green">
+
+### Zero fragmentation
+
+No free means no holes. The arena is always a single contiguous block of used memory followed by free space. Fragmentation is architecturally impossible.
+
+</div>
+<div class="card green">
+
+### Cache locality
+
+Sequential allocations produce sequential addresses. Objects allocated together are processed together. The CPU prefetcher works at maximum efficiency.
+
+</div>
+</div>
+
+<p><br></p>
+<div class="columns3">
+<div class="card green">
+
+### Deterministic latency
+
+Bookkeeping cost is constant regardless of fragmentation state, thread count, or prior allocation history. No GC jitter, no lock contention. Total time scales linearly with allocation size due to zeroing, but that scaling is predictable — no spikes.
+
+</div>
+<div class="card green">
+
+### Cheap sub-arenas
+
+`CreateSubArena` calls `parent.Allocate(size)` once — at most one `mprotect` call if the new range crosses a committed-page boundary, no copy, no lock. Hierarchical memory budgets cost a single bump at creation time and nothing thereafter.
+
+</div>
+<div class="card green">
+
+### Debug visibility
+
+The current offset is a single integer. Memory pressure for any subsystem is one subtraction.
+
+</div>
+</div>
+
+<hr />
+<h1 id="arenaallocator-cons-constraints">ArenaAllocator — Cons &amp; Constraints<a class="headerlink" href="#arenaallocator-cons-constraints" title="Permanent link">&para;</a></h1>
+<div class="columns">
+<div class="card red">
+
+### No individual free
+
+Once allocated, a block cannot be returned independently. The only reclamation mechanism is `Clear()` (reset entire arena) or `ZReleaseScratch()` (restore to a saved cursor position).
+
+This is a design choice, not a bug. It enforces the lifetime contract.
+
+**Consequence:** ArenaAllocator is wrong when you need to free individual objects at arbitrary times — entity removal, texture eviction, mid-session asset unload.
+
+</div>
+<div>
+<br>
+
+### Grow leaks dead blocks
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a> Array&lt;T&gt; initial:
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a> ┌────────────────────────┐ free
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a> │   8 entries (64 B)     │──►
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a> └────────────────────────┘
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>         ▲ cursor
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a> Array&lt;T&gt; after push (grows to 16):
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a> ┌────────────────────────┬─────────────────────────────┐ free
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a> │   8 entries (DEAD)     │   16 entries (live)         │──►
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a> └────────────────────────┴─────────────────────────────┘
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>                                   ▲ cursor
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>                   ▲ 64 bytes permanently lost
+</code></pre></div>
+
+For `Array<T>` backed by a long-lived arena (like `AssetManager::Arena`), every `push_back` that triggers a realloc wastes the old block for the lifetime of the arena.
+
+**Mitigation:** pre-size containers via `init(arena, expected_capacity)` to eliminate grows. Works for import pipelines; difficult for session-lifetime collections with unpredictable growth.
+
+</div>
+</div>
+
+<hr />
+<h1 id="poolallocator-design">PoolAllocator — Design<a class="headerlink" href="#poolallocator-design" title="Permanent link">&para;</a></h1>
+<p>Fixed-size free list. Carved from an ArenaAllocator at initialization time.</p>
+<div class="columns">
+<div>
+
+### Layout
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a> Parent arena gives PoolAllocator a single block:
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a> ┌──────────────────────────────────────────┐
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a> │  chunk 0  │  chunk 1  │  chunk 2  │ ...  │
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a> └──┬────────┴──┬────────┴──┬────────┴──────┘
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    │           │           │
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    │   free list (links stored INSIDE chunks):
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>    │
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>    head ──► [chunk 2] ──► [chunk 0] ──► nullptr
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>                    ▲ PoolFreeNode* stored in first bytes of each free chunk
+</code></pre></div>
+
+### Invariants
+
+- All chunks are **exactly** `chunk_size` bytes
+- Free list links occupy the first `sizeof(PoolFreeNode*)` bytes of each free chunk
+- `Allocate()` — pop head, return the chunk pointer
+- `Free(ptr)` — assert ownership + alignment, push head
+
+</div>
+<div>
+
+### Initialization
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">PoolAllocator::Initialize</span><span class="p">(</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span><span class="n">ArenaAllocator</span><span class="o">*</span><span class="w"> </span><span class="n">arena</span><span class="p">,</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">total_size</span><span class="p">,</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">chunk_size</span><span class="p">,</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">alignment</span><span class="p">)</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="p">{</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">    </span><span class="c1">// One arena carve for all chunks at once</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="w">    </span><span class="n">memory</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">arena</span><span class="o">-&gt;</span><span class="n">Allocate</span><span class="p">(</span><span class="n">total_size</span><span class="p">,</span><span class="w"> </span><span class="n">alignment</span><span class="p">));</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">    </span><span class="n">total_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">size</span><span class="p">;</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">    </span><span class="n">chunk_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">chk_size</span><span class="p">;</span><span class="w">  </span><span class="c1">// already aligned to power-of-two boundary</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">    </span><span class="n">head</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">    </span><span class="n">Clear</span><span class="p">();</span><span class="w">    </span><span class="c1">// zeroes all chunks and builds the free list</span>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="p">}</span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="c1">// Clear() — O(capacity): zero every chunk, then rebuild free list</span>
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="kt">void</span><span class="w"> </span><span class="nf">PoolAllocator::Clear</span><span class="p">()</span>
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="p">{</span>
+<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">total_size</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">chunk_size</span><span class="p">;</span>
+<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="w">        </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">memory</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">chunk_size</span><span class="p">];</span>
+<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a><span class="w">        </span><span class="n">secure_memset</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">chunk_size</span><span class="p">);</span>
+<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="w">        </span><span class="c1">// C-style cast: technically UB (no placement new), but PoolFreeNode is</span>
+<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="w">        </span><span class="c1">// trivially copyable — all compilers generate correct code in practice.</span>
+<a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="w">        </span><span class="c1">// Conformant fix: ::new (ptr) PoolFreeNode{head}</span>
+<a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a><span class="w">        </span><span class="k">auto</span><span class="o">*</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">PoolFreeNode</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">ptr</span><span class="p">;</span>
+<a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a><span class="w">        </span><span class="n">node</span><span class="o">-&gt;</span><span class="n">Next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">head</span><span class="p">;</span>
+<a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a><span class="w">        </span><span class="n">head</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">node</span><span class="p">;</span>
+<a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a><span class="w">    </span><span class="c1">// Result: head → chunk[count-1] → chunk[count-2] → ... → chunk[0] → nullptr</span>
+<a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a><span class="p">}</span>
+</code></pre></div>
+
+The parent arena is touched **once** at init. After that, alloc/free never touch the arena.
+
+</div>
+</div>
+
+<hr />
+<h1 id="poolallocator-api-surface">PoolAllocator — API Surface<a class="headerlink" href="#poolallocator-api-surface" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">struct</span><span class="w"> </span><span class="nc">PoolAllocator</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">Arena</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ArenaAllocator</span><span class="p">;</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span><span class="kt">void</span><span class="w">  </span><span class="nf">Initialize</span><span class="p">(</span><span class="n">Arena</span><span class="o">*</span><span class="w"> </span><span class="n">arena</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">total_size</span><span class="p">,</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">                     </span><span class="kt">size_t</span><span class="w"> </span><span class="n">chunk_size</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">alignment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DEFAULT_ALIGNMENT</span><span class="p">);</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="nf">Allocate</span><span class="p">();</span><span class="w">            </span><span class="c1">// O(1) — pop free-list head, zero chunk, return; nullptr if exhausted</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">    </span><span class="kt">void</span><span class="w">  </span><span class="nf">Free</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ptr</span><span class="p">);</span><span class="w">       </span><span class="c1">// O(1) — push free-list head (bounds-checked, always-on assert)</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">    </span><span class="kt">void</span><span class="w">  </span><span class="nf">Clear</span><span class="p">();</span><span class="w">               </span><span class="c1">// O(capacity) — zero all chunks, rebuild free list</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="p">};</span>
+</code></pre></div>
+<h3 id="usage-in-engine">Usage in engine<a class="headerlink" href="#usage-in-engine" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1">// Entity slot pool — 4096 entities, each 128 bytes</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">PoolAllocator</span><span class="w"> </span><span class="n">entity_pool</span><span class="p">;</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="n">entity_pool</span><span class="p">.</span><span class="n">Initialize</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ecs_arena</span><span class="p">,</span><span class="w"> </span><span class="mi">4096</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">128</span><span class="p">,</span><span class="w"> </span><span class="mi">128</span><span class="p">);</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="c1">// Allocate one entity slot</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">slot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">entity_pool</span><span class="p">.</span><span class="n">Allocate</span><span class="p">();</span><span class="w">     </span><span class="c1">// pops free list + zeroes chunk — ~5 cyc + memset(128)</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="c1">// Return the slot</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="n">entity_pool</span><span class="p">.</span><span class="n">Free</span><span class="p">(</span><span class="n">slot</span><span class="p">);</span><span class="w">                  </span><span class="c1">// pushes free list, asserts ownership — ~8 cycles</span>
+</code></pre></div>
+<h3 id="safety-invariants-enforced">Safety invariants enforced<a class="headerlink" href="#safety-invariants-enforced" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>Free</code> asserts <code>ptr &gt;= m_memory &amp;&amp; ptr &lt; m_memory + total_size</code></li>
+<li><code>Free</code> asserts <code>(ptr - m_memory) % chunk_size == 0</code> (chunk-aligned)</li>
+<li>Use-after-free: subsequent <code>Allocate()</code> returns the freed chunk — the pool zeroes it automatically (<code>secure_memset</code> inside <code>Allocate</code>) before returning. Caller receives a pre-zeroed slot; no manual clear needed.</li>
+<li>Double-free: second <code>Free</code> of same ptr <strong>silently corrupts</strong> the free list in all builds — the range and alignment assertions do NOT catch it (the pointer is still valid by both checks). Detection requires a per-chunk allocated/free bitset, which this allocator does not maintain. Guard against it at the call site.</li>
+</ul>
+<hr />
+<h1 id="poolallocator-performance">PoolAllocator — Performance<a class="headerlink" href="#poolallocator-performance" title="Permanent link">&para;</a></h1>
+<div class="columns">
+<div>
+
+### Allocation
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a> Allocate():
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>   if head == nullptr: return null  // pool exhausted — caller must check
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>   result = head                    // 1 mov
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>   head   = head-&gt;Next              // 1 load
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>   memset(result, 0, chunk_size)    // O(chunk_size) zeroing — dominates
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>   return result
+</code></pre></div>
+
+**~5 cycles bookkeeping + `memset(chunk_size)` zeroing.** For a 128-byte entity slot (2 cache lines) the zero cost is ~4 ns on warm cache — comparable to the list-pop itself.
+
+### Free
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a> Free(ptr):
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>   VALIDATE_ASSERT in range + aligned  // always-on (release: crash handler)
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>   node       = (PoolFreeNode*)ptr     // cast
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>   node-&gt;Next = head                   // 1 store
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>   head       = node                   // 1 store
+</code></pre></div>
+
+**~5–8 cycles.** Assertions are always-on in all build modes.
+
+### No lock
+
+Thread safety requires a CAS or spinlock — but all current engine pool allocators are used from a single thread (the main thread or a single render thread). No synchronization cost.
+
+</div>
+<div>
+
+### Comparison for a pool-suited workload (entity add/remove)
+
+| Allocator | Alloc | Free | Fragmentation |
+|---|---|---|---|
+| PoolAllocator | **~5 cyc** + memset(chunk) | **~5 cyc** | Zero |
+| TLSF | ~20–40 cyc | ~20–40 cyc | ~1.0625× |
+| jemalloc | ~100 cyc | ~100 cyc | Low |
+| ptmalloc | ~200 cyc | ~200 cyc | Medium |
+
+### Memory overhead
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a> PoolAllocator backing for 4096 entities × 128 B:
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>   Total reserved: 524 288 bytes (512 KB)
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>   Metadata:       1 pointer in each free chunk
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>                   = 0 bytes overhead on allocated chunks
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>   Header cost:    sizeof(PoolAllocator) = ~48 bytes
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a> vs jemalloc for same workload:
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>   Each 128-byte alloc gets a ~32-byte header  → 25% overhead
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>   Total overhead: ~131 KB just for metadata
+</code></pre></div>
+
+</div>
+</div>
+
+<hr />
+<h1 id="poolallocator-pros-cons">PoolAllocator — Pros &amp; Cons<a class="headerlink" href="#poolallocator-pros-cons" title="Permanent link">&para;</a></h1>
+<div class="columns">
+<div>
+
+### Pros
+
+<div class="card green">
+O(1) alloc AND free. Unlike the arena, individual objects can be returned without resetting the entire pool.
+</div>
+<br>
+<div class="card green">
+Zero fragmentation. All chunks are the same size — there are no holes, no wasted gaps, no coalescing needed. The free list is just a sequence of identical slots.
+</div>
+<br>
+<div class="card green">
+No sidecar metadata. Free list links live inside the free chunks themselves — zero bytes of separate bookkeeping array. Note: allocation order after first use is LIFO-scrambled; sequential layout is only guaranteed at init, not preserved across alloc/free cycles.
+</div>
+<br>
+<div class="card green">
+Backed by arena. Lifetime is tied to the parent arena — pool memory is reclaimed automatically when the arena is shut down.
+</div>
+
+</div>
+<div>
+
+### Cons
+
+<div class="card red">
+Fixed chunk size — only suited for objects of exactly one size. A pool for 128-byte entities cannot serve a 200-byte component.
+</div>
+<br>
+<div class="card red">
+Multi-size objects require multiple pools. Each pool must be pre-sized and pre-registered. Pooling heterogeneous objects means either wasting memory (largest size wins) or managing a family of pools.
+</div>
+<br>
+<div class="card red">
+Capacity is fixed at init time. Once all slots are allocated, Allocate() returns null. Growing a pool requires a new backing arena carve — no in-place extension.
+</div>
+<br>
+<div class="card red">
+Clear() is O(capacity) — it must traverse all chunks to rebuild the free list. This is acceptable for shutdown but unacceptable as a per-frame reset.
+</div>
+
+</div>
+</div>
+
+<hr />
+<!-- _class: center -->
+
+<h1 id="part-iii">Part III<a class="headerlink" href="#part-iii" title="Permanent link">&para;</a></h1>
+<h2 id="the-gap-tlsf">The Gap &amp; TLSF<a class="headerlink" href="#the-gap-tlsf" title="Permanent link">&para;</a></h2>
+<p><em>Where Arena and Pool fall short · TLSF solution</em></p>
+<hr />
+<h1 id="the-gap-what-neither-allocator-handles">The Gap — What Neither Allocator Handles<a class="headerlink" href="#the-gap-what-neither-allocator-handles" title="Permanent link">&para;</a></h1>
+<div class="columns">
+<div>
+
+### Today: texture upload pipeline
+
+Each texture goes through a thread pool worker:
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a> stbi_load / DeserializeEnvMap
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>         │
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>         ▼
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a> std::vector&lt;float&gt; output_buf    ← malloc(w*h*4*4)
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>         │
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a> Bitmap vertical_cross            ← std::vector inside → malloc
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a> Bitmap cubemap                   ← std::vector inside → malloc
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>         │
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a> std::vector&lt;uint8_t&gt; buffer      ← malloc(final_bytes)
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>         │
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a> TextureDeferral { Buffer = std::vector }
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>         │
+<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a> ThreadSafeQueue
+<a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>         │
+<a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a> CompleteDeferrals()
+<a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>         │
+<a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a> ~TextureDeferral()               ← free()
+</code></pre></div>
+
+Each upload: **4–5 system heap round-trips.**
+Multiple concurrent uploads: **contention on the global malloc lock.**
+
+</div>
+<div>
+
+### Why ArenaAllocator does not fit
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a> Upload A: 16 MB   ← arena bump
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a> Upload B: 256 KB  ← arena bump
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a> Upload A done     ← NO FREE. 16 MB permanently dead.
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a> Upload C: 16 MB   ← arena bump
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a> ...
+</code></pre></div>
+
+After 100 uploads the arena has leaked hundreds of MB — all dead blocks from completed uploads that could never be freed.
+
+### Why PoolAllocator does not fit
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a> Chunk size = max texture = 48 MB
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a> 8 in-flight uploads × 48 MB = 384 MB reserved
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a> A 256 KB thumbnail wastes 47.75 MB per slot.
+</code></pre></div>
+
+Multiple pools by size class avoids waste — but blocks cannot merge across pools, and you must choose size class boundaries upfront.
+
+</div>
+</div>
+
+<hr />
+<h1 id="fragmentation-arena-vs-pool-vs-tlsf">Fragmentation: Arena vs Pool vs TLSF<a class="headerlink" href="#fragmentation-arena-vs-pool-vs-tlsf" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a> Texture upload session — 10 textures, mixed sizes:
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a> [16MB] [256KB] [8MB] [16MB] [256KB] [256KB] [8MB] [16MB] [256KB] [8MB]
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a> ArenaAllocator (if it had free — it does not, showing the leak pattern):
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a> ┌──────┬───┬──────┬──────┬───┬───┬──────┬──────┬───┬──────┐
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a> │ 16MB │256│  8MB │ 16MB │256│256│  8MB │ 16MB │256│  8MB │ total: ~73MB
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a> └──────┴───┴──────┴──────┴───┴───┴──────┴──────┴───┴──────┘
+<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>  All freed? Cursor reset = all 73MB back. But no INDIVIDUAL free.
+<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>
+<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a> PoolAllocator (chunk = 16MB, 8 slots = 128MB reserved):
+<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a> ┌──────┬──────┬──────┬──────┬──────┬──────┬──────┬──────┐
+<a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a> │ 16MB │ 16MB │ 16MB │ 16MB │ 16MB │ 16MB │ 16MB │ 16MB │ 128MB reserved
+<a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a> │ used │wasted│ used │ used │wasted│wasted│ used │ used │ 64MB wasted
+<a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a> └──────┴──────┴──────┴──────┴──────┴──────┴──────┴──────┘
+<a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a>
+<a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a> TLSF (one 64MB slab):
+<a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a> Alloc 16MB:  [16MB used] [48MB free]
+<a id="__codelineno-19-18" name="__codelineno-19-18" href="#__codelineno-19-18"></a> Alloc 256KB: [16MB] [256KB] [~47.7MB free]
+<a id="__codelineno-19-19" name="__codelineno-19-19" href="#__codelineno-19-19"></a> Free 16MB:   [16MB FREE] [256KB] [~47.7MB free]
+<a id="__codelineno-19-20" name="__codelineno-19-20" href="#__codelineno-19-20"></a> Coalesce:    [16MB FREE] [256KB] [~47.7MB free]  ← left merge skipped (256KB between)
+<a id="__codelineno-19-21" name="__codelineno-19-21" href="#__codelineno-19-21"></a> Alloc 8MB:   [8MB used] [8MB FREE] [256KB] [~47.7MB free]  ← fits in 16MB freed slot
+<a id="__codelineno-19-22" name="__codelineno-19-22" href="#__codelineno-19-22"></a>
+<a id="__codelineno-19-23" name="__codelineno-19-23" href="#__codelineno-19-23"></a> After all 10 textures freed: single contiguous 64MB free block.
+<a id="__codelineno-19-24" name="__codelineno-19-24" href="#__codelineno-19-24"></a> Fragmentation: zero. All adjacent frees coalesced.
+</code></pre></div>
+<hr />
+<h1 id="tlsf-what-is-it">TLSF — What Is It?<a class="headerlink" href="#tlsf-what-is-it" title="Permanent link">&para;</a></h1>
+<p><strong>Two-Level Segregated Fit</strong> (mattconte/tlsf) is a dynamic allocator designed for systems where alloc/free latency must be deterministic.</p>
+<div class="columns">
+<div>
+
+### Guarantees
+
+| Property | Value |
+|---|---|
+| `tlsf_malloc(n)` | O(1) — worst case, not amortized |
+| `tlsf_free(ptr)` | O(1) — including neighbor coalesce |
+| `tlsf_realloc(ptr,n)` | O(1) if in-place, O(n) copy otherwise |
+| Internal fragmentation | ≤ (1 + 1/SL) × requested + 32 B — with SL=4: ~1.0625× |
+| External fragmentation | Bounded — adjacent frees always merge |
+| Per-block overhead | ~16 B allocated / ~32 B free (boundary tag header) |
+
+### Origins
+
+Originally designed for embedded real-time systems (RTEMS, uC/OS). Also used in Sony PS3 SDK, Haiku OS, and several game engines. The O(1) guarantee is formal — no code path is longer than O(1) regardless of heap state.
+
+</div>
+<div>
+
+### Backed by a fixed slab
+
+TLSF does not call `malloc` internally. It operates entirely within a flat buffer you hand it:
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1">// You provide the memory</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="kt">uint8_t</span><span class="w"> </span><span class="n">backing</span><span class="p">[</span><span class="mi">64</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="p">];</span><span class="w"> </span><span class="c1">// 64 MB slab</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="c1">// TLSF manages it</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="n">tlsf_t</span><span class="w"> </span><span class="n">pool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tlsf_create_with_pool</span><span class="p">(</span><span class="n">backing</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">backing</span><span class="p">));</span>
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>
+<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="c1">// Allocate from it</span>
+<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tlsf_malloc</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="p">);</span><span class="w">  </span><span class="c1">// 16 MB</span>
+<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tlsf_malloc</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span><span class="w"> </span><span class="mi">256</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="p">);</span><span class="w">         </span><span class="c1">// 256 KB</span>
+<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a>
+<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="c1">// Free returns to the slab — coalesces with neighbors</span>
+<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="n">tlsf_free</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">);</span><span class="w">  </span><span class="c1">// 16 MB block merges back into free space</span>
+<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a>
+<a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="c1">// The slab is immediately reusable for the next allocation</span>
+<a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tlsf_malloc</span><span class="p">(</span><span class="n">pool</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1024</span><span class="p">);</span><span class="w">  </span><span class="c1">// 14 MB — succeeds</span>
+</code></pre></div>
+
+This is the key difference from `malloc`: the backing memory comes from **our** arena — one reservation, zero system heap involvement after init.
+
+</div>
+</div>
+
+<hr />
+<h1 id="tlsf-performance-profile">TLSF — Performance Profile<a class="headerlink" href="#tlsf-performance-profile" title="Permanent link">&para;</a></h1>
+<div class="columns">
+<div>
+
+### Alloc and free cost
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a> tlsf_malloc(n):
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>   FL, SL  = bitmap indices of n        ~2 ops
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>   BSF on bitmap to find free slot      ~1 op (hardware BSF)
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>   pop free list head                   ~2 ops
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>   split remainder                      ~4 ops
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>   ─────────────────────────────────────
+<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>   ~20–40 cycles total (cache-warm)
+</code></pre></div>
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a> tlsf_free(ptr):
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>   merge left neighbor  (check P-bit)   ~3 ops
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>   merge right neighbor (check F-bit)   ~3 ops
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>   compute FL, SL for merged block      ~2 ops
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>   push onto free list                  ~2 ops
+<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>   set bitmap bit                       ~1 op
+<a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a>   ─────────────────────────────────────
+<a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a>   ~20–40 cycles total (cache-warm)
+</code></pre></div>
+
+### Cache miss cost
+
+The free list traversal is O(1) — but the first pop involves loading the free block header. If the slab is hot in L2, this is ~5 cycles. If cold, it is one L3 or DRAM miss (~50–200 cycles).
+
+For the texture upload slab (active during every import session), the slab is L2/L3 resident.
+
+</div>
+<div>
+
+### Comparison for variable-size, individual-lifetime workload
+
+| Allocator | Alloc | Free | Notes |
+|---|---|---|---|
+| ArenaAllocator | **3 cyc** + memset(n) | — | No free; leak on grow |
+| PoolAllocator | **5 cyc** + memset(chunk) | **5 cyc** | Fixed size only |
+| **TLSF** | **~30 cyc** | **~30 cyc** | Variable size, O(1) |
+| jemalloc | ~100 cyc | ~100 cyc | Lock + bookkeeping |
+| ptmalloc | ~200 cyc | ~200 cyc | Heavy metadata |
+
+### Why TLSF beats jemalloc here
+
+1. **No lock.** Per-slab, per-thread — no contention.
+2. **Known backing.** The slab is pre-allocated from our arena — no OS calls, no TLB misses on new pages.
+3. **Bounded fragmentation.** jemalloc fragments over hours; TLSF coalesces on every free.
+4. **Deterministic.** No background compaction thread, no epoch-based reclaim.
+
+</div>
+</div>
+
+<hr />
+<h1 id="tlsf-internal-design-two-level-bitmap">TLSF — Internal Design: Two-Level Bitmap<a class="headerlink" href="#tlsf-internal-design-two-level-bitmap" title="Permanent link">&para;</a></h1>
+<p>TLSF organizes free blocks into a two-tier segregated free list indexed by a bitmap. Finding the right free list is a single bit-scan instruction.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a> First-Level Index (FL): floor(log2(block_size_in_bytes))
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a> Second-Level Index (SL): subdivides each FL band into 16–32 sub-classes
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a> (For MB-range blocks the actual FL values are 22–26; the diagram uses
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>  abbreviated band indices for readability — the structure is identical.)
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>
+<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a> FL bitmap (one bit per size class)
+<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a> ┌──┬──┬──┬──┬──┬──┬──┬──┐
+<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a> │0 │0 │1 │0 │1 │1 │0 │1 │  1 = at least one free block in this class
+<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a> └──┴──┴──┴──┴──┴──┴──┴──┘
+<a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a>       │        │  │     │
+<a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a>       │        │  └─── band 7 → SL bitmap for 64MB–128MB range
+<a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a>       │        └────── band 5 → SL bitmap for 16MB–32MB range
+<a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a>       └─────────────── band 3 → SL bitmap for 4MB–8MB range
+<a id="__codelineno-23-14" name="__codelineno-23-14" href="#__codelineno-23-14"></a>
+<a id="__codelineno-23-15" name="__codelineno-23-15" href="#__codelineno-23-15"></a> Second-Level bitmap for band 5 (16 MB – 32 MB):
+<a id="__codelineno-23-16" name="__codelineno-23-16" href="#__codelineno-23-16"></a> ┌──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┐
+<a id="__codelineno-23-17" name="__codelineno-23-17" href="#__codelineno-23-17"></a> │0 │0 │1 │0 │0 │0 │1 │0 │0 │0 │0 │1 │0 │0 │0 │0 │
+<a id="__codelineno-23-18" name="__codelineno-23-18" href="#__codelineno-23-18"></a> └──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┘
+<a id="__codelineno-23-19" name="__codelineno-23-19" href="#__codelineno-23-19"></a>           │           │           │
+<a id="__codelineno-23-20" name="__codelineno-23-20" href="#__codelineno-23-20"></a>         17.5MB       19MB        22MB  ← free block size classes
+<a id="__codelineno-23-21" name="__codelineno-23-21" href="#__codelineno-23-21"></a>
+<a id="__codelineno-23-22" name="__codelineno-23-22" href="#__codelineno-23-22"></a> Free list head for each SL:
+<a id="__codelineno-23-23" name="__codelineno-23-23" href="#__codelineno-23-23"></a> [17.5MB] → block → block → nullptr
+<a id="__codelineno-23-24" name="__codelineno-23-24" href="#__codelineno-23-24"></a> [19MB  ] → block → nullptr
+<a id="__codelineno-23-25" name="__codelineno-23-25" href="#__codelineno-23-25"></a> [22MB  ] → block → block → block → nullptr
+</code></pre></div>
+<p><code>tlsf_malloc(n)</code>:
+1. Compute FL = <code>floor(log2(n))</code>, SL = sub-class of n within FL band — 2 ops
+2. Find next set bit in the bitmap at or above (FL, SL) — 1 <code>BSF</code> instruction
+3. Pop the head of that free list — 1 load
+4. Split remainder back into a smaller free block — 2 list ops
+<strong>Total: ~8–12 operations — O(1) by construction.</strong></p>
+<hr />
+<h1 id="tlsf-block-structure">TLSF — Block Structure<a class="headerlink" href="#tlsf-block-structure" title="Permanent link">&para;</a></h1>
+<p>Each block in the TLSF heap has a small header. Headers form a doubly-linked physical list for coalescing.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a> Memory layout of a TLSF slab:
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a> ┌───────────────────────────────────────────────────────────────────┐
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a> │                     TLSF slab (e.g. 64 MB)                       │
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a> ├──────────┬──────────────────────┬──────────────┬─────────────────┤
+<a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a> │ TLSF hdr │    Allocated Block   │  Free Block  │ Allocated Block │
+<a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a> │ ~3 KB    │                      │              │                 │
+<a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a> └──────────┴─────────────┬────────┴──────────────┴─────────────────┘
+<a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a>                           │
+<a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a>                  Block header (16–32 bytes):
+<a id="__codelineno-24-11" name="__codelineno-24-11" href="#__codelineno-24-11"></a>                  ┌────────────────────────────────────┐
+<a id="__codelineno-24-12" name="__codelineno-24-12" href="#__codelineno-24-12"></a>                  │ prev_phys_block* │ size | flags     │  ← all blocks (16 B)
+<a id="__codelineno-24-13" name="__codelineno-24-13" href="#__codelineno-24-13"></a>                  │ (free only:      │                  │
+<a id="__codelineno-24-14" name="__codelineno-24-14" href="#__codelineno-24-14"></a>                  │  next_free*,     │   F = free bit   │  ← free only (+16 B)
+<a id="__codelineno-24-15" name="__codelineno-24-15" href="#__codelineno-24-15"></a>                  │  prev_free*)     │   P = prev free  │
+<a id="__codelineno-24-16" name="__codelineno-24-16" href="#__codelineno-24-16"></a>                  └────────────────────────────────────┘
+<a id="__codelineno-24-17" name="__codelineno-24-17" href="#__codelineno-24-17"></a>                  │                                    │
+<a id="__codelineno-24-18" name="__codelineno-24-18" href="#__codelineno-24-18"></a>                  │◄── header overhead: 16 B alloc    ►│
+<a id="__codelineno-24-19" name="__codelineno-24-19" href="#__codelineno-24-19"></a>                  │                    32 B free        │
+<a id="__codelineno-24-20" name="__codelineno-24-20" href="#__codelineno-24-20"></a>
+<a id="__codelineno-24-21" name="__codelineno-24-21" href="#__codelineno-24-21"></a> Coalesce on free:
+<a id="__codelineno-24-22" name="__codelineno-24-22" href="#__codelineno-24-22"></a> ┌───────────┬──────────┬───────────┐     ┌──────────────────────┐
+<a id="__codelineno-24-23" name="__codelineno-24-23" href="#__codelineno-24-23"></a> │ free 8MB  │ free 4MB │ free 6MB  │ ──► │    merged free 18MB  │
+<a id="__codelineno-24-24" name="__codelineno-24-24" href="#__codelineno-24-24"></a> └───────────┴──────────┴───────────┘     └──────────────────────┘
+<a id="__codelineno-24-25" name="__codelineno-24-25" href="#__codelineno-24-25"></a>   All three blocks are adjacent in physical memory →
+<a id="__codelineno-24-26" name="__codelineno-24-26" href="#__codelineno-24-26"></a>   tlsf_free() merges them in O(1) using prev_phys_block pointer.
+</code></pre></div>
+<p>Coalescing is what prevents the "fragmentation cliff" seen with multiple pools: TLSF can always recombine adjacent free space regardless of what size class it was in.</p>
+<hr />
+<h1 id="tlsfslab-the-engine-wrapper">TLSFSlab — The Engine Wrapper<a class="headerlink" href="#tlsfslab-the-engine-wrapper" title="Permanent link">&para;</a></h1>
+<div class="columns">
+<div>
+
+### Structure
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="c1">// ZEngine/ZEngine/Core/Memory/TLSFSlab.h</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="k">struct</span><span class="w"> </span><span class="nc">TLSFSlab</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w">  </span><span class="n">Backing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="w">    </span><span class="n">tlsf_t</span><span class="w"> </span><span class="n">Pool</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="w">    </span><span class="kt">void</span><span class="w">  </span><span class="nf">Init</span><span class="p">(</span><span class="n">ArenaAllocator</span><span class="o">*</span><span class="w"> </span><span class="n">arena</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">bytes</span><span class="p">);</span>
+<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="nf">Alloc</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">n</span><span class="p">);</span>
+<a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="nf">Realloc</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">n</span><span class="p">);</span>
+<a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="w">    </span><span class="kt">void</span><span class="w">  </span><span class="nf">Free</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ptr</span><span class="p">);</span>
+<a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a><span class="w">    </span><span class="kt">void</span><span class="w">  </span><span class="nf">Shutdown</span><span class="p">();</span>
+<a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a><span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="nf">Overhead</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"> </span><span class="c1">// diagnostic: TLSF metadata bytes</span>
+<a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a><span class="p">};</span>
+</code></pre></div>
+
+### Relationship to arena
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a> Device-&gt;Arena  (ArenaAllocator, 1 GB)
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>   │
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>   └── ZPushSize(&amp;Device-&gt;Arena, 64MB, 64)
+<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>                     │
+<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>                     ▼
+<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>         ┌──────────────────────────────────┐
+<a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a>         │   TLSFSlab::Backing  (64 MB)     │
+<a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a>         │                                  │
+<a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a>         │  [tlsf metadata ~3KB]            │
+<a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a>         │  [free block: 64MB - 3KB]        │
+<a id="__codelineno-26-11" name="__codelineno-26-11" href="#__codelineno-26-11"></a>         │                                  │
+<a id="__codelineno-26-12" name="__codelineno-26-12" href="#__codelineno-26-12"></a>         │  tlsf_malloc ──► alloc from here │
+<a id="__codelineno-26-13" name="__codelineno-26-13" href="#__codelineno-26-13"></a>         │  tlsf_free   ──► merge here      │
+<a id="__codelineno-26-14" name="__codelineno-26-14" href="#__codelineno-26-14"></a>         └──────────────────────────────────┘
+<a id="__codelineno-26-15" name="__codelineno-26-15" href="#__codelineno-26-15"></a>
+<a id="__codelineno-26-16" name="__codelineno-26-16" href="#__codelineno-26-16"></a> Arena cursor moves once at Init.
+<a id="__codelineno-26-17" name="__codelineno-26-17" href="#__codelineno-26-17"></a> Arena is NOT touched by subsequent Alloc/Free calls.
+</code></pre></div>
+
+</div>
+<div>
+
+### Init
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">TLSFSlab::Init</span><span class="p">(</span><span class="n">ArenaAllocator</span><span class="o">*</span><span class="w"> </span><span class="n">arena</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">bytes</span><span class="p">)</span>
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="p">{</span>
+<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">    </span><span class="n">Backing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ZPushSize</span><span class="p">(</span><span class="n">arena</span><span class="p">,</span><span class="w"> </span><span class="n">bytes</span><span class="p">,</span><span class="w"> </span><span class="mi">64</span><span class="p">);</span>
+<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">    </span><span class="n">ZENGINE_VALIDATE_ASSERT</span><span class="p">(</span><span class="n">Backing</span><span class="p">,</span><span class="w"> </span><span class="s">"TLSFSlab: arena OOM"</span><span class="p">);</span>
+<a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="w">    </span><span class="n">Pool</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">tlsf_create_with_pool</span><span class="p">(</span><span class="n">Backing</span><span class="p">,</span><span class="w"> </span><span class="n">bytes</span><span class="p">);</span>
+<a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="w">    </span><span class="n">ZENGINE_VALIDATE_ASSERT</span><span class="p">(</span><span class="n">Pool</span><span class="p">,</span><span class="w">    </span><span class="s">"TLSFSlab: tlsf_create failed"</span><span class="p">);</span>
+<a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="p">}</span>
+</code></pre></div>
+
+### Alloc / Free
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="nf">TLSFSlab::Alloc</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">n</span><span class="p">)</span>
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="p">{</span>
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tlsf_malloc</span><span class="p">(</span><span class="n">Pool</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">);</span>
+<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="w">    </span><span class="n">ZENGINE_VALIDATE_ASSERT</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="s">"TLSFSlab: slab exhausted"</span><span class="p">);</span>
+<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">p</span><span class="p">;</span>
+<a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="p">}</span>
+<a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a>
+<a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="kt">void</span><span class="w"> </span><span class="nf">TLSFSlab::Free</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ptr</span><span class="p">)</span>
+<a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="p">{</span>
+<a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span><span class="w"> </span><span class="n">tlsf_free</span><span class="p">(</span><span class="n">Pool</span><span class="p">,</span><span class="w"> </span><span class="n">ptr</span><span class="p">);</span>
+<a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a><span class="p">}</span>
+</code></pre></div>
+
+### Shutdown
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">TLSFSlab::Shutdown</span><span class="p">()</span>
+<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="p">{</span>
+<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Pool</span><span class="p">)</span><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">tlsf_destroy</span><span class="p">(</span><span class="n">Pool</span><span class="p">);</span><span class="w"> </span><span class="n">Pool</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="w">    </span><span class="c1">// Backing is part of the parent arena — it is NOT freed here.</span>
+<a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a><span class="w">    </span><span class="c1">// The parent arena's Shutdown() reclaims the entire range.</span>
+<a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="w">    </span><span class="n">Backing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a><span class="p">}</span>
+</code></pre></div>
+
+</div>
+</div>
+
+<hr />
+<h1 id="thread-safety-per-worker-slabs">Thread Safety — Per-Worker Slabs<a class="headerlink" href="#thread-safety-per-worker-slabs" title="Permanent link">&para;</a></h1>
+<pre class="mermaid"><code>graph TD
+    SUB["Submitter Thread\nThreadPoolHelper::Submit(lambda)"]
+
+    SUB -- "round-robin\ncursor % WorkerCount" --&gt; W0
+    SUB -- "round-robin" --&gt; W1
+    SUB -- "round-robin" --&gt; W2
+    SUB -- "round-robin" --&gt; W3
+
+    subgraph TP["ThreadPool (hardware_concurrency - 1, max 16)"]
+        W0["Worker 0\nWorkerRun(0)\nt_worker_slab = &amp;slab[0]"]
+        W1["Worker 1\nWorkerRun(1)\nt_worker_slab = &amp;slab[1]"]
+        W2["Worker 2\nWorkerRun(2)\nt_worker_slab = &amp;slab[2]"]
+        W3["Worker 3\nWorkerRun(3)\nt_worker_slab = &amp;slab[3]"]
+    end
+
+    W0 -- "exclusive\nno lock" --&gt; S0["TLSFSlab[0]\n64 MB"]
+    W1 -- "exclusive\nno lock" --&gt; S1["TLSFSlab[1]\n64 MB"]
+    W2 -- "exclusive\nno lock" --&gt; S2["TLSFSlab[2]\n64 MB"]
+    W3 -- "exclusive\nno lock" --&gt; S3["TLSFSlab[3]\n64 MB"]
+
+    S0 &amp; S1 &amp; S2 &amp; S3 -- "one arena carve at init" --&gt; VA["VulkanDevice Arena\n1 GB"]
+
+    style VA fill:#1a1a2e,color:#fff
+    style S0 fill:#e94560,color:#fff
+    style S1 fill:#e94560,color:#fff
+    style S2 fill:#e94560,color:#fff
+    style S3 fill:#e94560,color:#fff</code></pre>
+<p>Thread-local <code>t_worker_slab</code> set at <code>WorkerRun(idx)</code> start. Lambdas call <code>GetWorkerSlab()</code>. <strong>Zero contention between workers</strong> — each slab is touched by exactly one worker at a time.</p>
+<blockquote>
+<p><strong>Open problem — cross-thread free:</strong> <code>CompleteDeferrals()</code> runs on the render thread and calls <code>d.Slab-&gt;Free(d.Pixels)</code> on a worker's slab. If that worker is concurrently executing the next decode task, both threads touch the same TLSF pool simultaneously — undefined behavior. TLSF has no internal lock. This must be resolved before Phase 1 ships. Options: (a) per-slab spinlock on Free only, (b) worker drains a lock-free deferred-free queue at task start, (c) render thread posts the free back to the worker's queue.</p>
+</blockquote>
+<hr />
+<!-- _class: center -->
+
+<h1 id="part-iv">Part IV<a class="headerlink" href="#part-iv" title="Permanent link">&para;</a></h1>
+<h2 id="integration-plan">Integration Plan<a class="headerlink" href="#integration-plan" title="Permanent link">&para;</a></h2>
+<p><em>Phase 1 · Upload Pipeline · TextureDeferral</em></p>
+<hr />
+<h1 id="upload-pipeline-before-vs-after">Upload Pipeline — Before vs After<a class="headerlink" href="#upload-pipeline-before-vs-after" title="Permanent link">&para;</a></h1>
+<div class="columns">
+<div>
+
+### Before (today)
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a> Worker thread
+<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>   ├── std::vector&lt;float&gt; output_buf
+<a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>   │       └── malloc(w × h × 4 × 4)    ← system heap
+<a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>   │
+<a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>   ├── Bitmap vertical_cross
+<a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>   │       └── std::vector&lt;uint8_t&gt;      ← malloc
+<a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a>   │
+<a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a>   ├── Bitmap cubemap
+<a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a>   │       └── std::vector&lt;uint8_t&gt;      ← malloc
+<a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a>   │
+<a id="__codelineno-30-11" name="__codelineno-30-11" href="#__codelineno-30-11"></a>   ├── std::vector&lt;uint8_t&gt; buffer
+<a id="__codelineno-30-12" name="__codelineno-30-12" href="#__codelineno-30-12"></a>   │       └── malloc(final_bytes)       ← malloc
+<a id="__codelineno-30-13" name="__codelineno-30-13" href="#__codelineno-30-13"></a>   │
+<a id="__codelineno-30-14" name="__codelineno-30-14" href="#__codelineno-30-14"></a>   └── TextureDeferral {
+<a id="__codelineno-30-15" name="__codelineno-30-15" href="#__codelineno-30-15"></a>           Buffer = std::vector&lt;uint8_t&gt; ← ownership move into queue
+<a id="__codelineno-30-16" name="__codelineno-30-16" href="#__codelineno-30-16"></a>       }
+<a id="__codelineno-30-17" name="__codelineno-30-17" href="#__codelineno-30-17"></a>
+<a id="__codelineno-30-18" name="__codelineno-30-18" href="#__codelineno-30-18"></a> Render thread (CompleteDeferrals)
+<a id="__codelineno-30-19" name="__codelineno-30-19" href="#__codelineno-30-19"></a>   └── ~TextureDeferral()
+<a id="__codelineno-30-20" name="__codelineno-30-20" href="#__codelineno-30-20"></a>           └── ~vector&lt;uint8_t&gt;()        ← free() on system heap
+</code></pre></div>
+
+4–5 system heap round-trips per texture.
+Multiple workers contend on glibc's arena lock.
+
+</div>
+<div>
+
+### After (with TLSF)
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a> Worker thread  (t_worker_slab = &amp;slab[idx])
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>   ├── float* raw = slab-&gt;Alloc(w×h×4×4) ← TLSF, no lock
+<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>   │       stbi_load writes into raw      ← requires STBI_MALLOC override
+<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>   │
+<a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>   ├── Bitmap vertical_cross (uses slab)  ← TLSF
+<a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>   │       └── slab-&gt;Free(raw)            ← input decode buffer freed
+<a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a>   │
+<a id="__codelineno-31-8" name="__codelineno-31-8" href="#__codelineno-31-8"></a>   ├── Bitmap cubemap (uses slab)         ← TLSF
+<a id="__codelineno-31-9" name="__codelineno-31-9" href="#__codelineno-31-9"></a>   │       └── freed immediately
+<a id="__codelineno-31-10" name="__codelineno-31-10" href="#__codelineno-31-10"></a>   │
+<a id="__codelineno-31-11" name="__codelineno-31-11" href="#__codelineno-31-11"></a>   ├── uint8_t* pixels = slab-&gt;Alloc(n)   ← TLSF, only live alloc
+<a id="__codelineno-31-12" name="__codelineno-31-12" href="#__codelineno-31-12"></a>   │       └── memmove(pixels, cubemap, n)
+<a id="__codelineno-31-13" name="__codelineno-31-13" href="#__codelineno-31-13"></a>   │
+<a id="__codelineno-31-14" name="__codelineno-31-14" href="#__codelineno-31-14"></a>   └── TextureDeferral {
+<a id="__codelineno-31-15" name="__codelineno-31-15" href="#__codelineno-31-15"></a>           Pixels   = pixels
+<a id="__codelineno-31-16" name="__codelineno-31-16" href="#__codelineno-31-16"></a>           ByteSize = n
+<a id="__codelineno-31-17" name="__codelineno-31-17" href="#__codelineno-31-17"></a>           Slab     = &amp;slab[idx]          ← back-ref for free
+<a id="__codelineno-31-18" name="__codelineno-31-18" href="#__codelineno-31-18"></a>       }
+<a id="__codelineno-31-19" name="__codelineno-31-19" href="#__codelineno-31-19"></a>
+<a id="__codelineno-31-20" name="__codelineno-31-20" href="#__codelineno-31-20"></a> Render thread (CompleteDeferrals)  ← NOTE: cross-thread free (see thread safety)
+<a id="__codelineno-31-21" name="__codelineno-31-21" href="#__codelineno-31-21"></a>   └── UploadTextureBuffer(pixels)
+<a id="__codelineno-31-22" name="__codelineno-31-22" href="#__codelineno-31-22"></a>       d.Slab-&gt;Free(d.Pixels)             ← O(1) TLSF free, block merges
+</code></pre></div>
+
+1 live TLSF allocation at handoff. System heap involvement reduced to zero **only if** `STBI_MALLOC` / `STBI_FREE` are overridden to route through `t_worker_slab`. Without that override, `stbi_load` still allocates its decoded pixel buffer on the system heap and the "zero system heap" claim does not hold for that allocation.
+
+</div>
+</div>
+
+<hr />
+<h1 id="upload-pipeline-sequence-view">Upload Pipeline — Sequence View<a class="headerlink" href="#upload-pipeline-sequence-view" title="Permanent link">&para;</a></h1>
+<pre class="mermaid"><code>sequenceDiagram
+    participant S  as Submitter
+    participant TP as ThreadPool Worker N
+    participant SL as TLSFSlab[N]
+    participant Q  as DeferralQueue
+    participant RT as Render Thread
+    participant GPU as GPU Upload
+
+    S  -&gt;&gt; TP  : Submit(decode task)
+    TP -&gt;&gt; SL  : Alloc(w×h×4×4)        ── decode buffer
+    Note over TP: stbi_load writes here only if STBI_MALLOC overridden
+    TP -&gt;&gt; TP  : stbi_load / DeserializeEnvMap → raw pixels
+    TP -&gt;&gt; SL  : Alloc(cubemap_bytes)   ── final pixel buffer
+    TP -&gt;&gt; SL  : Free(decode buffer)    ── intermediates freed immediately
+    TP -&gt;&gt; Q   : Enqueue TextureDeferral { Pixels*, ByteSize, Slab* }
+
+    RT -&gt;&gt; Q   : Pop TextureDeferral
+    RT -&gt;&gt; GPU : UploadTextureBuffer(Pixels)
+    Note over RT,SL: Cross-thread free — requires lock or deferred-free queue (see Thread Safety slide)
+    RT -&gt;&gt; SL  : Free(Pixels)           ── O(1), block merges back</code></pre>
+<p>The slab block is live only from decode completion to GPU upload confirmation — the narrowest possible window. Every free immediately coalesces with adjacent free space, keeping the slab in a clean, fully-mergeable state for the next texture.</p>
+<hr />
+<h1 id="texturedeferral-struct-change">TextureDeferral — Struct Change<a class="headerlink" href="#texturedeferral-struct-change" title="Permanent link">&para;</a></h1>
+<div class="columns">
+<div>
+
+### Before
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="k">struct</span><span class="w"> </span><span class="nc">TextureDeferral</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="w">    </span><span class="c1">// std::variant&lt;&gt; occupies max(sizeof(T)) bytes</span>
+<a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="w">    </span><span class="c1">// + discriminant + alignment padding</span>
+<a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="w">    </span><span class="c1">// = ~40 bytes for the variant alone</span>
+<a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">variant</span><span class="o">&lt;</span>
+<a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="w">        </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="p">,</span><span class="w">           </span><span class="c1">// borrowed (IsLarge = false)</span>
+<a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="w">      </span><span class="c1">// owned    (IsLarge = true)</span>
+<a id="__codelineno-32-8" name="__codelineno-32-8" href="#__codelineno-32-8"></a><span class="w">    </span><span class="o">&gt;</span><span class="w"> </span><span class="n">Buffer</span><span class="p">;</span>
+<a id="__codelineno-32-9" name="__codelineno-32-9" href="#__codelineno-32-9"></a>
+<a id="__codelineno-32-10" name="__codelineno-32-10" href="#__codelineno-32-10"></a><span class="w">    </span><span class="n">Textures</span><span class="o">::</span><span class="n">TextureHandle</span><span class="w"> </span><span class="n">TexHandle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<a id="__codelineno-32-11" name="__codelineno-32-11" href="#__codelineno-32-11"></a><span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">FrameIdx</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-32-12" name="__codelineno-32-12" href="#__codelineno-32-12"></a><span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">ThreadIdx</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-32-13" name="__codelineno-32-13" href="#__codelineno-32-13"></a><span class="w">    </span><span class="kt">bool</span><span class="w">    </span><span class="n">IsLarge</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<a id="__codelineno-32-14" name="__codelineno-32-14" href="#__codelineno-32-14"></a><span class="p">};</span>
+</code></pre></div>
+
+`std::vector<uint8_t>` inside the variant: 24 bytes on the stack (pointer + size + capacity), heap allocation holds the actual pixel data. Moving the deferral into the queue moves the vector's internal state — no pixel copy, but the heap allocation stays live until `~TextureDeferral` runs on the render thread.
+
+</div>
+<div>
+
+### After
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="k">struct</span><span class="w"> </span><span class="nc">TextureDeferral</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w">              </span><span class="n">Pixels</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="w">    </span><span class="kt">size_t</span><span class="w">                      </span><span class="n">ByteSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="w">    </span><span class="n">Textures</span><span class="o">::</span><span class="n">TextureHandle</span><span class="w">     </span><span class="n">TexHandle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="w">    </span><span class="kt">uint8_t</span><span class="w">                     </span><span class="n">FrameIdx</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a><span class="w">    </span><span class="kt">uint8_t</span><span class="w">                     </span><span class="n">ThreadIdx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a><span class="w">    </span><span class="kt">bool</span><span class="w">                        </span><span class="n">IsLarge</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a><span class="w">    </span><span class="c1">// null when IsLarge=false (borrowed pointer, slab not involved)</span>
+<a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a><span class="w">    </span><span class="n">Core</span><span class="o">::</span><span class="n">Memory</span><span class="o">::</span><span class="n">TLSFSlab</span><span class="o">*</span><span class="w">     </span><span class="n">Slab</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a><span class="p">};</span>
+</code></pre></div>
+
+Flat struct. No heap ownership in the struct itself.
+
+`CompleteDeferrals()` change:
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="c1">// Before:</span>
+<a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">Buffer</span><span class="p">);</span>
+<a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a><span class="n">UploadTextureBuffer</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">FrameIdx</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">ThreadIdx</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">TexHandle</span><span class="p">,</span>
+<a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a><span class="w">                    </span><span class="n">buf</span><span class="p">.</span><span class="n">data</span><span class="p">());</span>
+<a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a><span class="c1">// implicit: vector destructs → free()</span>
+<a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a>
+<a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a><span class="c1">// After:</span>
+<a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a><span class="n">UploadTextureBuffer</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">FrameIdx</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">ThreadIdx</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">TexHandle</span><span class="p">,</span>
+<a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a><span class="w">                    </span><span class="n">d</span><span class="p">.</span><span class="n">Pixels</span><span class="p">);</span>
+<a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">IsLarge</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">Slab</span><span class="p">)</span>
+<a id="__codelineno-34-11" name="__codelineno-34-11" href="#__codelineno-34-11"></a><span class="w">    </span><span class="n">d</span><span class="p">.</span><span class="n">Slab</span><span class="o">-&gt;</span><span class="n">Free</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">Pixels</span><span class="p">);</span><span class="w">  </span><span class="c1">// O(1), merges back into slab</span>
+</code></pre></div>
+
+</div>
+</div>
+
+<hr />
+<h1 id="sizing-and-memory-impact">Sizing and Memory Impact<a class="headerlink" href="#sizing-and-memory-impact" title="Permanent link">&para;</a></h1>
+<div class="columns">
+<div>
+
+### Slab size per worker
+
+| Texture type | Max size | With intermediates |
+|---|---|---|
+| 2D RGBA 8-bit, 4K | 64 MB | 64 MB |
+| 2D float HDR, 2K | 32 MB | 32 MB |
+| Cubemap (equirect → 6 faces) | 48 MB | ~96 MB (input + output) |
+| Environment map (.zenvmap) | 48 MB | 48 MB |
+
+Worst case: equirect → cubemap conversion holds two 48 MB bitmaps simultaneously = **96 MB peak**.
+
+Recommended slab size: **128 MB** per worker to cover the worst case with headroom.
+
+### Reservation vs RSS
+
+Like all slabs backed by the arena, the 128 MB slab is a **virtual reservation**. Physical pages are committed only when TLSF writes a block header to that region. A worker that only handles 256 KB textures will commit far fewer physical pages than 128 MB.
+
+</div>
+<div>
+
+### Total reservation
+
+| Config | Workers | Per-slab | Total |
+|---|---|---|---|
+| Developer (12-core) | 11 | 128 MB | 1.4 GB virtual |
+| CI runner (4-core) | 3 | 128 MB | 384 MB virtual |
+| Target console (8-core) | 7 | 64 MB | 448 MB virtual |
+
+These reservations come from the existing `VulkanDevice` arena budget (1 GB). No new top-level budget slot required.
+
+### TLSF metadata overhead
+
+<div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a> tlsf_create_with_pool overhead: ~3 KB per slab
+<a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a> Block header per alloc:         16 bytes (prev_phys_block* + size)
+<a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a> Block header per free block:    32 bytes (+ next_free* + prev_free*)
+<a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>
+<a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a> For 10 concurrent allocs in a 64MB slab:
+<a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a> Overhead: 3 KB + 10×16 B = ~3.2 KB
+<a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a> Overhead fraction: 3.2 KB / 64 MB = 0.005%
+</code></pre></div>
+
+Negligible in practice.
+
+</div>
+</div>
+
+<hr />
+<!-- _class: center -->
+
+<h1 id="part-v">Part V<a class="headerlink" href="#part-v" title="Permanent link">&para;</a></h1>
+<h2 id="future-scope-roadmap">Future Scope &amp; Roadmap<a class="headerlink" href="#future-scope-roadmap" title="Permanent link">&para;</a></h2>
+<p><em>AssetManager · ECS · Timeline</em></p>
+<hr />
+<h1 id="future-scope-assetmanager">Future Scope — AssetManager<a class="headerlink" href="#future-scope-assetmanager" title="Permanent link">&para;</a></h1>
+<p>The <code>AssetManager</code> arena backs long-lived <code>Array&lt;T&gt;</code> and <code>UnorderedHashMap&lt;K,V&gt;</code> containers. Every <code>grow()</code> wastes a dead block.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a> AssetManager::Arena (512 MB)
+<a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>   │
+<a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>   ├── Meshes[]              Array&lt;AssetMesh&gt;      — grows with every import
+<a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a>   ├── NodeHierarchies[]     Array&lt;AssetNode&gt;       — grows with every import
+<a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a>   ├── Materials[]           Array&lt;AssetMaterial&gt;   — grows with every import
+<a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a>   ├── UUIDToTextureHandle   UnorderedHashMap&lt;uuid,TextureHandle&gt;
+<a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a>   └── UUIDToMaterialSlot    UnorderedHashMap&lt;uuid,uint32_t&gt;
+</code></pre></div>
+<p>After a session importing 500 assets with 3 resizes each:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a> Dead blocks per container = C₀ + 2C₀ + 4C₀  (3 doublings from initial capacity C₀)
+<a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>                           = 7 × C₀
+<a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a>
+<a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a> AssetMesh:    C₀ ≈ 64 entries × ~128 B  =  8 KB  → 7 × 8 KB  =  ~56 KB dead
+<a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a> AssetNode:    C₀ ≈ 64 entries × ~64 B   =  4 KB  → 7 × 4 KB  =  ~28 KB dead
+<a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a> AssetMaterial:C₀ ≈ 64 entries × ~128 B  =  8 KB  → 7 × 8 KB  =  ~56 KB dead
+<a id="__codelineno-37-7" name="__codelineno-37-7" href="#__codelineno-37-7"></a> UUIDToTex:    C₀ ≈ 256 buckets × ~24 B  =  6 KB  → 7 × 6 KB  =  ~42 KB dead
+<a id="__codelineno-37-8" name="__codelineno-37-8" href="#__codelineno-37-8"></a> UUIDToMat:    C₀ ≈ 256 buckets × ~20 B  =  5 KB  → 7 × 5 KB  =  ~35 KB dead
+<a id="__codelineno-37-9" name="__codelineno-37-9" href="#__codelineno-37-9"></a>
+<a id="__codelineno-37-10" name="__codelineno-37-10" href="#__codelineno-37-10"></a> Total per session: ~217 KB of dead arena blocks
+</code></pre></div>
+<p>This is a modest but permanent leak — across 100 import sessions in a long editor run it accumulates to ~20 MB. It does not disappear until the <code>AssetManager</code> arena is torn down at shutdown.</p>
+<p>A <code>TLSFSlab</code> backing these containers would give <code>realloc()</code> behavior: if the block immediately following the container's current allocation is free, TLSF extends in-place — zero copy. Dead block accumulation drops to near zero.</p>
+<p><strong>Requires:</strong> <code>Array&lt;T&gt;</code> and <code>UnorderedHashMap&lt;K,V&gt;</code> to accept a typed allocator parameter. This is a separate refactor — the container interface currently only accepts <code>ArenaAllocator*</code>.</p>
+<hr />
+<h1 id="future-scope-ecs-component-storage">Future Scope — ECS Component Storage<a class="headerlink" href="#future-scope-ecs-component-storage" title="Permanent link">&para;</a></h1>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a> ComponentStorage today (planned — issue #642):
+<a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a>
+<a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a> ArchetypeTable[Position]     PoolAllocator  — 3× float, fixed size, fine
+<a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a> ArchetypeTable[Velocity]     PoolAllocator  — 3× float, fixed size, fine
+<a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a> ArchetypeTable[MeshRenderer] PoolAllocator  — uuid + handle, fixed size, fine
+<a id="__codelineno-38-6" name="__codelineno-38-6" href="#__codelineno-38-6"></a> ArchetypeTable[Physics]      ???            — variable: shape data, constraints
+<a id="__codelineno-38-7" name="__codelineno-38-7" href="#__codelineno-38-7"></a> ArchetypeTable[Script]       ???            — variable: script bytecode + state
+</code></pre></div>
+<p>When component types carry variable-size payloads (script state, animation clips, physics shapes), a <code>PoolAllocator</code> per archetype requires knowing the maximum instance size upfront. A <code>TLSFSlab</code> per archetype table handles heterogeneous payloads cleanly:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a> ArchetypeTable[Physics]
+<a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>   ├── backing: TLSFSlab (16 MB, carved from ECSScene arena)
+<a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a>   ├── entity 1: RigidBody  { mass, inertia, 6 constraint params }  = 72 bytes
+<a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a>   ├── entity 2: Cloth      { mesh_ref, wind_params[32], pin[16] }  = 320 bytes
+<a id="__codelineno-39-5" name="__codelineno-39-5" href="#__codelineno-39-5"></a>   └── entity 3: Softbody   { particle[128] }                       = 512 bytes
+</code></pre></div>
+<p>No pre-declared fixed size. TLSF handles the mix in O(1).</p>
+<hr />
+<h1 id="roadmap">Roadmap<a class="headerlink" href="#roadmap" title="Permanent link">&para;</a></h1>
+<pre class="mermaid"><code>gantt
+    title TLSF Integration Roadmap
+    dateFormat  YYYY-MM-DD
+    axisFormat  %b %Y
+
+    section Phase 1 — Upload Pipeline (v0.5.0)
+    TLSFSlab wrapper (h + cpp)       :p1a, 2026-09-01, 3d
+    ThreadPool TLS slab pointer      :p1b, after p1a, 2d
+    Cross-thread free resolution     :p1c, after p1b, 3d
+    RRM slab init + sizing           :p1d, after p1c, 2d
+    TextureDeferral struct change    :p1e, after p1d, 2d
+    Replace upload std::vector       :p1f, after p1e, 3d
+    STBI_MALLOC override             :p1g, after p1f, 2d
+    Profile + validate               :p1h, after p1g, 3d
+
+    section Phase 2 — AssetManager (v0.6.0)
+    Array/HashMap typed allocator    :p2a, 2026-10-01, 7d
+    AssetManagerSlab creation        :p2b, after p2a, 3d
+    Container migration              :p2c, after p2b, 5d
+    Dead-block waste measurement     :p2d, after p2c, 2d
+
+    section Phase 3 — ECS Storage (v1.0.0)
+    Per-archetype TLSFSlab           :p3a, 2026-12-01, 5d
+    Variable-payload component types :p3b, after p3a, 7d</code></pre>
+<hr />
+<h1 id="roadmap-implementation-phases">Roadmap — Implementation Phases<a class="headerlink" href="#roadmap-implementation-phases" title="Permanent link">&para;</a></h1>
+<div class="columns">
+<div>
+
+### Phase 1 — Upload pipeline (target: v0.5.0)
+
+1. Add `ZEngine/ZEngine/Core/Memory/TLSFSlab.h` / `.cpp`
+2. Add `thread_local TLSFSlab* t_worker_slab` to `ThreadPool.h`; set in `WorkerRun(idx)`
+3. Create `m_upload_slabs[MAX_WORKERS]` in `RenderResourceManager`; init from `Device->Arena`
+4. **Resolve cross-thread free:** add per-slab lock-free deferred-free queue; render thread enqueues the pointer, worker drains at task start — OR add a minimal spinlock on `TLSFSlab::Free` only
+5. Replace `TextureDeferral::Buffer` variant with `Pixels + Slab`
+6. Replace `std::vector<uint8_t>` in upload lambda with slab allocs
+7. Override `STBI_MALLOC` / `STBI_FREE` / `STBI_REALLOC` to route through `t_worker_slab` (required for true zero system-heap)
+8. Profile: import session memory pressure before/after
+
+**Validation:** import 50 mixed textures (256 KB to 4K HDR), measure system heap allocation count = 0 during upload (requires STBI override from step 7).
+
+> **Caveat:** `ThreadPoolHelper::Submit(lambda)` heap-allocates the lambda closure (`new Fn(...)`) on every task dispatch. Task dispatch itself still touches the system heap. To reach true zero, decode tasks must be rewritten to use the C-style `Submit(void* ctx, TaskFn fn)` overload with a pre-allocated context block from the slab.
+
+</div>
+<div>
+
+### Phase 2 — Asset containers (target: v0.6.0)
+
+1. Add typed allocator parameter to `Array<T>` and `UnorderedHashMap<K,V>`
+2. Create `AssetManagerSlab` (TLSFSlab, 256 MB, from `AssetManager::Arena`)
+3. Migrate all 5 `AssetManager` containers to use the slab
+4. Remove dead-block waste from grow path
+
+### Phase 3 — ECS component storage (target: v1.0.0)
+
+1. Per-archetype `TLSFSlab` for variable-payload component types
+2. Integrate with ComponentStorage allocation protocol (issue #642+)
+
+### Metrics to track
+
+| Metric | Before | Target |
+|---|---|---|
+| System heap allocs during import | N per texture | 0 |
+| AssetManager arena dead bytes | ~200 KB / import session; ~20 MB after 100 sessions | < 1 MB total |
+| Max GPU upload latency | non-deterministic | < 2× median |
+
+</div>
+</div>
+
+<hr />
+<!-- _class: center -->
+
+<h1 id="part-vi">Part VI<a class="headerlink" href="#part-vi" title="Permanent link">&para;</a></h1>
+<h2 id="platform-implications">Platform Implications<a class="headerlink" href="#platform-implications" title="Permanent link">&para;</a></h2>
+<p><em>Windows · macOS Apple Silicon · Linux x86-64</em></p>
+<hr />
+<h1 id="platform-implications-windows-macos-arm64-linux">Platform Implications — Windows / macOS arm64 / Linux<a class="headerlink" href="#platform-implications-windows-macos-arm64-linux" title="Permanent link">&para;</a></h1>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Windows</th>
+<th>macOS arm64</th>
+<th>Linux x86-64</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reserve</td>
+<td><code>VirtualAlloc(MEM_RESERVE, PAGE_NOACCESS)</code></td>
+<td><code>mmap(PROT_NONE)</code></td>
+<td><code>mmap(PROT_NONE)</code></td>
+</tr>
+<tr>
+<td>Commit</td>
+<td><code>VirtualAlloc(MEM_COMMIT, PAGE_READWRITE)</code></td>
+<td><code>mprotect(PROT_READ\|PROT_WRITE)</code></td>
+<td><code>mprotect(PROT_READ\|PROT_WRITE)</code></td>
+</tr>
+<tr>
+<td>Release</td>
+<td><code>VirtualFree(MEM_RELEASE)</code></td>
+<td><code>munmap</code></td>
+<td><code>munmap</code></td>
+</tr>
+<tr>
+<td>Physical page size</td>
+<td>4 KB</td>
+<td><strong>16 KB</strong></td>
+<td>4 KB (default)</td>
+</tr>
+<tr>
+<td>Commit granularity</td>
+<td>4 KB</td>
+<td><strong>16 KB</strong></td>
+<td>4 KB</td>
+</tr>
+<tr>
+<td>GPU memory model</td>
+<td>Discrete — PCIe staging buffer</td>
+<td><strong>UMA — CPU/GPU share pool</strong></td>
+<td>Discrete — PCIe staging buffer</td>
+</tr>
+<tr>
+<td>Huge pages</td>
+<td><code>MEM_LARGE_PAGES</code> (2 MB, privileged)</td>
+<td>Not exposed</td>
+<td><code>madvise(MADV_HUGEPAGE)</code> or <code>MAP_HUGETLB</code></td>
+</tr>
+<tr>
+<td>Virtual address space</td>
+<td>128 TB (user mode)</td>
+<td>256 TB (arm64)</td>
+<td>128 TB (x86-64)</td>
+</tr>
+<tr>
+<td>Overcommit</td>
+<td>Pagefile-backed; no OOM killer</td>
+<td>Not available</td>
+<td>Configurable; OOM killer if exhausted</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="platform-implications-engine-impact">Platform Implications — Engine Impact<a class="headerlink" href="#platform-implications-engine-impact" title="Permanent link">&para;</a></h1>
+<div class="columns">
+<div>
+
+### macOS Apple Silicon — 16 KB pages
+
+`mprotect` rounds to 16 KB boundaries. The arena's commit formula uses `m_mem_page_size` set via `sysconf(_SC_PAGE_SIZE)` at init — this returns **16384** on arm64, ensuring correct 16 KB-aligned commits.
+
+Impact: a single 1-byte allocation on first use commits **16 KB of physical RAM** (vs 4 KB on Linux/Windows). Startup cost of creating many small arenas is 4× higher. Matters most for `VirtualFS` (64 MB, many small mounts) and `ShaderCache` (64 MB, small SPIR-V entries).
+
+### macOS Apple Silicon — Unified Memory Architecture
+
+CPU and GPU share the same physical memory pool. With Metal/MoltenVK, texture data in a CPU-side arena allocation is **in the same physical address space as the GPU** — no PCIe copy. The TLSF-backed decode buffer (Phase 1) could be passed directly to Metal as a `MTLBuffer` with `storageMode = .shared`, eliminating the GPU staging copy entirely.
+
+This is an optimization opportunity the current pipeline (and the TLSF design) does not yet exploit. The `TextureDeferral` `Pixels` pointer is today always staged through Vulkan's VMA staging buffer even on arm64.
+
+</div>
+<div>
+
+### ARM64 memory model — TLSF cross-thread free
+
+Both Apple Silicon and Linux ARM64 use a **weakly-ordered** memory model. On x86-64, stores from one thread are visible to other cores in issue order (TSO). On ARM64, stores require explicit `dmb`/`stlr` barriers to guarantee visibility.
+
+The proposed render-thread `d.Slab->Free(d.Pixels)` on a worker's TLSF slab (see Phase 1 open problem) is a data race on all platforms. On ARM64 the corruption is more reliably observable: a worker's TLSF `malloc` may see a stale free-list pointer written by the render thread but not yet propagated. UBSAN + TSAN on an arm64 Linux target will surface this before it reaches production.
+
+### Linux — Transparent Huge Pages
+
+On Linux with `THP = madvise`, calling `madvise(ptr, 2MB_aligned_size, MADV_HUGEPAGE)` on hot arenas (`VulkanDevice`, `ECSScene`) promotes pages to 2 MB huge pages. TLB coverage improves from 4 KB × 512 entries = 2 MB per TLB miss to 2 MB × 512 = 1 GB. For dense archetype iteration over ECS component arrays this is a measurable win.
+
+`MADV_HUGEPAGE` is a hint — the kernel promotes opportunistically. No code change required; add one `madvise` call in `Initialize()` for arenas larger than 2 MB.
+
+### Windows — Commit semantics differ
+
+On Windows, `VirtualAlloc(MEM_COMMIT)` backs a range with **pagefile reservation immediately** (not demand-paged like POSIX `mprotect`). Physical RAM is still demand-paged on first write, but pagefile space is reserved at commit time. This means `m_committed_size` is a harder resource: committing an entire large owner would reserve its capacity in the pagefile even if no pages are ever touched. The current engine commits on demand as each owner cursor advances, but auditing `m_committed_size` leaks on Windows is different from auditing RSS on Linux.
+
+</div>
+</div>
+
+<hr />
+<!-- _class: center -->
+
+<h1 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h1>
+<p><br></p>
+<table>
+<thead>
+<tr>
+<th>Allocator</th>
+<th>Cost</th>
+<th>Free?</th>
+<th>Size</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ArenaAllocator</strong></td>
+<td>~3 cyc + memset(n)</td>
+<td>No</td>
+<td>Any</td>
+<td>Scratch, import, per-frame</td>
+</tr>
+<tr>
+<td><strong>PoolAllocator</strong></td>
+<td>~5 cyc + memset(chunk)</td>
+<td>Yes</td>
+<td>Fixed</td>
+<td>Entity slots, handles, same-type objects</td>
+</tr>
+<tr>
+<td><strong>TLSFSlab</strong></td>
+<td>~30 cycles</td>
+<td>Yes</td>
+<td>Variable</td>
+<td>Upload buffers, asset metadata, ECS payloads</td>
+</tr>
+<tr>
+<td>System heap</td>
+<td>~100–500 cycles</td>
+<td>Yes</td>
+<td>Variable</td>
+<td>Nothing on the hot path</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<blockquote>
+<p>Arena and Pool cover 95% of engine allocations today.
+TLSF fills the remaining 5% — variable size, individual lifetimes — currently leaking through to the system heap.
+The upload pipeline is Phase 1: measurable, isolated, zero risk to other systems.</p>
+</blockquote>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Zodiac Engine contributors
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/JeanPhilippeKernel/RendererEngine" target="_blank" rel="noopener" title="RendererEngine on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://discord.gg/jC3GPVKKsW" target="_blank" rel="noopener" title="Zodiac Engine on Discord" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

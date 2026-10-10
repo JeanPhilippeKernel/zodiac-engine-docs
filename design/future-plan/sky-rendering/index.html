@@ -1,0 +1,2694 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Cross-platform Vulkan engine, editor, and project tooling">
+      
+      
+      
+        <link rel="canonical" href="https://jeanphilippekernel.github.io/zodiac-engine-docs/design/future-plan/sky-rendering/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/logo-white.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Sky Rendering System - Zodiac Engine</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#sky-rendering-system" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Zodiac Engine" class="md-header__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="../../../assets/logo-white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Zodiac Engine
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Sky Rendering System
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="light-blue"  aria-label="Use light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Use light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="light-blue"  aria-label="Use dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Use dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../getting-started/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Get ZEngine
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../editor/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Editor
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../development/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Develop
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../reference/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../project/releases/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Project
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../contributing/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Contribute
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Zodiac Engine" class="md-nav__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="../../../assets/logo-white.png" alt="logo">
+
+    </a>
+    Zodiac Engine
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../getting-started/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Get ZEngine
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Get ZEngine
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/install-with-zodiac-engine-hub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install with Zodiac Engine Hub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/first-project/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create your first project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/update-and-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Update and migration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/supported-platforms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Supported platforms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../editor/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Editor
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Editor
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../editor/assets-and-importing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assets and importing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../editor/scenes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scenes and authoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../development/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Develop
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Develop
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/build-from-source/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build from source
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/run-and-debug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run and debug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/project-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../reference/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rendering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/asset-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/memory-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/zui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ZUI system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/containers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Containers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Releases and changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/rfcs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proposals and RFCs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/archive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Historical records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../contributing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribute
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contribute
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/commit-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commit conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/release-process/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release process
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#current-implementation-correction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current implementation correction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-goals-and-boundaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Goals and boundaries
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Goals and boundaries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#11-post-version-1-extension-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Post-version-1 extension points
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-ownership-configuration-and-units" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Ownership, configuration, and units
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Ownership, configuration, and units">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-configuration-validity-and-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Configuration validity and migration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-coordinate-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Coordinate convention
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-resource-model-and-lifetime" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Resource model and lifetime
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Resource model and lifetime">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-skyenvironment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 SkyEnvironment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-skyviewresources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 SkyViewResources
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-frame-and-thread-ownership" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Frame and thread ownership
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-render-graph-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Render-graph contract
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Render-graph contract">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-frame-topology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Frame topology
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-composition-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Composition contract
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-render-view-sizing-and-temporal-stability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Render-view sizing and temporal stability
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-descriptor-and-pipeline-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Descriptor and pipeline contract
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Descriptor and pipeline contract">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-pso-and-binding-lifetime" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 PSO and binding lifetime
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-code-boundaries-and-allocation-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Code boundaries and allocation policy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-skysphere-presentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. SkySphere presentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-atmosphere-rendering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Atmosphere rendering
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Atmosphere rendering">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-numerical-and-payload-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Numerical and payload contract
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-hdri-asset-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. HDRI asset path
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. HDRI asset path">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-import-validation-and-colour-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Import validation and colour contract
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-image-based-lighting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Image-based lighting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Image-based lighting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-lighting-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Lighting convention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-quality-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 Quality policy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-hdr-formats-and-memory-budget" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. HDR, formats, and memory budget
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. HDR, formats, and memory budget">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#101-colour-exposure-and-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 Colour, exposure, and output
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-diagnostics-and-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Diagnostics and validation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-production-release-gates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Production release gates
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-delivery-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Delivery order
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/JeanPhilippeKernel/RendererEngine/edit/develop/docs/design/future-plan/sky-rendering.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="sky-rendering-system">Sky Rendering System<a class="headerlink" href="#sky-rendering-system" title="Permanent link">&para;</a></h1>
+<p><strong>Relates to:</strong> render-graph integration, render-graph redesign, GPU allocator rearchitecture, per-frame upload heap, scene-serialization.md, editor-undo-redo.md
+<strong>Legacy status:</strong> the pre-SkyEnvironment <code>SkyboxPass</code> was retired in #827.
+<strong>Status:</strong> Partial renderer implementation plus production design. The
+implementation-status correction below takes precedence over later target-state
+language.
+<strong>Scope:</strong> scene-owned sky configuration, HDRI and analytic-sky presentation, atmosphere rendering, and the environment lighting resources consumed by the renderer.</p>
+<hr />
+<blockquote>
+<h2 id="current-implementation-correction">Current implementation correction<a class="headerlink" href="#current-implementation-correction" title="Permanent link">&para;</a></h2>
+<p>The renderer already owns a live <code>Scenes::SkyConfig</code> in <code>RenderScene</code>, a
+revision counter, fallback cubemap/IBL resources, atmosphere/HDRI bake and
+presentation callbacks, capability fallback, and the persistent
+environment-lighting memory gate. <code>GraphicRenderer</code> registers those callbacks
+at initialization and declares their resources through the current render-graph
+callback contract.</p>
+<p>It does <strong>not</strong> yet have the document/EditorSession boundary specified below:
+<code>YAMLSceneSerializer</code> does not serialize the scene sky, entity identity is not
+durable across a current load, and <code>RenderFrameState</code> still borrows a mutable
+<code>RenderScene*</code> even though it carries copied sky values. The scene serializer,
+transaction system, and immutable render snapshot described in the editor docs
+are prerequisites for calling scene-owned sky authoring production ready.</p>
+<p><code>skyDefaults</code> below is a proposed project-template shape, not a currently
+parsed project configuration section. The implemented generated-project keys
+are <code>rendering.environment_lighting_quality</code> and
+<code>rendering.environment_lighting_budget_mb</code>; their value is renderer/project
+policy, not serialized scene data. Do not edit generated <code>project.json</code> merely
+to change the 384 MiB default.</p>
+</blockquote>
+<h2 id="1-goals-and-boundaries">1. Goals and boundaries<a class="headerlink" href="#1-goals-and-boundaries" title="Permanent link">&para;</a></h2>
+<p>The sky system has two distinct responsibilities:</p>
+<ol>
+<li>Present background radiance and atmospheric effects for a particular render view.</li>
+<li>Produce stable image-based-lighting (IBL) inputs for the scene.</li>
+</ol>
+<p>They share inputs, but they do not have the same lifetime or update frequency. Keeping them separate is essential for multiple viewports, asynchronous baking, and a renderer that never binds invalid textures.</p>
+<table>
+<thead>
+<tr>
+<th>Visual mode</th>
+<th>Background source</th>
+<th>Environment lighting</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Atmosphere</td>
+<td>Analytic atmosphere</td>
+<td>Captured sky-radiance cubemap, then baked IBL</td>
+</tr>
+<tr>
+<td>HDRI</td>
+<td>Cooked HDR cubemap</td>
+<td>The same cooked cubemap, then baked IBL</td>
+</tr>
+<tr>
+<td>SkySphere</td>
+<td>Analytic gradient and optional sun disc</td>
+<td>Engine-provided neutral fallback environment</td>
+</tr>
+</tbody>
+</table>
+<p>SkySphere intentionally does not generate a physically accurate environment capture. It must nevertheless leave lighting with valid fallback descriptors. No mode may produce an unbound descriptor, a null texture, or a black editor viewport solely because an asset is loading or failed.</p>
+<p>Version 1 covers the three modes above, a robust IBL lifecycle, and correct HDR composition. Volumetric clouds, weather, stars, moon phases, local reflection probes, sky blending, and atmosphere volume shadows are follow-up features. The design leaves extension points for them without making them prerequisites.</p>
+<h3 id="11-post-version-1-extension-points">1.1 Post-version-1 extension points<a class="headerlink" href="#11-post-version-1-extension-points" title="Permanent link">&para;</a></h3>
+<p>Version 1 deliberately has one global environment per scene. Future work may add:</p>
+<ul>
+<li>separate background, diffuse-IBL, specular-IBL, reflection-capture, and ray-visibility controls;</li>
+<li>cross-fading between two ready snapshots for HDRI changes, weather, or time-of-day transitions, with an explicit doubled-memory budget;</li>
+<li>local reflection probes, environment volumes, and baked indirect-lighting integration for interiors;</li>
+<li>clouds, fog volumes, precipitation, stars, moon, and planet/terrain shadows layered into both presentation and relevant lighting captures;</li>
+<li>stereo/XR multiview and high-resolution offline/cinematic capture policies.</li>
+</ul>
+<p>These extensions consume the same immutable snapshot, RenderView, graph-declaration, and timeline-retirement contracts defined below. They must not introduce special global state or bypass the environment lifetime model.</p>
+<hr />
+<h2 id="2-ownership-configuration-and-units">2. Ownership, configuration, and units<a class="headerlink" href="#2-ownership-configuration-and-units" title="Permanent link">&para;</a></h2>
+<p>Sky configuration is owned by the scene or render world. A project may supply defaults, but it must not be the sole owner: different scenes can legitimately use different skies. The serialized scene representation contains a stable environment asset reference, never a raw retained character pointer or an absolute working-space path.</p>
+<p><strong>Target state:</strong> project defaults are a template for a newly created scene
+only. The proposed optional <code>project.json</code> section is shown below; it is not
+currently parsed. An existing scene must retain the <code>SkyConfig</code> stored in its
+scene file once serialization lands:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">"skyDefaults"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">"mode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"atmosphere"</span><span class="p">,</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">"environmentMap"</span><span class="p">:</span><span class="w"> </span><span class="s2">"optional-asset-uuid"</span><span class="p">,</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nt">"environmentIntensity"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="nt">"environmentTint"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">],</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="nt">"environmentYawRadians"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">}</span>
+</code></pre></div>
+<p>The nested atmosphere and SkySphere settings begin with the engine's validated defaults. A project must not store generated environment-cache paths, live Vulkan data, or editor viewport preview state in this section.</p>
+<p>Sky serialization is not implemented in the current YAML scene serializer. The
+target schema must introduce a versioned migration policy rather than silently
+discard or replace previously authored data.</p>
+<p>The exact engine type follows the asset-manager API, but the conceptual configuration is:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">SkyMode</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">uint8_t</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="p">{</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="n">Atmosphere</span><span class="p">,</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="n">HDRI</span><span class="p">,</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="n">SkySphere</span><span class="p">,</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">};</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="k">struct</span><span class="w"> </span><span class="nc">SkyConfig</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">{</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="n">SkyMode</span><span class="w">        </span><span class="n">Mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SkyMode</span><span class="o">::</span><span class="n">Atmosphere</span><span class="p">;</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="n">AssetReference</span><span class="w"> </span><span class="n">EnvironmentMap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span><span class="w"> </span><span class="c1">// Stable asset UUID/handle, not cstring.</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="c1">// Shared artistic controls. These affect the visual and IBL source consistently.</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="kt">float</span><span class="w">          </span><span class="n">EnvironmentIntensity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">;</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span><span class="n">Vec4f</span><span class="w">          </span><span class="n">EnvironmentTint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">};</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="kt">float</span><span class="w">          </span><span class="n">EnvironmentYawRadians</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="n">EntityID</span><span class="w">       </span><span class="n">PrimaryCelestialLight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span><span class="w"> </span><span class="c1">// Optional runtime resolution of an authored UUID reference; invalid means no direct sun.</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span><span class="n">AtmosphereSettings</span><span class="w"> </span><span class="n">Atmosphere</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">    </span><span class="n">SkySphereSettings</span><span class="w">  </span><span class="n">Sphere</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="p">};</span>
+</code></pre></div>
+<p>The sky system distinguishes two change domains:</p>
+<ul>
+<li>The environment bake key contains source content, atmosphere physical parameters, resolved sun state, shader version, and quality tier. A change creates a new SkyEnvironment revision.</li>
+<li>The presentation state contains dynamic values that can be applied at sampling time, such as HDRI yaw, a linear intensity multiplier, tint, and SkySphere colours. It combines SkyConfig with RenderView camera/post-processing inputs and is refreshed per frame without rebuilding cubemaps.</li>
+</ul>
+<p>HDRI yaw transforms the lookup direction for both background and IBL sampling; tint and intensity multiply both paths in linear colour. These operations are rotationally/equivariantly valid and do not require a rebake. Display exposure remains a camera/post-processing control. Asset completion and hot reload increment the bake key only when the completed asset is still the requested asset. This makes stale asynchronous completions harmless.</p>
+<p>For the analytic atmosphere, the editor exposes all serialized authoring fields in Planet, Molecular, Aerosols, Ozone, Sun, and Ground groups. Planet placement and world-unit scale are camera-local inputs: changing either refreshes the per-view atmosphere path without regenerating planet-centred resources. Rayleigh, Mie, and ozone properties regenerate the static LUTs as well as the source and IBL resources. The resolved sun and its radiometric settings, ground albedo, and ground ambient irradiance regenerate the source-radiance cubemap and IBL while reusing compatible static LUTs.</p>
+<p>Ground albedo and ambient irradiance are never presentation-only overrides. The implicit Lambertian ground is captured into the atmosphere source cubemap, so a ground edit remains on the pending revision until its source, diffuse IBL, and specular IBL are complete. Per-view sky and aerial passes read the ground values from that same published snapshot. This avoids a new visible lower hemisphere being combined with old environment lighting.</p>
+<h3 id="21-configuration-validity-and-migration">2.1 Configuration validity and migration<a class="headerlink" href="#21-configuration-validity-and-migration" title="Permanent link">&para;</a></h3>
+<p>SkyConfig is data, not a live GPU resource. Game/editor code submits an immutable copy to the renderer; the renderer validates it before it becomes an environment revision.</p>
+<ul>
+<li>All numeric values must be finite. Radii and scale heights are positive, atmosphere radius exceeds planet radius, scattering/absorption values are non-negative, and anisotropy is constrained away from its singular limits.</li>
+<li>A missing primary celestial light is a documented no-sun state: there is no sun disc or direct-sun contribution. It does not select an arbitrary scene light.</li>
+<li>An unknown mode, an unresolved asset reference, an invalid HDR image, or an unsupported device feature selects the safe fallback environment and produces one actionable diagnostic.</li>
+<li>Repeated edits within a frame coalesce to the newest revision. Undo/redo uses the same revision path and does not mutate an already-published GPU snapshot.</li>
+</ul>
+<p>Newly saved scenes write only the typed mode and stable asset reference. Generated cooked-cache paths are never serialized as scene identity.</p>
+<h3 id="22-coordinate-convention">2.2 Coordinate convention<a class="headerlink" href="#22-coordinate-convention" title="Permanent link">&para;</a></h3>
+<p>Atmosphere shaders use kilometres internally. Scattering coefficients are uploaded in inverse kilometres; authoring data expressed in inverse metres is converted once during upload. Planet radii, scale heights, ozone-layer values, and camera altitude use kilometres.</p>
+<p>The scene supplies:</p>
+<ul>
+<li>a planet centre in world space;</li>
+<li>the scene world-unit-to-metre scale;</li>
+<li>a camera position relative to that centre, converted to kilometres with a numerically stable large-world/floating-origin path.</li>
+</ul>
+<p>The default one-world-unit-per-metre configuration places the planet centre at <code>(0, -6,360,000, 0)</code>. World origin is consequently sea level, so ordinary editor scenes are never accidentally interpreted as being inside the planet.</p>
+<p>Rays that reach the analytic planet boundary are closed against the scene's Lambertian atmosphere-ground albedo and diffuse fill irradiance. This prevents a no-terrain editor viewport from exposing a black lower hemisphere. A terrain renderer remains responsible for replacing that implicit surface with real scene geometry.</p>
+<p>Every atmosphere RenderView is classified from that same camera-relative kilometre conversion before graph declaration: <code>BelowGround</code> (at or inside the planet radius), <code>InsideAtmosphere</code>, <code>OutsideAtmosphere</code>, or <code>Invalid</code>. Only the latter two run per-view sky and aerial integration. A below-ground or invalid editor view uses a fixed blue environment-background fallback, so opaque content, grid, and gizmos remain usable without sending an invalid ray to the atmosphere kernels. The fallback does not sample the baked cubemap: its appearance is therefore independent of camera position and orientation. This is an editor fallback, not physical underground rendering: gameplay terrain and underground materials remain responsible for occlusion. The editor may opt into a spherical ground constraint derived from the active atmosphere's configured centre and radius; it is disabled by default and never applies to game cameras or SkySphere/HDRI modes.</p>
+<p>The public contract also defines coordinate handedness, cubemap face orientation, the sign of the light direction, and whether a directional light points toward or away from its source. The same primary celestial light drives the sun disc, atmosphere, direct lighting, and sun shadows. Selecting the first active directional light is not deterministic enough for this role. Solar angular radius and illuminance use documented physical units; any artistic multiplier is named and applied consistently to background radiance and environment lighting.</p>
+<hr />
+<h2 id="3-resource-model-and-lifetime">3. Resource model and lifetime<a class="headerlink" href="#3-resource-model-and-lifetime" title="Permanent link">&para;</a></h2>
+<p>The implementation separates persistent environment resources from transient per-view resources.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Scene SkyConfig
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>       |
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>       v
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>SkyEnvironment revision
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>       |---- persistent atmosphere LUTs
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>       |---- persistent source-radiance cubemap
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>       |---- persistent irradiance + specular IBL cubemaps
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>       |
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>       +---- SkyEnvironmentSnapshot (fallback | baking | ready | failed)
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>RenderView
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>       |---- transient sky-view LUT
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>       |---- transient aerial-perspective LUT
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>       +---- final sky composition
+</code></pre></div>
+<h3 id="31-skyenvironment">3.1 SkyEnvironment<a class="headerlink" href="#31-skyenvironment" title="Permanent link">&para;</a></h3>
+<p>A SkyEnvironment belongs to one scene/render world. It owns the persistent source radiance, static atmosphere LUTs where applicable, and a published IBL snapshot. The BRDF integration LUT is engine-global, keyed by shader and quality version, because it is independent of the scene sky.</p>
+<p>Environment baking writes a next snapshot. The renderer continues reading the previous ready snapshot, or the engine fallback snapshot, until the next one is complete. Publication happens only after the GPU work has completed according to its timeline value. Replaced snapshots remain pinned until all submitted users have retired; only then can their textures be freed.</p>
+<p>The state machine is:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>fallback -&gt; baking(revision N) -&gt; ready(revision N)
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>                       |
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>                       +--&gt; failed(revision N), keep previous ready or fallback
+</code></pre></div>
+<p>A boolean dirty flag is not sufficient: it can lose a newer revision while an older bake is in flight.</p>
+<h3 id="32-skyviewresources">3.2 SkyViewResources<a class="headerlink" href="#32-skyviewresources" title="Permanent link">&para;</a></h3>
+<p>Sky-view and aerial-perspective LUTs are per RenderView because camera altitude, near/far range, and projection differ between the editor, game view, scene capture, reflection capture, and multiple viewports. They are transient graph resources and are recreated or resized with the render view, not with the swapchain globally.</p>
+<p>Static transmittance and multiscattering LUTs may be shared by views using the same environment revision. They must not be overwritten while a prior frame still samples them.</p>
+<h3 id="33-frame-and-thread-ownership">3.3 Frame and thread ownership<a class="headerlink" href="#33-frame-and-thread-ownership" title="Permanent link">&para;</a></h3>
+<p>Only the render thread creates, updates, publishes, pins, or retires SkyEnvironment GPU resources. Editor/game threads send immutable configuration revisions through the renderer mailbox. Import workers may decode and cook assets, but completion is returned as a revision-tagged message; a worker never writes Vulkan descriptors or environment state directly.</p>
+<p>At frame start, the renderer acquires one ready snapshot and pins it for that frame. Every lighting and sky pass in that frame binds that same snapshot. The pin is released only after the frame submission receives its timeline value. This prevents mixed old/new IBL bindings within one frame and prevents a hot-reloaded resource from being freed while a command buffer still references it.</p>
+<p>Descriptor writes are scoped to a reusable frame slot only after that slot's prior submission has retired. Publishing a new snapshot updates future frame slots; it never overwrites descriptors still visible to an in-flight command buffer.</p>
+<p>An obsolete bake that has not been submitted may be cancelled. A submitted obsolete bake is allowed to finish, but its result is discarded unless its revision is still current. The bake scheduler has a bounded queue and a configurable time budget; it never accumulates one expensive full bake for every slider edit. Dynamic primary-celestial updates are additionally coalesced: the current implementation accepts at most one new atmosphere source bake per eight observed sky revisions, retaining the newest direction for the next accepted request. An availability change or a rotation of at least five degrees bypasses the budget, so a deliberate editor edit responds immediately. Physical atmosphere, ground, quality, and mode changes remain immediate because they are not animation-budgeted edits.</p>
+<p>Shutdown first unregisters asset-completion listeners and stops accepting bake work. It then retires pinned snapshots through the normal device-timeline path before the device allocator is destroyed. Worker completion messages received during shutdown are discarded without dereferencing scene or renderer state.</p>
+<hr />
+<h2 id="4-render-graph-contract">4. Render-graph contract<a class="headerlink" href="#4-render-graph-contract" title="Permanent link">&para;</a></h2>
+<p>The render graph owns frame-pass instantiation, resource versions, barriers, and scheduling. SkySystem owns configuration, environment revisions, and GPU-resource snapshots. It does not mutate graph internals and does not call Compile during a frame.</p>
+<p>All sky callbacks are registered as persistent callbacks at renderer initialization. On each graph frame, their Register method either declares the exact resources it uses or returns false to omit itself. Mode switching is therefore a normal per-frame declaration change, not a graph rebuild driven by registration order.</p>
+<p>Persistent environment textures are imported into the graph with their established layout. A bake callback declares writes to the next snapshot; lighting declares reads from the exact published snapshot. The graph is responsible for the resulting image layout transitions, queue ownership transfers, and synchronization. A callback having no framebuffer attachment does not exempt it from resource declarations.</p>
+<p>EnvironmentBake is a logical subgraph, not one opaque callback containing every dispatch. Each producer/consumer boundary is a graph pass: static atmosphere LUT generation, atmosphere source-radiance capture, HDRI source preparation when needed, BRDF generation, diffuse convolution, and specular prefilter. Sky-view generation, aerial in-scattering, aerial transmittance, and final composition are likewise separate passes. This lets the graph derive barriers between stages; only dispatches with no graph-visible dependency remain within one callback.</p>
+<p>The last writer exports each next-snapshot resource in its intended read layout. Publication records that layout with the snapshot, so the next frame imports a known state rather than guessing from the previous mode. A streamed HDR source is imported through the graph's streaming-acquire path before a source-preparation or IBL pass reads it; the bake scheduler never bypasses the upload ownership transfer.</p>
+<p>Environment-bake passes request asynchronous compute only when the graph can schedule it safely for the device queue topology. On a device without useful asynchronous compute, they run in graphics-queue order with identical resource declarations and correctness. Timestamps are reported only where the device exposes a comparable clock domain.</p>
+<h3 id="41-frame-topology">4.1 Frame topology<a class="headerlink" href="#41-frame-topology" title="Permanent link">&para;</a></h3>
+<p>The logical frame flow is:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Depth / G-buffer
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>        |
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>        +--&gt; optional EnvironmentBake subgraph -&gt; next persistent snapshot
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>        |
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>published IBL snapshot --&gt; Deferred Lighting -&gt; HDR opaque scene
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>                                           |
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>per-view sky LUTs --------------------------+
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>                                           v
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>                           Sky composite -&gt; HDR scene with atmosphere
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>                                           |
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>                           Forward transparencies and overlays
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>                                           |
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>                           Exposure / bloom / tone mapping
+</code></pre></div>
+<p>An environment bake may overlap the frame, but lighting reads only a completed snapshot. The initial frame reads an engine fallback snapshot rather than stalling.</p>
+<p>For atmosphere mode, the bake path has a required producer chain:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>transmittance + multiscattering LUTs
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>                 -&gt; atmosphere source-radiance cubemap
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>                 -&gt; irradiance and specular prefilter
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>                 -&gt; published IBL snapshot
+</code></pre></div>
+<p>A sky-view LUT is camera dependent and is not an IBL source. IBL always reads the explicitly produced source-radiance cubemap.</p>
+<h3 id="42-composition-contract">4.2 Composition contract<a class="headerlink" href="#42-composition-contract" title="Permanent link">&para;</a></h3>
+<p>Sky composition consumes the depth result and opaque HDR scene colour. For a geometry pixel at camera distance d:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>outRadiance = opaqueRadiance * transmittance(d) + inScatteredRadiance(d)
+</code></pre></div>
+<p>For a background pixel, it writes sky radiance directly. The pass defines the depth-clear test for both standard and reverse-Z, reconstructs position/distance using the active projection convention, and keeps sun/background visibility correctly occluded by geometry.</p>
+<p>Composition writes a distinct HDR resource version, for example HDRSceneComposited. It must not sample and render to the same HDR image unless an explicitly supported attachment-feedback-loop design is adopted. A separate output is the portable baseline.</p>
+<p>If opaque rendering uses multisampled depth, composition reads the resolved depth that matches the opaque HDR scene. HDR scene alpha has one renderer-wide meaning and is never repurposed to store atmospheric transmittance.</p>
+<p>Forward transparent materials render after the background is present. They use the same atmospheric transmittance/in-scattering convention when atmospheric perspective is enabled; otherwise transparent objects would remain visually detached from the opaque scene.</p>
+<h3 id="43-render-view-sizing-and-temporal-stability">4.3 Render-view sizing and temporal stability<a class="headerlink" href="#43-render-view-sizing-and-temporal-stability" title="Permanent link">&para;</a></h3>
+<p>The render-view extent, not the swapchain extent, sizes per-view sky resources. A zero-width or zero-height view declares no sky work and preserves the last valid viewport output. A viewport resize invalidates only that RenderView's transient LUTs and composition target; it never invalidates the shared source cubemap or IBL snapshot.</p>
+<p>Fixed-resolution LUT quality tiers are permitted, but their sampling transform must be derived from the current view projection and aspect ratio. The final composite always matches the active render-view extent. If a future quality tier uses temporal accumulation, it defines a stable sampling sequence, reprojection validity, camera-cut reset, dynamic-resolution reset, and deterministic test mode. Temporal history is never reused across different views or sky revisions.</p>
+<p>When temporal anti-aliasing is enabled, the sky integration supplies an explicit infinite-depth/background classification and a rotational motion-vector or reactive-mask policy. It prevents camera jitter, a newly visible sun disc, and HDRI rotation from producing ghost trails.</p>
+<hr />
+<h2 id="5-descriptor-and-pipeline-contract">5. Descriptor and pipeline contract<a class="headerlink" href="#5-descriptor-and-pipeline-contract" title="Permanent link">&para;</a></h2>
+<p>Descriptor layouts are pipeline-owned and shader-reflection validated. This document defines stable logical resource names and types, not contradictory independent set-number tables. The shader source, reflection data, and C++ binding code for each pipeline must agree exactly.</p>
+<p>The engine already reserves descriptor set 1 for the bindless texture array and global samplers. Sky-specific UBO, sampled-image, sampler, and storage-image declarations must not redefine that set or its bindings. Dedicated sky descriptor sets are allocated after every engine-reserved set, and reflection validation rejects a collision before a pipeline can bake.</p>
+<table>
+<thead>
+<tr>
+<th>Logical group</th>
+<th>Required resources</th>
+<th>Lifetime</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PerView</td>
+<td>Camera UBO / dynamic offset</td>
+<td>Per RenderView, per frame</td>
+</tr>
+<tr>
+<td>AtmosphereParameters</td>
+<td>Atmosphere UBO / dynamic offset</td>
+<td>Per environment revision or frame</td>
+</tr>
+<tr>
+<td>SkyInputs</td>
+<td>Transmittance, multiscatter, sky-view, aerial LUTs, or source cubemap</td>
+<td>Imported/transient as declared</td>
+</tr>
+<tr>
+<td>SkyStorage</td>
+<td>Storage views for the exact LUT/cubemap mip and layer being written</td>
+<td>Bake or per-view compute</td>
+</tr>
+<tr>
+<td>LightingIBL</td>
+<td>Diffuse irradiance, specular environment, BRDF LUT</td>
+<td>Published snapshot</td>
+</tr>
+</tbody>
+</table>
+<p>Every pipeline has a single reflected layout. No shader may reuse one binding for incompatible descriptor types within that layout. Required bindings are verified before commands are recorded; an invalid binding must produce a clear validation/error path, not a silent no-op.</p>
+<p>Cubemaps are sampled through cube views. Compute writes use a compatible 2D-array storage view for the selected faces and mip level, then the result is sampled through the cube view. Layer and mip subresource ranges are declared explicitly to the graph.</p>
+<h3 id="51-pso-and-binding-lifetime">5.1 PSO and binding lifetime<a class="headerlink" href="#51-pso-and-binding-lifetime" title="Permanent link">&para;</a></h3>
+<p>Each sky graphics or compute pipeline is a normal renderer PSO. Its immutable key contains the shader identity/interface, attachment formats, sample count, raster/depth/blend state, and static specialization values. It does not contain a SkyConfig revision, a texture handle, a dynamic UBO offset, a viewport extent, or a per-frame resource.</p>
+<p>The PSO cache owns pipeline creation and invalidation. SkyEnvironment owns textures and data snapshots. Render-graph callbacks declare resource use and bind the chosen snapshot in Prepare. This separation avoids per-frame PSO creation while allowing any environment revision to reuse the same compatible pipeline.</p>
+<p>Shader hot reload validates the reflected interface before descriptor replay. If the interface no longer matches the callback's required logical bindings, the pass is rebuilt or safely omitted while the fallback sky remains usable. A failed pipeline bake or missing descriptor is surfaced through diagnostics; it must not leave command recording in a silent no-op state.</p>
+<p>The renderer foundation provides one graphics/compute descriptor binder for dynamic uniform buffers, sampled images, samplers, storage images, and storage buffers. It records bindings for shader-interface replay and requires complete descriptor bindings before dispatch. RenderGraph routes declared sampled and storage-image resources through this generic binder. Sky passes remain responsible for declaring their exact bindings and subresource ranges; this support alone does not schedule, allocate, or bake sky resources.</p>
+<h3 id="52-code-boundaries-and-allocation-policy">5.2 Code boundaries and allocation policy<a class="headerlink" href="#52-code-boundaries-and-allocation-policy" title="Permanent link">&para;</a></h3>
+<p>SkySystem is a scene-environment coordinator. SkyEnvironment owns persistent resource snapshots and revision state. Individual graph callbacks own only pass declaration, descriptor preparation, and command recording. RenderGraph remains generic: it knows imported resources, transient resources, subresource ranges, and synchronization, but contains no sky-specific state or scheduling rules.</p>
+<p>EnvironmentMapImporter owns source validation and cooked-artifact creation. The asset manager owns source identity and hot-reload notifications. GraphicRenderer selects a snapshot at frame start but does not decode assets or own the environment-resource lifetime.</p>
+<p>Persistent texture allocations occur only for fallback initialization, a new environment revision, or a selected quality tier. Per-frame work uses the graph frame arena and existing per-frame descriptor storage; it must not introduce a general heap allocation in view updates, command recording, or descriptor binding.</p>
+<p>The initial component boundary is:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>SkySystem / SkyEnvironment             configuration, revisions, snapshots
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>AtmosphereStaticLutPass                transmittance and multiscattering
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>SkySourceRadiancePass                  atmosphere capture or prepared HDRI source
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>EnvironmentIBLBakePass                 BRDF, diffuse irradiance, specular prefilter
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>SkyViewLutPass / AerialPerspectivePass per-RenderView lookup textures
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>SkyCompositePass                       depth-aware HDR scene composition
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>SkySpherePass                          analytic background mode
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>EnvironmentMapImporter                 cooked source artifact
+</code></pre></div>
+<hr />
+<h2 id="6-skysphere-presentation">6. SkySphere presentation<a class="headerlink" href="#6-skysphere-presentation" title="Permanent link">&para;</a></h2>
+<p>SkySphere is a fullscreen background pass. It reconstructs a view ray using the active projection convention, ignores camera translation, and writes linear scene radiance. The gradient uses the ray elevation; its optional sun disc uses a dot-product threshold against the primary celestial direction rather than an expensive inverse cosine.</p>
+<p>The push-constant block contains four Vec4 values and four scalar values, for exactly 80 bytes. It has no trailing pad:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">struct</span><span class="w"> </span><span class="nc">SkySpherePush</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="p">{</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="n">Vec4f</span><span class="w"> </span><span class="n">HorizonColor</span><span class="p">;</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="n">Vec4f</span><span class="w"> </span><span class="n">ZenithColor</span><span class="p">;</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="n">Vec4f</span><span class="w"> </span><span class="n">GroundColor</span><span class="p">;</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span><span class="n">Vec4f</span><span class="w"> </span><span class="n">SunDirection</span><span class="p">;</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">SunDiscAngularRadiusRadians</span><span class="p">;</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">SunDiscIntensity</span><span class="p">;</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">HorizonSharpness</span><span class="p">;</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">ShowSunDisc</span><span class="p">;</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="p">};</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="k">static_assert</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">SkySpherePush</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">80</span><span class="p">);</span>
+</code></pre></div>
+<p>The implementation also checks the device push-constant limit during capability initialization. SkySphere presentation does not alter the fallback IBL snapshot used by lighting.</p>
+<p>Selecting SkySphere immediately selects the engine fallback snapshot for lighting and retires any previously published non-fallback environment after its frame pins complete. It never queues asset decode, cubemap generation, or IBL baking. A directional light is optional: without one, the gradient remains valid and the sun disc is omitted. The unused <code>SunDirection.w</code> lane carries the far clip depth (<code>1</code> for standard depth, <code>0</code> for reverse-Z), preserving the 80-byte push-constant contract while allowing the fullscreen triangle to depth-test only where the depth buffer is clear.</p>
+<hr />
+<h2 id="7-atmosphere-rendering">7. Atmosphere rendering<a class="headerlink" href="#7-atmosphere-rendering" title="Permanent link">&para;</a></h2>
+<p>The atmosphere implementation follows the Bruneton/Hillaire family of techniques, but its numerical and renderer contracts are explicit.</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th style="text-align: right;">Resolution</th>
+<th>Preferred format</th>
+<th>Update cadence</th>
+<th>Ownership</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Transmittance</td>
+<td style="text-align: right;">256 x 64</td>
+<td>R11G11B10_UFLOAT when storage-supported; otherwise RGBA16F</td>
+<td>Atmosphere revision</td>
+<td>SkyEnvironment</td>
+</tr>
+<tr>
+<td>Multiscattering</td>
+<td style="text-align: right;">32 x 32</td>
+<td>RGBA16F</td>
+<td>Atmosphere revision</td>
+<td>SkyEnvironment</td>
+</tr>
+<tr>
+<td>Source-radiance cubemap</td>
+<td style="text-align: right;">Quality tier, initially 512 per face</td>
+<td>RGBA16F</td>
+<td>Atmosphere or sun revision</td>
+<td>SkyEnvironment</td>
+</tr>
+<tr>
+<td>Sky-view LUT</td>
+<td style="text-align: right;">Quality tier, initially 192 x 108</td>
+<td>RGBA16F</td>
+<td>Per RenderView</td>
+<td>Transient graph resource</td>
+</tr>
+<tr>
+<td>Aerial in-scattering</td>
+<td style="text-align: right;">Quality tier, initially 32 x 32 x 32</td>
+<td>RGBA16F</td>
+<td>Per RenderView</td>
+<td>Transient graph resource</td>
+</tr>
+<tr>
+<td>Aerial transmittance</td>
+<td style="text-align: right;">Quality tier, initially 32 x 32 x 32</td>
+<td>RGBA16F</td>
+<td>Per RenderView</td>
+<td>Transient graph resource</td>
+</tr>
+</tbody>
+</table>
+<p>All generated LUTs are GPU-written storage images. They are not uploaded through the staging ring; staging is reserved for external asset data. The graph declares storage writes and sampled reads so the required barriers are generated rather than hand-maintained inside unrelated passes.</p>
+<p>At the initial 32 x 32 x 32 aerial resolution, an 8 x 8 x 4 kernel dispatches 4 x 4 x 8 workgroups. Implementations derive those counts with ceiling division from the selected quality tier rather than relying on hard-coded dimensions.</p>
+<p>Sun changes invalidate the source-radiance cubemap and its IBL output. Static transmittance and multiscattering LUTs need not be regenerated for a direction-only sun change. A continuously animated day/night cycle uses a quality budget or progressive bake policy so it cannot hitch the editor.</p>
+<p>The atmosphere UBO is std140-aligned and checked with size and offset assertions on the C++ side, plus reflection validation in the shader build. It includes only canonical-unit values, camera-relative planet coordinates, and the resolved primary celestial-light direction. <code>SunIlluminanceLux</code> remains a photometric authored value; the renderer maps 6 klux to one scene-radiance unit before baking, so the default 120-klux clear-sky noon sun maps to 20 units. This unit bridge is shared by atmosphere source capture and IBL, while display exposure remains a per-view post-processing control. Wavelength-independent Mie scattering and absorption authoring values are scalar, but are packed into their RGB UBO fields as Vec4f(x, x, x, 0).</p>
+<h3 id="71-numerical-and-payload-contract">7.1 Numerical and payload contract<a class="headerlink" href="#71-numerical-and-payload-contract" title="Permanent link">&para;</a></h3>
+<p>The two aerial textures have an explicit payload: aerial in-scattering stores scene-linear RGB radiance and aerial transmittance stores RGB transmission. Alpha is unused or reserved with a documented value; it never ambiguously represents both radiance and coloured transmission. The initial two-texture representation costs little memory and avoids a colour-shifting scalar-alpha approximation. Any later packed representation requires matching HDR reference images before it replaces this baseline.</p>
+<p>The static multiscattering LUT has one shared spectral contract. Its coordinates are <code>u = 0.5 * (muSun + 1)</code> and <code>v = altitude / (atmosphereRadius - planetRadius)</code>, where <code>muSun</code> is the local-up cosine toward the sun. A texel stores <code>Mms = integral(Lms(omega) d omega) / Lsun</code>: the RGB angular integral of higher-order incident radiance, normalized by direct solar radiance. <code>Mms</code> consequently has steradian units. It excludes the local scattering coefficient, local extinction, all phase normalization, presentation tint, and solar radiance. It is not itself outgoing sky radiance and must never be added directly to a cubemap or a view LUT.</p>
+<p>The initial implementation uses a bounded isotropic-shell closure rather than claiming a full iterative solve. At the LUT sample point it computes the spectral scattering and extinction coefficients <code>sigmaS</code> and <code>sigmaT</code>, the direct-light scattering fraction <code>f = clamp((sigmaS / sigmaT) * (1 - TSun), 0, 1)</code>, and the retained-light probability <code>q = min(0.5 * f, 0.95)</code>. It stores <code>Mms = 4pi * f * q / (1 - q)</code>. The <code>0.5</code> represents the deliberately documented isotropic-shell return fraction; the <code>0.95</code> cap bounds the geometric series near opaque conditions. Because <code>sigmaS / sigmaT</code> is RGB, Rayleigh wavelength dependence is retained through both baking and consumption.</p>
+<p>Every ray integrator uses the same source terms at each sample, in kilometres:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>singleSource = (betaRayleigh * rhoRayleigh * RayleighPhase
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>              + betaMie * rhoMie * MiePhase) * TSun * Lsun
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>multipleSource = sigmaS * (Mms / (4pi)) * Lsun
+</code></pre></div>
+<p><code>1 / (4pi)</code> is applied exactly once in <code>multipleSource</code>, as the isotropic phase normalization. The source-radiance cubemap, sky-view LUT, and aerial-perspective LUT call the same shader helper for this integration. The cubemap capture point is sea level (<code>0 km</code> above the planet radius) and uses the same implicit Lambertian ground closure as a view ray; it is therefore a true scene-linear radiance capture rather than a coefficient lookup. A future iterative Bruneton/Hillaire solve may replace the LUT producer only if it preserves this payload and consumer equation, or versions both together.</p>
+<p>Regression/reference checks for this contract include: zero scattering produces a zero <code>Mms</code> and zero multiple-scattering source; an isolated red/green/blue scattering coefficient produces an isolated matching source channel; and multiplying a stored <code>4pi</code> angular integral by the consumer's <code>1 / (4pi)</code> recovers the unnormalized isotropic source. Shader compilation covers the common helper from all three ray-integration entry points. HDR reference captures cover noon, sunset, below-horizon sun, elevated camera, and the ground boundary before numerical changes are accepted.</p>
+<p>All atmosphere shader paths handle zero-length rays, horizon tangents, cameras below the ground radius, cameras above the atmosphere radius, and sun directions below the horizon without generating NaN or infinity. Inputs are validated on the CPU, but shaders still guard divisions, square roots, phase-function denominators, and exponential ranges. Sun angular radius is converted to radians before upload.</p>
+<p>The captured source-radiance cubemap has a complete mip chain. Prefiltering selects source LOD from sample solid angle/PDF and source texel solid angle, avoiding rough-surface aliasing and fireflies. If hardware cannot linearly filter or generate the required HDR mip chain, the capability service chooses a shader downsample path or disables the affected quality tier.</p>
+<p>LUT samplers use normalized coordinates and linear filtering. The sky-view LUT is an azimuth/elevation map, so its azimuth axis wraps and its elevation axis clamps; all other LUT axes clamp to edge. Cubemap samplers use the engine's canonical face orientation, clamp-to-edge addressing, and linear mip filtering. None of the radiance, transmittance, or IBL resources use an sRGB image view.</p>
+<hr />
+<h2 id="8-hdri-asset-path">8. HDRI asset path<a class="headerlink" href="#8-hdri-asset-path" title="Permanent link">&para;</a></h2>
+<p>HDRI import uses the existing environment-map asset pipeline:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>authored .hdr
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>     -&gt; importer
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>     -&gt; cooked project cache artifact (.zenvmap or its successor)
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>     -&gt; AssetReference in scene
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>     -&gt; asynchronous texture upload
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>     -&gt; SkyEnvironment source-radiance cubemap
+</code></pre></div>
+<p>Version 1 supports HDR input and extends the current importer that cooks it into a cubemap cache artifact. It must not also introduce a second runtime raw-equirectangular conversion pipeline. A future GPU-based cooker can replace the conversion implementation behind the same asset contract.</p>
+<p>Radiance <code>.hdr</code> and flat, single-part <code>.exr</code> input are supported. HDR uses stb_image and EXR uses TinyEXR; both decode to the same linear RGBA32F conversion path. Deep, multipart, and other EXR workflows that cannot be represented as one flat image are intentionally not accepted as environment sources.</p>
+<p>The current <code>.zenvmap</code> artifact is version 2. Its fixed header records source hash, importer version, RGBA32F payload contract, linear-scene colour, renderer-canonical cubemap orientation, exposure, face dimensions/layers, and the full GPU-generated mip policy. The runtime validates that complete contract and the exact payload length before it allocates or uploads; a header whose source hash does not match the registry is stale and is never used.</p>
+<p>Raw HDR equirectangular images are never decoded on the render thread or retained in resident VRAM for backdrop rendering. Version 2 uses an RGBA32F base-level cubemap payload (up to 1024 pixels per face) and generates the required full mip chain on the GPU before IBL convolution. A future half-precision or compressed artifact must receive a new artifact version and preserve the same validation and orientation contract. Heap pressure may request eviction or a lower already-cooked tier; it must not silently downscale authored assets at runtime.</p>
+<p>Cooked environment artifacts are derived cache data, not source content-browser items. The source asset remains the user-visible item and is the only identity serialized by the scene. Cache eviction or regeneration therefore never changes content-browser structure or source-control state.</p>
+<p>If an HDRI is pending or fails, the system retains the last ready snapshot or uses the engine fallback environment and visibly reports the failure once in editor diagnostics. It does not replace the viewport with a solid black backdrop.</p>
+<p>HDRI rotation/orientation, tint, and lighting intensity are common source-radiance inputs. Display exposure is a camera/post-processing control and must not accidentally make background brightness diverge from lighting brightness.</p>
+<h3 id="81-import-validation-and-colour-contract">8.1 Import validation and colour contract<a class="headerlink" href="#81-import-validation-and-colour-contract" title="Permanent link">&para;</a></h3>
+<p>The importer accepts Radiance <code>.hdr</code> and flat, single-part <code>.exr</code>. It validates an equirectangular 2:1 source aspect ratio, finite non-negative RGBA pixels, width divisible by four, and a maximum 1024-pixel cubemap face before allocating conversion buffers. HDR source pixels are interpreted as linear scene radiance, never as sRGB. Invalid NaN/infinite or negative radiance fails import with a diagnostic.</p>
+<p>The cooker writes atomically and preserves the prior valid artifact if recooking fails. It converts directly into the established six-face canonical order (covered against the prior vertical-cross conversion), records the complete GPU-generated mip policy, and stores the source/import hash used for stale-artifact detection. The runtime uses only completed artifacts and never samples a partially written cache file. Registry source hash and artifact readiness are part of the immutable HDRI bake key, so a reimport with the same scene UUID invalidates pending or active work while an unchanged unavailable artifact produces no retry loop.</p>
+<hr />
+<h2 id="9-image-based-lighting">9. Image-based lighting<a class="headerlink" href="#9-image-based-lighting" title="Permanent link">&para;</a></h2>
+<p>Each published SkyEnvironment snapshot contains:</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th style="text-align: right;">Initial quality</th>
+<th>Format</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Diffuse irradiance cubemap</td>
+<td style="text-align: right;">32 per face</td>
+<td>RGBA16F</td>
+<td>Cosine-convolved source radiance</td>
+</tr>
+<tr>
+<td>Specular environment cubemap</td>
+<td style="text-align: right;">128 per face, full mip chain</td>
+<td>RGBA16F</td>
+<td>GGX-prefiltered; roughness-to-LOD convention is documented</td>
+</tr>
+<tr>
+<td>BRDF integration LUT</td>
+<td style="text-align: right;">512 x 512</td>
+<td>RG16F</td>
+<td>Engine-global; versioned by shader and quality</td>
+</tr>
+</tbody>
+</table>
+<p>The specular map has a full mip chain through 1 x 1. Roughness 0 and 1 map to documented LOD limits, and all cubemap filtering follows the same face orientation and seam policy as source capture.</p>
+<p>IBL rebuild triggers are:</p>
+<ul>
+<li>a completed HDRI asset revision;</li>
+<li>entering HDRI or atmosphere mode without a matching ready snapshot;</li>
+<li>an atmosphere physical-parameter change;</li>
+<li>a resolved primary-sun change that changes atmosphere source radiance;</li>
+<li>a deliberate IBL quality-tier or shader-version change.</li>
+</ul>
+<p>Camera movement, SkySphere-only changes, HDRI rotation, linear tint, linear intensity, and display exposure do not invalidate shared IBL. The source, diffuse, and specular maps are baked through configurable sample-count tiers with GPU timestamps. Expensive prefilter work may be progressive or amortized, but partial results are never published as a supposedly complete snapshot.</p>
+<h3 id="91-lighting-convention">9.1 Lighting convention<a class="headerlink" href="#91-lighting-convention" title="Permanent link">&para;</a></h3>
+<p>Source radiance and IBL are stored in absolute linear scene units. If the renderer uses pre-exposure, the per-frame lighting and sky-composition shaders apply the same exposure transform at use time; an exposure change never forces an IBL rebake. Diffuse irradiance, specular radiance, the BRDF LUT, normal orientation, roughness-to-LOD mapping, and ambient/specular occlusion use one documented deferred-lighting convention.</p>
+<p>The fallback snapshot contains valid diffuse, specular, and BRDF textures with deterministic neutral values. It is created before the first scene can render and remains available during device-supported mode changes, asset failures, shader rebuilds, and memory-pressure eviction. A fallback is a valid lighting state, not a null-handle special case.</p>
+<h3 id="92-quality-policy">9.2 Quality policy<a class="headerlink" href="#92-quality-policy" title="Permanent link">&para;</a></h3>
+<p>Sky quality is renderer/platform policy rather than serialized artistic scene data. A tier specifies source-cubemap face resolution and mip policy, sky-view and aerial resolutions, IBL sample budgets, and optional format fallback. The active tier is part of the environment resource key.</p>
+<p>A quality change creates a new environment revision and follows the same next-snapshot publication path as an asset change. It never resizes a published cubemap or changes the number of descriptors in place. The editor may preview a lower tier while authoring, but bake completion, memory use, and diagnostics always report the selected tier explicitly.</p>
+<p>The HDRI IBL implementation reads the project-level <code>rendering.environment_lighting_quality</code> key. It accepts <code>low</code>, <code>standard</code> (the default), and <code>high</code>; scene files do not serialize the value. The initial budgets are:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th style="text-align: right;">Diffuse cube</th>
+<th style="text-align: right;">Diffuse samples</th>
+<th style="text-align: right;">Specular cube</th>
+<th style="text-align: right;">Specular samples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Low</td>
+<td style="text-align: right;">16 per face</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">64 per face, full mip chain</td>
+<td style="text-align: right;">64</td>
+</tr>
+<tr>
+<td>Standard</td>
+<td style="text-align: right;">32 per face</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">128 per face, full mip chain</td>
+<td style="text-align: right;">128</td>
+</tr>
+<tr>
+<td>High</td>
+<td style="text-align: right;">64 per face</td>
+<td style="text-align: right;">64</td>
+<td style="text-align: right;">256 per face, full mip chain</td>
+<td style="text-align: right;">256</td>
+</tr>
+</tbody>
+</table>
+<p>Persistent environment texture memory is independently capped by the project-level <code>rendering.environment_lighting_budget_mb</code> key. It accepts a positive integer number of MiB and defaults to 384 MiB when the key is missing or invalid.</p>
+<hr />
+<h2 id="10-hdr-formats-and-memory-budget">10. HDR, formats, and memory budget<a class="headerlink" href="#10-hdr-formats-and-memory-budget" title="Permanent link">&para;</a></h2>
+<p>The renderer must provide a floating-point linear scene-colour target before this system is enabled. Lighting, sky composition, bloom, and exposure operate in linear HDR; tone mapping and output-gamut conversion occur later. An R8G8B8A8_UNORM intermediate cannot preserve physically based sky radiance.</p>
+<p>Device startup validates all required image usage combinations. In particular:</p>
+<ul>
+<li>R11G11B10_UFLOAT is used for a storage LUT only if the device reports the required storage-image and sampled-image features; otherwise use RGBA16F.</li>
+<li>3D RGBA16F storage images, sampled images, and the required image views are checked before atmosphere mode is exposed.</li>
+<li>cubemap/array image views, mip and layer transitions, and storage writes are capability-tested.</li>
+<li>maximum 2D/3D/cubemap dimensions, array layers, storage-image descriptor counts, and push-constant limits are checked against the selected quality tier.</li>
+<li>unsupported optional modes remain unavailable with a readable reason; the fallback sky remains available.</li>
+</ul>
+<p>TextureSpecification and the render graph support a true depth extent, 3D image type/view creation, and 3D resource compatibility. A 32 x 32 x 32 LUT is a volume texture, not a 2D texture with a layer count. The sky implementation still performs the capability checks above before it enables atmosphere mode.</p>
+<p>All values below use binary units and exclude transient command/descriptors:</p>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Allocation</th>
+<th style="text-align: right;">Memory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Transmittance + multiscattering</td>
+<td>256 x 64 + 32 x 32 RGBA16F</td>
+<td style="text-align: right;">about 136 KiB</td>
+</tr>
+<tr>
+<td>One 192 x 108 sky-view + two 32 cubed aerial LUTs</td>
+<td>RGBA16F</td>
+<td style="text-align: right;">about 674 KiB per RenderView</td>
+</tr>
+<tr>
+<td>512 cubemap source radiance, base level</td>
+<td>6 faces RGBA16F</td>
+<td style="text-align: right;">12 MiB</td>
+</tr>
+<tr>
+<td>The same source with a complete mip chain</td>
+<td>RGBA16F</td>
+<td style="text-align: right;">about 16 MiB</td>
+</tr>
+<tr>
+<td>Diffuse + full-chain 128 specular IBL</td>
+<td>RGBA16F</td>
+<td style="text-align: right;">about 1.05 MiB per SkyEnvironment</td>
+</tr>
+<tr>
+<td>512 x 512 BRDF LUT</td>
+<td>RGBA16F</td>
+<td style="text-align: right;">2 MiB engine-global</td>
+</tr>
+</tbody>
+</table>
+<p>Version 1 uses the complete source mip chain: an atmosphere environment is therefore about 17.2 MiB plus 674 KiB per view; with the shared BRDF LUT initialized, the first such environment is about 19.9 MiB. A 512 cubemap is 12 MiB at its base level and about 16 MiB with its full chain; the BRDF LUT is 2 MiB, not 512 KiB.</p>
+<p>HDRI memory depends on the selected cooked cubemap quality tier. The old 32 MiB/128 MiB raw 2K/4K equirectangular estimates are useful import-memory warnings, but are not the desired steady-state resident runtime budget.</p>
+<p>The persistent-environment budget reserves the update peak, not only steady state: current snapshot, next bake snapshot, all in-flight pinned snapshots, and the global fallback. The shared BRDF LUT is counted once with the fallback. Static atmosphere LUTs are conservatively counted by every snapshot that references them, so sharing can defer a bake early but never undercount its peak. The bake is cancelled before this reservation would exceed <code>rendering.environment_lighting_budget_mb</code>; it never evicts the snapshot currently selected by a frame. Per-RenderView transient resources remain managed by the render-graph transient pool rather than this persistent-resource gate.</p>
+<h3 id="101-colour-exposure-and-output">10.1 Colour, exposure, and output<a class="headerlink" href="#101-colour-exposure-and-output" title="Permanent link">&para;</a></h3>
+<p>All sky, LUT, and IBL images use linear scene colour. The renderer composes lighting and sky into an RGBA16F scene-colour target, then converts it to the display-compatible RenderView texture through a single ACES-fitted tone-mapping pass. Editor UI is composited afterward in display space. Optional pre-exposure is applied consistently to direct and environment lighting; bloom and automatic exposure metering remain follow-up work before tone mapping and output-gamut conversion.</p>
+<p>Exposure metering defines how the bright sun disc and HDRI highlights influence the histogram, and it resets or smoothly adapts on a sky revision according to the camera-cut policy. Reference tests use fixed exposure. This prevents apparent lighting discontinuities from being hidden by unstable automatic exposure.</p>
+<p>The editor viewport and ordinary window presentation consume the post-tone-mapped, display-compatible RenderView output. They do not sample the raw/pre-exposed HDR composition texture. HDR screenshots or offline capture request an explicitly named linear HDR export; UI composition must neither tone-map the image again nor apply a second sRGB conversion.</p>
+<hr />
+<h2 id="11-diagnostics-and-validation">11. Diagnostics and validation<a class="headerlink" href="#11-diagnostics-and-validation" title="Permanent link">&para;</a></h2>
+<p>The editor exposes a sky diagnostic panel and render-graph debug names for:</p>
+<ul>
+<li>active mode, requested and published environment revisions, and bake state;</li>
+<li>asset-load error and fallback reason;</li>
+<li>source cubemap, each atmosphere LUT, irradiance, specular mips, and BRDF LUT;</li>
+<li>GPU duration and sample tier for each bake stage;</li>
+<li>per-view LUT resolution and transient-memory cost;</li>
+<li>active format fallbacks and capability failures.</li>
+</ul>
+<p>Automated validation includes:</p>
+<ul>
+<li>shader reflection, descriptor-layout, UBO-size, and subresource-range checks;</li>
+<li>graphics and compute descriptor-binding/replay tests for every sky resource kind;</li>
+<li>render-graph declaration tests for exact environment versions, read/write dependencies, and imported-resource barriers;</li>
+<li>image/reference tests for noon, sunset, night, no celestial light, camera altitude changes, and reverse-Z;</li>
+<li>HDRI orientation, rotation, failed-load, hot-reload, and stale-completion tests;</li>
+<li>multi-viewport/editor/game/capture tests with distinct camera positions;</li>
+<li>resize and dynamic-resolution tests;</li>
+<li>in-flight rebake, resource retirement, low-memory fallback, and device-capability fallback tests;</li>
+<li>IBL roughness/LOD and cubemap-seam tests.</li>
+</ul>
+<p>The visual test suite uses deterministic scene data, fixed exposure, and tolerance-based HDR image comparison.</p>
+<hr />
+<h2 id="12-production-release-gates">12. Production release gates<a class="headerlink" href="#12-production-release-gates" title="Permanent link">&para;</a></h2>
+<p>The feature is ready for a supported quality tier only when all of the following are true:</p>
+<ul>
+<li>validation layers and the graph declaration validator report no descriptor, layout, subresource, lifetime, or synchronization errors;</li>
+<li>the fallback environment renders valid background and IBL on the first frame, while an HDRI loads, after load failure, and during a shader-interface rebuild;</li>
+<li>each supported platform/device tier passes the HDR reference suite, including resize, multiple views, reverse-Z, and hot-reload cases;</li>
+<li>peak memory for active, baking, fallback, and in-flight snapshots remains inside the configured environment budget;</li>
+<li>CPU frame allocation, descriptor binding, and command recording remain allocation-free outside the graph frame arena;</li>
+<li>bake timing stays within the selected tier budget, and cancelled/stale work cannot cause editor hitches or publish stale lighting;</li>
+<li>a graphics debugger capture verifies the source-cubemap to IBL dependency chain and the final HDR composition.</li>
+</ul>
+<p>Unsupported tiers are not release failures when capability detection clearly disables them and the fallback sky remains correct.</p>
+<hr />
+<h2 id="13-delivery-order">13. Delivery order<a class="headerlink" href="#13-delivery-order" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Step</th>
+<th>Deliverable</th>
+<th>Depends on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td>HDR scene-colour pipeline, post-processing ordering, 3D texture/render-graph support, graphics/compute image-descriptor binder, reserved-set validation, format-capability service</td>
+<td>Renderer foundations (3D resource and descriptor-binder support in progress)</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td>Breaking SkyConfig schema, stable asset reference, project defaults, engine fallback environment</td>
+<td>Asset and scene systems</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td>Persistent SkyEnvironment snapshots, timeline-safe publish/retirement, graph-import contract, diagnostic state</td>
+<td>Step 1</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td>Engine-global BRDF LUT and fallback IBL; LightingPass descriptor integration</td>
+<td>Step 2</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td>SkySphere visual pass and correct background composition</td>
+<td>Steps 0-3</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td>HDRI cooked-asset route, quality tiers, source cubemap, asynchronous rebuild</td>
+<td>Steps 1-4</td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td>HDRI irradiance/specular bake, timestamps, quality policy, hot reload</td>
+<td>Step 5</td>
+</tr>
+<tr>
+<td style="text-align: right;">7</td>
+<td>Static atmosphere LUTs and atmosphere source-radiance cubemap</td>
+<td>Steps 0-3</td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td>Per-view sky/aerial LUTs and opaque/transparent atmospheric composition</td>
+<td>Step 7</td>
+</tr>
+<tr>
+<td style="text-align: right;">9</td>
+<td>Atmosphere IBL baking, dynamic celestial-light budget, full validation matrix</td>
+<td>Steps 6-8</td>
+</tr>
+<tr>
+<td style="text-align: right;">10</td>
+<td>Retire the pre-SkyEnvironment background implementation after visual, graph, and fallback parity is proven (completed in #827)</td>
+<td>All prior steps</td>
+</tr>
+</tbody>
+</table>
+<p>This order ships a useful, safe HDRI/SkySphere baseline before the more expensive atmosphere system, while preserving one resource and lifetime model for all modes.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Zodiac Engine contributors
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/JeanPhilippeKernel/RendererEngine" target="_blank" rel="noopener" title="RendererEngine on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://discord.gg/jC3GPVKKsW" target="_blank" rel="noopener" title="Zodiac Engine on Discord" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2926 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Cross-platform Vulkan engine, editor, and project tooling">
+      
+      
+      
+        <link rel="canonical" href="https://jeanphilippekernel.github.io/zodiac-engine-docs/design/future-plan/shadows/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/logo-white.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>ZEngine — Shadow Mapping - Zodiac Engine</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#zengine-shadow-mapping" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Zodiac Engine" class="md-header__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="../../../assets/logo-white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Zodiac Engine
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ZEngine — Shadow Mapping
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="light-blue"  aria-label="Use light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Use light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="light-blue"  aria-label="Use dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Use dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../getting-started/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Get ZEngine
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../editor/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Editor
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../development/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Develop
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../reference/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../project/releases/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Project
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../contributing/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Contribute
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Zodiac Engine" class="md-nav__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="../../../assets/logo-white.png" alt="logo">
+
+    </a>
+    Zodiac Engine
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../getting-started/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Get ZEngine
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Get ZEngine
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/install-with-zodiac-engine-hub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install with Zodiac Engine Hub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/first-project/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create your first project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/update-and-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Update and migration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/supported-platforms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Supported platforms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../editor/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Editor
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Editor
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../editor/assets-and-importing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assets and importing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../editor/scenes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scenes and authoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../development/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Develop
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Develop
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/build-from-source/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build from source
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/run-and-debug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run and debug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/project-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../reference/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rendering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/asset-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/memory-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/zui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ZUI system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/containers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Containers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Releases and changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/rfcs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proposals and RFCs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/archive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Historical records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../contributing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribute
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contribute
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/commit-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commit conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/release-process/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release process
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-shadow-techniques-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Shadow Techniques Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Shadow Techniques Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#v1-target" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v1 — Target
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#v2-deferred" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v2 — Deferred
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-cascaded-shadow-maps-csm-for-directional-lights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Cascaded Shadow Maps (CSM) for Directional Lights
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Cascaded Shadow Maps (CSM) for Directional Lights">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-theory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Theory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-cascade-split-scheme" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Cascade Split Scheme
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-csmdata-gpu-struct" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 CSMData GPU Struct
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-shadow-map-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 Shadow Map Resolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-depth-bias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 Depth Bias
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#26-pcf-percentage-closer-filtering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 PCF — Percentage Closer Filtering
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-shadow-render-passes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Shadow Render Passes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Shadow Render Passes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-shadowpassspec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 ShadowPassSpec
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-shadowpassnode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 ShadowPassNode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-historical-callback-sketch-not-buildable-as-written" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Historical callback sketch — not buildable as written
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-execute-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Execute Phase
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-csm-output-handles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 CSM Output Handles
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-spot-light-shadows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Spot Light Shadows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Spot Light Shadows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-spotshadowdata-gpu-struct" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 SpotShadowData GPU Struct
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-pass-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Pass Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-point-light-shadows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Point Light Shadows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Point Light Shadows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-pointshadowdata-gpu-struct" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 PointShadowData GPU Struct
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-pass-structure-6-draw-calls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Pass Structure — 6 Draw Calls
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-shadow-ecs-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Shadow ECS Components
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Shadow ECS Components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-shadowcastercomponent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 ShadowCasterComponent
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-lightcomponent-shadow-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 LightComponent Shadow Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-shader-integration-lighting-pass-shadow-sampling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Shader Integration — Lighting Pass Shadow Sampling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. Shader Integration — Lighting Pass Shadow Sampling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-descriptor-bindings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 Descriptor Bindings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-csm-cascade-selection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 CSM Cascade Selection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-full-csm-shadow-lookup-with-pcf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 Full CSM Shadow Lookup with PCF
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-cascade-blend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 Cascade Blend
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#75-spot-light-shadow-lookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5 Spot Light Shadow Lookup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#76-point-light-shadow-lookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6 Point Light Shadow Lookup
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-gpu-data-layout-shadowuniformbuffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. GPU Data Layout — ShadowUniformBuffer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-rendergraph-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. RenderGraph Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. RenderGraph Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#91-pass-ordering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 Pass Ordering
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#92-registration-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 Registration Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#93-texture-lifetime" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 Texture Lifetime
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-shadow-quality-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Shadow Quality Settings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-file-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. File Layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-deliverables-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Deliverables Checklist
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/JeanPhilippeKernel/RendererEngine/edit/develop/docs/design/future-plan/shadows.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="zengine-shadow-mapping">ZEngine — Shadow Mapping<a class="headerlink" href="#zengine-shadow-mapping" title="Permanent link">&para;</a></h1>
+<p><strong>Priority:</strong> P2 — Required for visual quality in any 3D game
+<strong>Status:</strong> Design — no directional, spot, or point shadow-map implementation is currently registered in the renderer.
+<strong>Depends on:</strong> <code>gpu-allocator-rearchitecture.md</code>, <code>per-frame-upload-heap.md</code>, <code>actor-ecs-architecture.md</code> (LightComponent), <code>vfs-design.md</code> (Ticket 1)
+<strong>Blocks:</strong> Visual quality, night/indoor scenes</p>
+<blockquote>
+<p><strong>Current implementation correction:</strong> the v1/v2 tables and callback code below are target-state design, not shipped shadow functionality. The current renderer has no CSM, spot, or point shadow pass.</p>
+<p><strong>RenderGraph API correction:</strong> callback snippets in this design use a retired
+Setup/Compile form. Preserve their resource and pipeline requirements, but implement
+them with the current Register, pipeline-description/query, Prepare, Execute, and
+optional RecordDraw lifecycle in render-graph-integration.md.</p>
+</blockquote>
+<p><strong>Goal</strong>: Implement a multi-technique shadow system for ZEngine that covers the three
+primary light types (directional, spot, point) using classical depth-map shadow techniques
+in v1, with an architecture that accommodates PCSS, VSM, and ray-traced shadows in v2.
+The implementation follows ZEngine conventions: no <code>new</code>/<code>delete</code>, no exceptions, no RTTI,
+all GPU resources managed through <code>RenderGraph</code> resource declarations and the RRM, and all
+CPU-side data owned by <code>ArenaAllocator</code>-backed containers.</p>
+<hr />
+<h2 id="1-shadow-techniques-overview">1. Shadow Techniques Overview<a class="headerlink" href="#1-shadow-techniques-overview" title="Permanent link">&para;</a></h2>
+<h3 id="v1-target">v1 — Target<a class="headerlink" href="#v1-target" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Technique</th>
+<th>Light Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cascaded Shadow Maps (CSM)</td>
+<td>Directional</td>
+<td>4 cascades, PCF 3×3</td>
+</tr>
+<tr>
+<td>Single 2D Shadow Map</td>
+<td>Spot</td>
+<td>1 map per caster, capped at 4</td>
+</tr>
+<tr>
+<td>Cube Shadow Map</td>
+<td>Point</td>
+<td>6 faces per caster, capped at 2</td>
+</tr>
+</tbody>
+</table>
+<p>All v1 shadow maps use <code>VK_FORMAT_D32_SFLOAT</code>. PCF (Percentage Closer Filtering) with a
+3×3 Poisson disk kernel is applied in the main lighting pass shader. Depth bias (constant
++ slope-scaled) is configured per-cascade and per-light-type to eliminate self-shadowing
+artifacts without peter-panning.</p>
+<h3 id="v2-deferred">v2 — Deferred<a class="headerlink" href="#v2-deferred" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Technique</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PCSS (Percentage Closer Soft Shadows)</td>
+<td>Variable-radius PCF based on blocker distance; requires a blocker search pass before the PCF gather</td>
+</tr>
+<tr>
+<td>VSM (Variance Shadow Maps)</td>
+<td>Stores <code>depth</code> and <code>depth²</code>; allows Gaussian blur on the shadow map; eliminates hard-coded kernel size</td>
+</tr>
+<tr>
+<td>Ray-traced shadows</td>
+<td>Via <code>VK_KHR_ray_tracing_pipeline</code>; returns binary or soft shadows per-pixel from TLAS traversal; no depth maps needed</td>
+</tr>
+<tr>
+<td>Exponential Shadow Maps (ESM)</td>
+<td>Alternative to VSM; single channel, very fast on mobile</td>
+</tr>
+</tbody>
+</table>
+<p>v2 techniques require either additional render passes (PCSS blocker pass, VSM blur pass)
+or hardware ray-tracing support. They are out of scope for v1 but the architecture must
+not preclude them: shadow map textures are accessed by handle, and the lighting pass
+selects the sampling method via a specialization constant, so switching from PCF to PCSS
+is a shader-level change that does not alter the C++ pass structure.</p>
+<hr />
+<h2 id="2-cascaded-shadow-maps-csm-for-directional-lights">2. Cascaded Shadow Maps (CSM) for Directional Lights<a class="headerlink" href="#2-cascaded-shadow-maps-csm-for-directional-lights" title="Permanent link">&para;</a></h2>
+<h3 id="21-theory">2.1 Theory<a class="headerlink" href="#21-theory" title="Permanent link">&para;</a></h3>
+<p>A single shadow map for a directional light covering the entire view frustum wastes
+texel resolution on distant geometry and under-samples objects near the camera. CSM
+solves this by splitting the camera frustum into N sub-frusta (cascades), each covered by
+its own depth map rendered from the light's perspective. The nearest cascade gets the
+highest texel density; the farthest gets the lowest.</p>
+<p>ZEngine v1 uses <strong>N = 4</strong> cascades by default (configurable via <code>ShadowQualityPreset</code>).</p>
+<h3 id="22-cascade-split-scheme">2.2 Cascade Split Scheme<a class="headerlink" href="#22-cascade-split-scheme" title="Permanent link">&para;</a></h3>
+<p>ZEngine uses the <strong>practical split scheme</strong>, a weighted blend of the uniform (linear) and
+logarithmic schemes:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>split_i = lambda * near * (far / near)^(i / N)
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>        + (1 - lambda) * (near + (far - near) * (i / N))
+</code></pre></div>
+<p>where <code>lambda = 0.7</code> is the blend factor. A value of 1.0 gives pure logarithmic splits
+(optimal for scenes with large depth range), while 0.0 gives uniform splits (better for
+tight depth ranges). The blend at 0.7 is a good default for outdoor environments.</p>
+<p>The split depths are stored in view space (positive Z, camera looks along +Z) and
+compared against the fragment's depth during shadow lookup.</p>
+<h3 id="23-csmdata-gpu-struct">2.3 CSMData GPU Struct<a class="headerlink" href="#23-csmdata-gpu-struct" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// ZEngine/Rendering/Shadows/ShadowData.h</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstdint&gt;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"Core/Maths/Mat4f.h"</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Rendering</span><span class="o">::</span><span class="nn">Shadows</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">CascadeData</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Maths</span><span class="o">::</span><span class="n">Mat4f</span><span class="w"> </span><span class="n">LightSpaceMatrix</span><span class="p">;</span><span class="w"> </span><span class="c1">// world → light-clip for this cascade</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">        </span><span class="kt">float</span><span class="w">              </span><span class="n">SplitDepth</span><span class="p">;</span><span class="w">       </span><span class="c1">// view-space far plane of this cascade</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">        </span><span class="kt">float</span><span class="w">              </span><span class="n">Padding</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span><span class="w">       </span><span class="c1">// std140 alignment to 16 bytes</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="c1">// sizeof(CascadeData) == 80 bytes (64 + 4 + 12)</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">CSMData</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">        </span><span class="n">CascadeData</span><span class="w"> </span><span class="n">Cascades</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w">     </span><span class="c1">// indexed [0] = nearest, [3] = farthest</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w">    </span><span class="n">CascadeCount</span><span class="p">;</span><span class="w">    </span><span class="c1">// 1–4; matches ShadowQualityPreset</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">        </span><span class="kt">float</span><span class="w">       </span><span class="n">Padding</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span><span class="w">      </span><span class="c1">// pad to 16-byte boundary</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">    </span><span class="c1">// sizeof(CSMData) == 80*4 + 16 == 336 bytes</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="p">}</span><span class="w"> </span><span class="c1">// namespace ZEngine::Rendering::Shadows</span>
+</code></pre></div>
+<p><code>LightSpaceMatrix</code> is the product <code>LightProj * LightView</code>. It transforms a world-space
+position into the NDC of the cascade's depth map. In GLSL, the texture coordinate is
+derived as:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kt">vec4</span><span class="w"> </span><span class="n">shadowCoord</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cascade</span><span class="p">.</span><span class="n">LightSpaceMatrix</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">worldPos</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">shadowCoord</span><span class="p">.</span><span class="n">xyz</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">w</span><span class="p">;</span><span class="w">          </span><span class="c1">// perspective divide (orthographic → no-op)</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">shadowCoord</span><span class="p">.</span><span class="n">xy</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">xy</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5</span><span class="p">;</span><span class="w"> </span><span class="c1">// NDC to UV [0,1]</span>
+</code></pre></div>
+<h3 id="24-shadow-map-resolution">2.4 Shadow Map Resolution<a class="headerlink" href="#24-shadow-map-resolution" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Cascade</th>
+<th>Default Resolution</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>2048 × 2048</td>
+<td>Near objects, highest quality</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2048 × 2048</td>
+<td>Mid-range</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2048 × 2048</td>
+<td>Far range</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2048 × 2048</td>
+<td>Horizon</td>
+</tr>
+</tbody>
+</table>
+<p>All cascades use the same resolution by default for simplicity in the descriptor layout.
+Resolution is controlled by <code>ShadowQualityPreset</code> (see section 10).</p>
+<h3 id="25-depth-bias">2.5 Depth Bias<a class="headerlink" href="#25-depth-bias" title="Permanent link">&para;</a></h3>
+<p>Self-shadowing (shadow acne) is eliminated by applying a depth bias during the shadow
+map comparison. ZEngine applies both a constant bias and a slope-scaled bias:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">struct</span><span class="w"> </span><span class="nc">CascadeBiasParams</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">ConstantBias</span><span class="p">;</span><span class="w"> </span><span class="c1">// added directly to stored depth</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">SlopeBias</span><span class="p">;</span><span class="w">    </span><span class="c1">// multiplied by the rate-of-depth-change (dz/dx, dz/dy)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="p">};</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1">// Default values (tuned for 2048×2048 cascades):</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">constexpr</span><span class="w"> </span><span class="n">CascadeBiasParams</span><span class="w"> </span><span class="n">kDefaultCascadeBias</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="mf">0.005f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.5f</span><span class="w"> </span><span class="p">},</span><span class="w">  </span><span class="c1">// cascade 0 — near, small bias needed</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="mf">0.005f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.5f</span><span class="w"> </span><span class="p">},</span><span class="w">  </span><span class="c1">// cascade 1</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="mf">0.008f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0f</span><span class="w"> </span><span class="p">},</span><span class="w">  </span><span class="c1">// cascade 2 — larger texels, slightly more bias</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="mf">0.010f</span><span class="p">,</span><span class="w"> </span><span class="mf">2.5f</span><span class="w"> </span><span class="p">},</span><span class="w">  </span><span class="c1">// cascade 3 — largest texels</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="p">};</span>
+</code></pre></div>
+<p>In Vulkan the bias is applied via <code>VkPipelineRasterizationStateCreateInfo</code>:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">rasterInfo</span><span class="p">.</span><span class="n">depthBiasEnable</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="n">VK_TRUE</span><span class="p">;</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">rasterInfo</span><span class="p">.</span><span class="n">depthBiasConstantFactor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bias</span><span class="p">.</span><span class="n">ConstantBias</span><span class="p">;</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">rasterInfo</span><span class="p">.</span><span class="n">depthBiasSlopeFactor</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">bias</span><span class="p">.</span><span class="n">SlopeBias</span><span class="p">;</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">rasterInfo</span><span class="p">.</span><span class="n">depthBiasClamp</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span>
+</code></pre></div></p>
+<h3 id="26-pcf-percentage-closer-filtering">2.6 PCF — Percentage Closer Filtering<a class="headerlink" href="#26-pcf-percentage-closer-filtering" title="Permanent link">&para;</a></h3>
+<p>The main lighting pass samples the shadow map using a <strong>3×3 Poisson disk</strong> kernel. This
+produces smooth shadow edges without the hard aliasing of a single sample.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// 9-sample Poisson disk (radius scaled to shadow map texel size)</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">const</span><span class="w"> </span><span class="kt">vec2</span><span class="w"> </span><span class="n">kPoissonDisk</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec2</span><span class="p">[](</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="kt">vec2</span><span class="p">(</span><span class="w"> </span><span class="mf">0.000</span><span class="p">,</span><span class="w">  </span><span class="mf">0.000</span><span class="p">),</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="kt">vec2</span><span class="p">(</span><span class="w"> </span><span class="mf">0.527</span><span class="p">,</span><span class="w">  </span><span class="mf">0.153</span><span class="p">),</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="kt">vec2</span><span class="p">(</span><span class="o">-</span><span class="mf">0.527</span><span class="p">,</span><span class="w">  </span><span class="mf">0.153</span><span class="p">),</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="kt">vec2</span><span class="p">(</span><span class="w"> </span><span class="mf">0.000</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">0.620</span><span class="p">),</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">    </span><span class="kt">vec2</span><span class="p">(</span><span class="w"> </span><span class="mf">0.834</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">0.480</span><span class="p">),</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="w">    </span><span class="kt">vec2</span><span class="p">(</span><span class="o">-</span><span class="mf">0.834</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">0.480</span><span class="p">),</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="kt">vec2</span><span class="p">(</span><span class="w"> </span><span class="mf">0.361</span><span class="p">,</span><span class="w">  </span><span class="mf">0.860</span><span class="p">),</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="kt">vec2</span><span class="p">(</span><span class="o">-</span><span class="mf">0.361</span><span class="p">,</span><span class="w">  </span><span class="mf">0.860</span><span class="p">),</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">    </span><span class="kt">vec2</span><span class="p">(</span><span class="w"> </span><span class="mf">0.000</span><span class="p">,</span><span class="w">  </span><span class="mf">1.000</span><span class="p">)</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="p">);</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="kt">float</span><span class="w"> </span><span class="n">SampleShadowPCF</span><span class="p">(</span><span class="kt">sampler2DShadow</span><span class="w"> </span><span class="n">shadowMap</span><span class="p">,</span><span class="w"> </span><span class="kt">vec3</span><span class="w"> </span><span class="n">shadowCoord</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">texelSize</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">shadow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mo">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">9</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">        </span><span class="n">shadow</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">shadowMap</span><span class="p">,</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="w">            </span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">xy</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">kPoissonDisk</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">texelSize</span><span class="p">,</span>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">            </span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">z</span>
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="w">        </span><span class="p">));</span>
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">shadow</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">9.0</span><span class="p">;</span><span class="w"> </span><span class="c1">// 1.0 = fully lit, 0.0 = fully shadowed</span>
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="p">}</span>
+</code></pre></div>
+<p><code>sampler2DShadow</code> triggers hardware depth comparison so each <code>texture()</code> call returns
+0.0 or 1.0 (with bilinear filtering producing fractional values on supporting hardware).</p>
+<hr />
+<h2 id="3-shadow-render-passes">3. Shadow Render Passes<a class="headerlink" href="#3-shadow-render-passes" title="Permanent link">&para;</a></h2>
+<h3 id="31-shadowpassspec">3.1 ShadowPassSpec<a class="headerlink" href="#31-shadowpassspec" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">// ZEngine/Rendering/Shadows/ShadowPassSpec.h</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstdint&gt;</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vulkan/vulkan.h&gt;</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"Core/Maths/Vec4f.h"</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Rendering</span><span class="o">::</span><span class="nn">Shadows</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">ShadowPassSpec</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w">         </span><span class="n">Width</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="mi">2048</span><span class="p">;</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w">         </span><span class="n">Height</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="mi">2048</span><span class="p">;</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">        </span><span class="n">VkFormat</span><span class="w">         </span><span class="n">DepthFormat</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">VK_FORMAT_D32_SFLOAT</span><span class="p">;</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">        </span><span class="kt">float</span><span class="w">            </span><span class="n">ConstantBias</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mf">0.005f</span><span class="p">;</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">        </span><span class="kt">float</span><span class="w">            </span><span class="n">SlopeBias</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="mf">1.5f</span><span class="p">;</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">        </span><span class="kt">float</span><span class="w">            </span><span class="n">BiasClamp</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0f</span><span class="p">;</span>
+<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w">         </span><span class="n">CascadeIndex</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">     </span><span class="c1">// 0-3 for CSM; 0 for spot/point face</span>
+<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="w">        </span><span class="kt">bool</span><span class="w">             </span><span class="n">EnablePCF</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>
+<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="p">}</span><span class="w"> </span><span class="c1">// namespace ZEngine::Rendering::Shadows</span>
+</code></pre></div>
+<h3 id="32-shadowpassnode">3.2 ShadowPassNode<a class="headerlink" href="#32-shadowpassnode" title="Permanent link">&para;</a></h3>
+<p>Each cascade (and each spot / point-face) is rendered by a dedicated <code>ShadowPassNode</code>
+that implements <code>IRenderGraphCallbackPass</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// ZEngine/Rendering/Shadows/ShadowPassNode.h</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"Rendering/RenderGraph/IRenderGraphCallbackPass.h"</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"Rendering/Shadows/ShadowPassSpec.h"</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"Rendering/Textures/TextureHandle.h"</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"ECS/Scene.h"</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"Core/Maths/Mat4f.h"</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Rendering</span><span class="o">::</span><span class="nn">Shadows</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">ShadowPassNode</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">IRenderGraphCallbackPass</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="w">    </span><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">        </span><span class="k">explicit</span><span class="w"> </span><span class="n">ShadowPassNode</span><span class="p">(</span>
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="n">ShadowPassSpec</span><span class="o">&amp;</span><span class="w">          </span><span class="n">spec</span><span class="p">,</span>
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="n">Core</span><span class="o">::</span><span class="n">Maths</span><span class="o">::</span><span class="n">Mat4f</span><span class="o">&amp;</span><span class="w">      </span><span class="n">lightSpaceMatrix</span><span class="p">,</span>
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="w">            </span><span class="n">ECS</span><span class="o">::</span><span class="n">Scene</span><span class="o">*</span><span class="w">                    </span><span class="n">scene</span>
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="w">        </span><span class="p">);</span>
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>
+<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="w">        </span><span class="c1">// IRenderGraphCallbackPass</span>
+<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">Setup</span><span class="p">(</span><span class="n">RenderGraphResourceBuilder</span><span class="o">&amp;</span><span class="w"> </span><span class="n">builder</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="p">;</span>
+<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">Execute</span><span class="p">(</span><span class="n">RenderGraphExecuteContext</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ctx</span><span class="p">)</span><span class="w">    </span><span class="k">override</span><span class="p">;</span>
+<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>
+<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="w">        </span><span class="p">[[</span><span class="na">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="n">Rendering</span><span class="o">::</span><span class="n">Textures</span><span class="o">::</span><span class="n">TextureHandle</span><span class="w"> </span><span class="n">GetDepthOutput</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a>
+<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a><span class="w">    </span><span class="k">private</span><span class="o">:</span>
+<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a><span class="w">        </span><span class="n">ShadowPassSpec</span><span class="w">                    </span><span class="n">m_Spec</span><span class="p">;</span>
+<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Maths</span><span class="o">::</span><span class="n">Mat4f</span><span class="w">                </span><span class="n">m_LightSpaceMatrix</span><span class="p">;</span>
+<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a><span class="w">        </span><span class="n">ECS</span><span class="o">::</span><span class="n">Scene</span><span class="o">*</span><span class="w">                       </span><span class="n">m_Scene</span><span class="p">;</span>
+<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="w">        </span><span class="n">Rendering</span><span class="o">::</span><span class="n">Textures</span><span class="o">::</span><span class="n">TextureHandle</span><span class="w"> </span><span class="n">m_DepthOutput</span><span class="p">;</span>
+<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a>
+<a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a><span class="p">}</span><span class="w"> </span><span class="c1">// namespace ZEngine::Rendering::Shadows</span>
+</code></pre></div>
+<h3 id="33-historical-callback-sketch-not-buildable-as-written">3.3 Historical callback sketch — not buildable as written<a class="headerlink" href="#33-historical-callback-sketch-not-buildable-as-written" title="Permanent link">&para;</a></h3>
+<p>During <code>Setup</code>, the pass declares its output texture as a <code>RenderGraph</code> resource so the
+graph can allocate the Vulkan image and schedule it in the correct barrier state before
+<code>Execute</code> runs:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">ShadowPassNode::Setup</span><span class="p">(</span><span class="n">RenderGraphResourceBuilder</span><span class="o">&amp;</span><span class="w"> </span><span class="n">builder</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">    </span><span class="n">Rendering</span><span class="o">::</span><span class="n">Specifications</span><span class="o">::</span><span class="n">TextureSpecification</span><span class="w"> </span><span class="n">depthSpec</span><span class="p">{};</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="n">depthSpec</span><span class="p">.</span><span class="n">Width</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">m_Spec</span><span class="p">.</span><span class="n">Width</span><span class="p">;</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="n">depthSpec</span><span class="p">.</span><span class="n">Height</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">m_Spec</span><span class="p">.</span><span class="n">Height</span><span class="p">;</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="n">depthSpec</span><span class="p">.</span><span class="n">Format</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">m_Spec</span><span class="p">.</span><span class="n">DepthFormat</span><span class="p">;</span><span class="w">       </span><span class="c1">// VK_FORMAT_D32_SFLOAT</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">    </span><span class="n">depthSpec</span><span class="p">.</span><span class="n">UsageFlags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">                         </span><span class="o">|</span><span class="w"> </span><span class="n">VK_IMAGE_USAGE_SAMPLED_BIT</span><span class="p">;</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">    </span><span class="n">depthSpec</span><span class="p">.</span><span class="n">SampleCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VK_SAMPLE_COUNT_1_BIT</span><span class="p">;</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="w">    </span><span class="n">depthSpec</span><span class="p">.</span><span class="n">MipLevels</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="w">    </span><span class="n">depthSpec</span><span class="p">.</span><span class="n">Layers</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="w">    </span><span class="n">m_DepthOutput</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">CreateTexture</span><span class="p">(</span><span class="s">"ShadowDepth"</span><span class="p">,</span><span class="w"> </span><span class="n">depthSpec</span><span class="p">);</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">    </span><span class="n">builder</span><span class="p">.</span><span class="n">WriteDepthAttachment</span><span class="p">(</span><span class="n">m_DepthOutput</span><span class="p">);</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="34-execute-phase">3.4 Execute Phase<a class="headerlink" href="#34-execute-phase" title="Permanent link">&para;</a></h3>
+<p>During <code>Execute</code>, the pass frustum-culls the scene against the cascade's light-space
+frustum and renders all opaque meshes with a minimal depth-only vertex shader:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">ShadowPassNode::Execute</span><span class="p">(</span><span class="n">RenderGraphExecuteContext</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ctx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="c1">// Bind shadow render pipeline (depth-only, no fragment shader)</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="n">ctx</span><span class="p">.</span><span class="n">BindPipeline</span><span class="p">(</span><span class="n">ctx</span><span class="p">.</span><span class="n">GetShadowDepthPipeline</span><span class="p">());</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="c1">// Push light-space matrix as push constant</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">    </span><span class="n">ctx</span><span class="p">.</span><span class="n">PushConstants</span><span class="p">(</span><span class="n">m_LightSpaceMatrix</span><span class="p">);</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">    </span><span class="c1">// Iterate scene; frustum cull against this cascade's light frustum</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">    </span><span class="n">m_Scene</span><span class="o">-&gt;</span><span class="n">ForEachEntity</span><span class="o">&lt;</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">        </span><span class="n">ECS</span><span class="o">::</span><span class="n">Components</span><span class="o">::</span><span class="n">TransformComponent</span><span class="p">,</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">        </span><span class="n">ECS</span><span class="o">::</span><span class="n">Components</span><span class="o">::</span><span class="n">MeshComponent</span><span class="p">,</span>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">        </span><span class="n">ECS</span><span class="o">::</span><span class="n">Components</span><span class="o">::</span><span class="n">ShadowCasterComponent</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">    </span><span class="o">&gt;</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">EntityID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="w">          </span><span class="k">const</span><span class="w"> </span><span class="n">ECS</span><span class="o">::</span><span class="n">Components</span><span class="o">::</span><span class="n">TransformComponent</span><span class="o">&amp;</span><span class="w"> </span><span class="n">transform</span><span class="p">,</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="w">          </span><span class="k">const</span><span class="w"> </span><span class="n">ECS</span><span class="o">::</span><span class="n">Components</span><span class="o">::</span><span class="n">MeshComponent</span><span class="o">&amp;</span><span class="w"> </span><span class="n">mesh</span><span class="p">,</span>
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="w">          </span><span class="k">const</span><span class="w"> </span><span class="n">ECS</span><span class="o">::</span><span class="n">Components</span><span class="o">::</span><span class="n">ShadowCasterComponent</span><span class="o">&amp;</span><span class="w"> </span><span class="n">shadow</span><span class="p">)</span>
+<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">shadow</span><span class="p">.</span><span class="n">CastShadow</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">FrustumCull</span><span class="p">(</span><span class="n">m_LightFrustum</span><span class="p">,</span><span class="w"> </span><span class="n">transform</span><span class="p">,</span><span class="w"> </span><span class="n">mesh</span><span class="p">.</span><span class="n">BoundingBox</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a><span class="w">        </span><span class="n">ctx</span><span class="p">.</span><span class="n">DrawMesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span><span class="w"> </span><span class="n">transform</span><span class="p">.</span><span class="n">WorldMatrix</span><span class="p">);</span>
+<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a><span class="w">    </span><span class="p">});</span>
+<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a><span class="p">}</span>
+</code></pre></div>
+<p>The pipeline for shadow passes has:
+- No color attachments (<code>colorAttachmentCount = 0</code>)
+- Depth write enabled
+- Front-face culling to reduce peter-panning
+- Depth bias configured from <code>ShadowPassSpec</code></p>
+<p>The vertex shader is a minimal two-instruction shader:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">// shadow_depth.vert</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">layout</span><span class="p">(</span><span class="n">push_constant</span><span class="p">)</span><span class="w"> </span><span class="k">uniform</span><span class="w"> </span><span class="n">PC</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kt">mat4</span><span class="w"> </span><span class="n">LightSpaceMatrix</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="n">pc</span><span class="p">;</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">layout</span><span class="p">(</span><span class="n">location</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mo">0</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="kt">vec3</span><span class="w"> </span><span class="n">inPosition</span><span class="p">;</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="kt">void</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">    </span><span class="nb">gl_Position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pc</span><span class="p">.</span><span class="n">LightSpaceMatrix</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ubo</span><span class="p">.</span><span class="n">ModelMatrix</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">inPosition</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="p">}</span>
+</code></pre></div></p>
+<p>No fragment shader is bound; the rasterizer writes depth automatically.</p>
+<h3 id="35-csm-output-handles">3.5 CSM Output Handles<a class="headerlink" href="#35-csm-output-handles" title="Permanent link">&para;</a></h3>
+<p>The CSM system exposes four shadow map handles for consumption by the lighting pass:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">struct</span><span class="w"> </span><span class="nc">CSMPassOutput</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">    </span><span class="n">Rendering</span><span class="o">::</span><span class="n">Textures</span><span class="o">::</span><span class="n">TextureHandle</span><span class="w"> </span><span class="n">ShadowMap</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w"> </span><span class="c1">// one per cascade</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="p">};</span>
+</code></pre></div>
+<hr />
+<h2 id="4-spot-light-shadows">4. Spot Light Shadows<a class="headerlink" href="#4-spot-light-shadows" title="Permanent link">&para;</a></h2>
+<h3 id="41-overview">4.1 Overview<a class="headerlink" href="#41-overview" title="Permanent link">&para;</a></h3>
+<p>Each shadow-casting spot light uses a single <strong>perspective</strong> depth map. The light's
+<code>innerAngle</code> and <code>outerAngle</code> define the field of view for the projection matrix.</p>
+<p>Resolution: <strong>1024 × 1024</strong> by default. Cap: <strong>4 simultaneous spot light shadows</strong> in v1.
+If more than 4 spot lights with <code>ShadowCasterComponent::CastShadow = true</code> exist in the
+scene, the 4 closest to the camera are selected each frame.</p>
+<h3 id="42-spotshadowdata-gpu-struct">4.2 SpotShadowData GPU Struct<a class="headerlink" href="#42-spotshadowdata-gpu-struct" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1">// ZEngine/Rendering/Shadows/ShadowData.h (continued)</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Rendering</span><span class="o">::</span><span class="nn">Shadows</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">SpotShadowData</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Maths</span><span class="o">::</span><span class="n">Mat4f</span><span class="w"> </span><span class="n">LightSpaceMatrix</span><span class="p">;</span><span class="w"> </span><span class="c1">// perspective proj * view from spot origin</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">        </span><span class="kt">float</span><span class="w">              </span><span class="n">NearPlane</span><span class="p">;</span><span class="w">        </span><span class="c1">// typically 0.1</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">        </span><span class="kt">float</span><span class="w">              </span><span class="n">FarPlane</span><span class="p">;</span><span class="w">         </span><span class="c1">// spot light range</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">        </span><span class="kt">float</span><span class="w">              </span><span class="n">Padding</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span><span class="w">       </span><span class="c1">// std140 alignment</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">    </span><span class="c1">// sizeof(SpotShadowData) == 80 bytes</span>
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="p">}</span><span class="w"> </span><span class="c1">// namespace ZEngine::Rendering::Shadows</span>
+</code></pre></div>
+<p>The projection matrix for a spot light is built as:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kt">float</span><span class="w"> </span><span class="n">fovY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0f</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">spotLight</span><span class="p">.</span><span class="n">OuterAngle</span><span class="p">;</span><span class="w"> </span><span class="c1">// full cone angle</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">Core</span><span class="o">::</span><span class="n">Maths</span><span class="o">::</span><span class="n">Mat4f</span><span class="w"> </span><span class="n">proj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Core</span><span class="o">::</span><span class="n">Maths</span><span class="o">::</span><span class="n">Mat4f</span><span class="o">::</span><span class="n">Perspective</span><span class="p">(</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="n">fovY</span><span class="p">,</span><span class="w"> </span><span class="cm">/*aspect*/</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="n">nearPlane</span><span class="p">,</span><span class="w"> </span><span class="n">farPlane</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="p">);</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="c1">// Vulkan Y-flip: proj[1][1] *= -1;</span>
+</code></pre></div>
+<h3 id="43-pass-structure">4.3 Pass Structure<a class="headerlink" href="#43-pass-structure" title="Permanent link">&para;</a></h3>
+<p>One <code>ShadowPassNode</code> is instantiated per active shadow-casting spot light each frame.
+The pass is identical to the CSM variant except:
+- Resolution: <code>1024 × 1024</code>
+- Light-space matrix: perspective, not orthographic
+- Bias: <code>ConstantBias = 0.005f</code>, <code>SlopeBias = 2.0f</code> (perspective maps are more sensitive
+  to slope bias)</p>
+<hr />
+<h2 id="5-point-light-shadows">5. Point Light Shadows<a class="headerlink" href="#5-point-light-shadows" title="Permanent link">&para;</a></h2>
+<h3 id="51-overview">5.1 Overview<a class="headerlink" href="#51-overview" title="Permanent link">&para;</a></h3>
+<p>Point lights cast shadows in all directions. The standard technique is a <strong>cube shadow
+map</strong>: render the scene six times, once for each face of a virtual cube centered on the
+light, and store depth into a <code>VkImageViewType::VK_IMAGE_VIEW_TYPE_CUBE</code> image.</p>
+<p>Resolution: <strong>512 × 512</strong> per face. Cap: <strong>2 simultaneous point light shadow casters</strong>
+in v1 (12 render passes total at most). If more than 2 point lights with
+<code>CastShadow = true</code> exist, the 2 closest to the camera are selected.</p>
+<h3 id="52-pointshadowdata-gpu-struct">5.2 PointShadowData GPU Struct<a class="headerlink" href="#52-pointshadowdata-gpu-struct" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1">// ZEngine/Rendering/Shadows/ShadowData.h (continued)</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Rendering</span><span class="o">::</span><span class="nn">Shadows</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">PointShadowData</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Maths</span><span class="o">::</span><span class="n">Mat4f</span><span class="w"> </span><span class="n">FaceMatrices</span><span class="p">[</span><span class="mi">6</span><span class="p">];</span><span class="w">  </span><span class="c1">// proj * view for each cube face</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Maths</span><span class="o">::</span><span class="n">Vec3f</span><span class="w"> </span><span class="n">LightPosition</span><span class="p">;</span><span class="w">    </span><span class="c1">// world-space light origin</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">        </span><span class="kt">float</span><span class="w">              </span><span class="n">FarPlane</span><span class="p">;</span><span class="w">         </span><span class="c1">// used for depth linearisation in shader</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">        </span><span class="kt">float</span><span class="w">              </span><span class="n">Padding</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span><span class="w">       </span><span class="c1">// Vec3f + float = 16 bytes, already aligned</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="w">    </span><span class="c1">// sizeof(PointShadowData) == 64*6 + 16 == 400 bytes</span>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="p">}</span><span class="w"> </span><span class="c1">// namespace ZEngine::Rendering::Shadows</span>
+</code></pre></div>
+<p>static_assert(sizeof(PointShadowData) % 16 == 0,
+    "PointShadowData must be 16-byte aligned for std140 UBO layout");
+static_assert(offsetof(PointShadowData, FaceMatrices) == 0,
+    "FaceMatrices must be at the start of PointShadowData for correct GPU layout");</p>
+<p>The 6 view matrices correspond to the standard cube-map face directions:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>+X: lookAt(pos, pos + Right,   -Up)
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>-X: lookAt(pos, pos - Right,   -Up)
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>+Y: lookAt(pos, pos + Up,     +Forward)
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>-Y: lookAt(pos, pos - Up,    -Forward)
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>+Z: lookAt(pos, pos + Forward, -Up)
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>-Z: lookAt(pos, pos - Forward, -Up)
+</code></pre></div></p>
+<p>All 6 faces share the same 90° FOV perspective projection with aspect = 1.0.</p>
+<h3 id="53-pass-structure-6-draw-calls">5.3 Pass Structure — 6 Draw Calls<a class="headerlink" href="#53-pass-structure-6-draw-calls" title="Permanent link">&para;</a></h3>
+<p>In v1, ZEngine renders 6 separate <code>ShadowPassNode</code> instances per point light (one per
+face), relying on multiview rendering or layer-targeted render passes via
+<code>VkRenderingAttachmentInfo::imageView</code> pointing at the appropriate cube face layer.</p>
+<p>A geometry shader alternative (broadcast one draw call to 6 layers via <code>gl_Layer</code>) is
+noted as a v2 optimisation; it requires <code>VK_EXT_shader_viewport_index_layer</code> and
+complicates the depth-only pipeline setup.</p>
+<p>The point shadow pipeline uses <strong>linear depth</strong> instead of clip-space depth to make the
+cube-map lookup distance comparison straightforward in the lighting shader:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1">// point_shadow_depth.frag</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="k">layout</span><span class="p">(</span><span class="n">push_constant</span><span class="p">)</span><span class="w"> </span><span class="k">uniform</span><span class="w"> </span><span class="n">PC</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="kt">vec3</span><span class="w">  </span><span class="n">LightPosition</span><span class="p">;</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">FarPlane</span><span class="p">;</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="p">}</span><span class="w"> </span><span class="n">pc</span><span class="p">;</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="kt">void</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">fragWorldPos</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">pc</span><span class="p">.</span><span class="n">LightPosition</span><span class="p">);</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="w">    </span><span class="nb">gl_FragDepth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dist</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">pc</span><span class="p">.</span><span class="n">FarPlane</span><span class="p">;</span><span class="w"> </span><span class="c1">// normalise to [0,1]</span>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="6-shadow-ecs-components">6. Shadow ECS Components<a class="headerlink" href="#6-shadow-ecs-components" title="Permanent link">&para;</a></h2>
+<p>Two ECS components participate in the shadow system.</p>
+<h3 id="61-shadowcastercomponent">6.1 ShadowCasterComponent<a class="headerlink" href="#61-shadowcastercomponent" title="Permanent link">&para;</a></h3>
+<p>Attached to <strong>mesh entities</strong> that should cast shadows. A mesh without this component
+is invisible to shadow passes.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1">// ZEngine/ECS/Components/ShadowCasterComponent.h</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">ECS</span><span class="o">::</span><span class="nn">Components</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">ShadowCasterComponent</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">        </span><span class="kt">bool</span><span class="w">  </span><span class="n">CastShadow</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">ShadowBias</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">0.005f</span><span class="p">;</span><span class="w"> </span><span class="c1">// per-object constant bias override</span>
+<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">SlopeBias</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mf">1.5f</span><span class="p">;</span><span class="w">   </span><span class="c1">// per-object slope bias override</span>
+<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>
+<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="p">}</span><span class="w"> </span><span class="c1">// namespace ZEngine::ECS::Components</span>
+</code></pre></div>
+<p>Per-object bias overrides allow fine-tuning without touching global defaults. A zero-bias
+object (e.g., a flat plane) would set <code>ShadowBias = 0.001f</code> to prevent shadow acne
+without introducing peter-panning.</p>
+<h3 id="62-lightcomponent-shadow-fields">6.2 LightComponent Shadow Fields<a class="headerlink" href="#62-lightcomponent-shadow-fields" title="Permanent link">&para;</a></h3>
+<p>The existing <code>ECS::Components::LightComponent</code> is extended with shadow fields:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1">// Addition to LightComponent (in actor-ecs-architecture.md)</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">LightShadowSettings</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">    </span><span class="kt">bool</span><span class="w">     </span><span class="n">EnableShadows</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ShadowMapIndex</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">UINT32_MAX</span><span class="p">;</span><span class="w"> </span><span class="c1">// assigned by ShadowSystem, read-only</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">    </span><span class="kt">float</span><span class="w">    </span><span class="n">NearPlane</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1f</span><span class="p">;</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="w">    </span><span class="kt">float</span><span class="w">    </span><span class="n">FarPlane</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="mf">50.0f</span><span class="p">;</span>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="p">};</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="c1">// Added as a field in LightComponent:</span>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="n">LightShadowSettings</span><span class="w"> </span><span class="n">Shadow</span><span class="p">;</span>
+</code></pre></div>
+<p>The <code>ShadowMapIndex</code> field is written by the <code>ShadowSystem</code> during frame setup so that
+the lighting pass can look up the correct <code>SpotShadowData</code> or <code>PointShadowData</code> slot.</p>
+<hr />
+<h2 id="7-shader-integration-lighting-pass-shadow-sampling">7. Shader Integration — Lighting Pass Shadow Sampling<a class="headerlink" href="#7-shader-integration-lighting-pass-shadow-sampling" title="Permanent link">&para;</a></h2>
+<h3 id="71-descriptor-bindings">7.1 Descriptor Bindings<a class="headerlink" href="#71-descriptor-bindings" title="Permanent link">&para;</a></h3>
+<p>The main lighting pass fragment shader receives all shadow data via a single uniform
+buffer and an array of shadow map textures.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1">// Binding layout in lighting.frag</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="k">layout</span><span class="p">(</span><span class="n">set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mo">0</span><span class="p">)</span><span class="w"> </span><span class="k">uniform</span><span class="w"> </span><span class="n">ShadowUBO</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span><span class="c1">// see section 8 for full struct</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">    </span><span class="n">CascadeData</span><span class="w"> </span><span class="n">DirectionalCascades</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">    </span><span class="kt">uint</span><span class="w">        </span><span class="n">CascadeCount</span><span class="p">;</span>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">    </span><span class="c1">// ... spot and point data follow</span>
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="p">}</span><span class="w"> </span><span class="n">shadowUbo</span><span class="p">;</span>
+<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>
+<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="k">layout</span><span class="p">(</span><span class="n">set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">uniform</span><span class="w"> </span><span class="kt">sampler2DShadow</span><span class="w"> </span><span class="n">DirectionalShadowMaps</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="k">layout</span><span class="p">(</span><span class="n">set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">uniform</span><span class="w"> </span><span class="kt">sampler2DShadow</span><span class="w"> </span><span class="n">SpotShadowMaps</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a><span class="k">layout</span><span class="p">(</span><span class="n">set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">binding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="k">uniform</span><span class="w"> </span><span class="kt">samplerCube</span><span class="w">     </span><span class="n">PointShadowMaps</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
+</code></pre></div>
+<h3 id="72-csm-cascade-selection">7.2 CSM Cascade Selection<a class="headerlink" href="#72-csm-cascade-selection" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="kt">int</span><span class="w"> </span><span class="n">GetCascadeIndex</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">viewDepth</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mo">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="kt">int</span><span class="p">(</span><span class="n">shadowUbo</span><span class="p">.</span><span class="n">CascadeCount</span><span class="p">);</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">viewDepth</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">shadowUbo</span><span class="p">.</span><span class="n">DirectionalCascades</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">SplitDepth</span><span class="p">)</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kt">int</span><span class="p">(</span><span class="n">shadowUbo</span><span class="p">.</span><span class="n">CascadeCount</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="73-full-csm-shadow-lookup-with-pcf">7.3 Full CSM Shadow Lookup with PCF<a class="headerlink" href="#73-full-csm-shadow-lookup-with-pcf" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="kt">float</span><span class="w"> </span><span class="n">ComputeDirectionalShadow</span><span class="p">(</span><span class="kt">vec3</span><span class="w"> </span><span class="n">worldPos</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">viewDepth</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="w">    </span><span class="kt">int</span><span class="w">   </span><span class="n">cascadeIdx</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">GetCascadeIndex</span><span class="p">(</span><span class="n">viewDepth</span><span class="p">);</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">    </span><span class="kt">vec4</span><span class="w">  </span><span class="n">shadowCoord</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">shadowUbo</span><span class="p">.</span><span class="n">DirectionalCascades</span><span class="p">[</span><span class="n">cascadeIdx</span><span class="p">].</span><span class="n">LightSpaceMatrix</span>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">                      </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">worldPos</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">    </span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">xyz</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">    </span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">xy</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">xy</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5</span><span class="p">;</span>
+<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>
+<a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a><span class="w">    </span><span class="c1">// Reject fragments outside shadow map bounds</span>
+<a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">z</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">z</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span>
+<a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span>
+<a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a>
+<a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a><span class="w">    </span><span class="c1">// PCF 3x3 Poisson disk</span>
+<a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">texelSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="kt">float</span><span class="p">(</span><span class="n">SHADOW_MAP_RESOLUTION</span><span class="p">);</span>
+<a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">shadow</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+<a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a>
+<a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">vec2</span><span class="w"> </span><span class="n">kPoissonDisk</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">vec2</span><span class="p">[](</span>
+<a id="__codelineno-21-17" name="__codelineno-21-17" href="#__codelineno-21-17"></a><span class="w">        </span><span class="kt">vec2</span><span class="p">(</span><span class="w"> </span><span class="mf">0.000</span><span class="p">,</span><span class="w">  </span><span class="mf">0.000</span><span class="p">),</span><span class="w"> </span><span class="kt">vec2</span><span class="p">(</span><span class="w"> </span><span class="mf">0.527</span><span class="p">,</span><span class="w">  </span><span class="mf">0.153</span><span class="p">),</span><span class="w"> </span><span class="kt">vec2</span><span class="p">(</span><span class="o">-</span><span class="mf">0.527</span><span class="p">,</span><span class="w">  </span><span class="mf">0.153</span><span class="p">),</span>
+<a id="__codelineno-21-18" name="__codelineno-21-18" href="#__codelineno-21-18"></a><span class="w">        </span><span class="kt">vec2</span><span class="p">(</span><span class="w"> </span><span class="mf">0.000</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">0.620</span><span class="p">),</span><span class="w"> </span><span class="kt">vec2</span><span class="p">(</span><span class="w"> </span><span class="mf">0.834</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">0.480</span><span class="p">),</span><span class="w"> </span><span class="kt">vec2</span><span class="p">(</span><span class="o">-</span><span class="mf">0.834</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">0.480</span><span class="p">),</span>
+<a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a><span class="w">        </span><span class="kt">vec2</span><span class="p">(</span><span class="w"> </span><span class="mf">0.361</span><span class="p">,</span><span class="w">  </span><span class="mf">0.860</span><span class="p">),</span><span class="w"> </span><span class="kt">vec2</span><span class="p">(</span><span class="o">-</span><span class="mf">0.361</span><span class="p">,</span><span class="w">  </span><span class="mf">0.860</span><span class="p">),</span><span class="w"> </span><span class="kt">vec2</span><span class="p">(</span><span class="w"> </span><span class="mf">0.000</span><span class="p">,</span><span class="w">  </span><span class="mf">1.000</span><span class="p">)</span>
+<a id="__codelineno-21-20" name="__codelineno-21-20" href="#__codelineno-21-20"></a><span class="w">    </span><span class="p">);</span>
+<a id="__codelineno-21-21" name="__codelineno-21-21" href="#__codelineno-21-21"></a>
+<a id="__codelineno-21-22" name="__codelineno-21-22" href="#__codelineno-21-22"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mo">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">9</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-21-23" name="__codelineno-21-23" href="#__codelineno-21-23"></a><span class="w">        </span><span class="n">shadow</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">DirectionalShadowMaps</span><span class="p">[</span><span class="n">cascadeIdx</span><span class="p">],</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span>
+<a id="__codelineno-21-24" name="__codelineno-21-24" href="#__codelineno-21-24"></a><span class="w">            </span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">xy</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">kPoissonDisk</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">texelSize</span><span class="p">,</span>
+<a id="__codelineno-21-25" name="__codelineno-21-25" href="#__codelineno-21-25"></a><span class="w">            </span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">z</span>
+<a id="__codelineno-21-26" name="__codelineno-21-26" href="#__codelineno-21-26"></a><span class="w">        </span><span class="p">));</span>
+<a id="__codelineno-21-27" name="__codelineno-21-27" href="#__codelineno-21-27"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-21-28" name="__codelineno-21-28" href="#__codelineno-21-28"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">shadow</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">9.0</span><span class="p">;</span>
+<a id="__codelineno-21-29" name="__codelineno-21-29" href="#__codelineno-21-29"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="74-cascade-blend">7.4 Cascade Blend<a class="headerlink" href="#74-cascade-blend" title="Permanent link">&para;</a></h3>
+<p>At cascade boundaries, a 10% overlap zone blends between adjacent cascades to eliminate
+the visible seam where shadow quality transitions:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="kt">float</span><span class="w"> </span><span class="n">blendRange</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span><span class="p">;</span><span class="w"> </span><span class="c1">// 10% of cascade depth range</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="kt">float</span><span class="w"> </span><span class="n">splitDepth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">shadowUbo</span><span class="p">.</span><span class="n">DirectionalCascades</span><span class="p">[</span><span class="n">cascadeIdx</span><span class="p">].</span><span class="n">SplitDepth</span><span class="p">;</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="kt">float</span><span class="w"> </span><span class="n">blendFactor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">smoothstep</span><span class="p">(</span>
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">    </span><span class="n">splitDepth</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">blendRange</span><span class="p">),</span>
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="w">    </span><span class="n">splitDepth</span><span class="p">,</span>
+<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="w">    </span><span class="n">viewDepth</span>
+<a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="p">);</span>
+<a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a>
+<a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">blendFactor</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">cascadeIdx</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="kt">int</span><span class="p">(</span><span class="n">shadowUbo</span><span class="p">.</span><span class="n">CascadeCount</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">shadow1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ComputeCascadeSample</span><span class="p">(</span><span class="n">cascadeIdx</span><span class="p">,</span><span class="w">     </span><span class="n">worldPos</span><span class="p">);</span>
+<a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">shadow2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ComputeCascadeSample</span><span class="p">(</span><span class="n">cascadeIdx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">worldPos</span><span class="p">);</span>
+<a id="__codelineno-22-12" name="__codelineno-22-12" href="#__codelineno-22-12"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">mix</span><span class="p">(</span><span class="n">shadow1</span><span class="p">,</span><span class="w"> </span><span class="n">shadow2</span><span class="p">,</span><span class="w"> </span><span class="n">blendFactor</span><span class="p">);</span>
+<a id="__codelineno-22-13" name="__codelineno-22-13" href="#__codelineno-22-13"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="75-spot-light-shadow-lookup">7.5 Spot Light Shadow Lookup<a class="headerlink" href="#75-spot-light-shadow-lookup" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="kt">float</span><span class="w"> </span><span class="n">ComputeSpotShadow</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">lightIdx</span><span class="p">,</span><span class="w"> </span><span class="kt">vec3</span><span class="w"> </span><span class="n">worldPos</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="w">    </span><span class="n">SpotShadowData</span><span class="w"> </span><span class="n">spot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">shadowUbo</span><span class="p">.</span><span class="n">SpotShadows</span><span class="p">[</span><span class="n">lightIdx</span><span class="p">];</span>
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">    </span><span class="kt">vec4</span><span class="w"> </span><span class="n">shadowCoord</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">spot</span><span class="p">.</span><span class="n">LightSpaceMatrix</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="kt">vec4</span><span class="p">(</span><span class="n">worldPos</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="w">    </span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">xyz</span><span class="w">    </span><span class="o">/=</span><span class="w"> </span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="w">    </span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">xy</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">xy</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5</span><span class="p">;</span>
+<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>
+<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">any</span><span class="p">(</span><span class="n">lessThan</span><span class="p">(</span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">xy</span><span class="p">,</span><span class="w"> </span><span class="kt">vec2</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)))</span><span class="w"> </span><span class="o">||</span>
+<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="w">        </span><span class="n">any</span><span class="p">(</span><span class="n">greaterThan</span><span class="p">(</span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">xy</span><span class="p">,</span><span class="w"> </span><span class="kt">vec2</span><span class="p">(</span><span class="mf">1.0</span><span class="p">))))</span>
+<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span>
+<a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a>
+<a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">texelSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="kt">float</span><span class="p">(</span><span class="n">SPOT_SHADOW_MAP_RESOLUTION</span><span class="p">);</span>
+<a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">shadow</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+<a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mo">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">9</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-23-14" name="__codelineno-23-14" href="#__codelineno-23-14"></a><span class="w">        </span><span class="n">shadow</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">SpotShadowMaps</span><span class="p">[</span><span class="n">lightIdx</span><span class="p">],</span><span class="w"> </span><span class="kt">vec3</span><span class="p">(</span>
+<a id="__codelineno-23-15" name="__codelineno-23-15" href="#__codelineno-23-15"></a><span class="w">            </span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">xy</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">kPoissonDisk</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">texelSize</span><span class="p">,</span>
+<a id="__codelineno-23-16" name="__codelineno-23-16" href="#__codelineno-23-16"></a><span class="w">            </span><span class="n">shadowCoord</span><span class="p">.</span><span class="n">z</span>
+<a id="__codelineno-23-17" name="__codelineno-23-17" href="#__codelineno-23-17"></a><span class="w">        </span><span class="p">));</span>
+<a id="__codelineno-23-18" name="__codelineno-23-18" href="#__codelineno-23-18"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-23-19" name="__codelineno-23-19" href="#__codelineno-23-19"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">shadow</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">9.0</span><span class="p">;</span>
+<a id="__codelineno-23-20" name="__codelineno-23-20" href="#__codelineno-23-20"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="76-point-light-shadow-lookup">7.6 Point Light Shadow Lookup<a class="headerlink" href="#76-point-light-shadow-lookup" title="Permanent link">&para;</a></h3>
+<p>Point light shadows use a <strong>cube map</strong> sampler. The lookup vector is the world-space
+displacement from the light to the fragment. Depth is linearised using the stored far
+plane:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="kt">float</span><span class="w"> </span><span class="n">ComputePointShadow</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">lightIdx</span><span class="p">,</span><span class="w"> </span><span class="kt">vec3</span><span class="w"> </span><span class="n">worldPos</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="w">    </span><span class="n">PointShadowData</span><span class="w"> </span><span class="n">pt</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">shadowUbo</span><span class="p">.</span><span class="n">PointShadows</span><span class="p">[</span><span class="n">lightIdx</span><span class="p">];</span>
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="w">    </span><span class="kt">vec3</span><span class="w">  </span><span class="n">dir</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="n">worldPos</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">pt</span><span class="p">.</span><span class="n">LightPosition</span><span class="p">;</span>
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">currentDepth</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">dir</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">pt</span><span class="p">.</span><span class="n">FarPlane</span><span class="p">;</span>
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>
+<a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="w">    </span><span class="c1">// Simple single-sample lookup (v1; PCF for cube maps is a v2 upgrade)</span>
+<a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">closestDepth</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">texture</span><span class="p">(</span><span class="n">PointShadowMaps</span><span class="p">[</span><span class="n">lightIdx</span><span class="p">],</span><span class="w"> </span><span class="n">dir</span><span class="p">).</span><span class="n">r</span><span class="p">;</span>
+<a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a><span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">bias</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="mf">0.05</span><span class="p">;</span>
+<a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">currentDepth</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">bias</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">closestDepth</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">;</span>
+<a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a><span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="8-gpu-data-layout-shadowuniformbuffer">8. GPU Data Layout — ShadowUniformBuffer<a class="headerlink" href="#8-gpu-data-layout-shadowuniformbuffer" title="Permanent link">&para;</a></h2>
+<p>The full uniform buffer pushed to the lighting pass descriptor set:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="c1">// ZEngine/Rendering/Shadows/ShadowUniformBuffer.h</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">"Rendering/Shadows/ShadowData.h"</span>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Rendering</span><span class="o">::</span><span class="nn">Shadows</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">ShadowUniformBuffer</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="w">        </span><span class="c1">// Directional light (CSM)</span>
+<a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="w">        </span><span class="n">CascadeData</span><span class="w">  </span><span class="n">DirectionalCascades</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w">      </span><span class="c1">// 80 * 4 = 320 bytes</span>
+<a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w">     </span><span class="n">CascadeCount</span><span class="p">;</span><span class="w">                </span><span class="c1">// 4 bytes</span>
+<a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a><span class="w">        </span><span class="kt">float</span><span class="w">        </span><span class="n">DirectionalPadding</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span><span class="w">       </span><span class="c1">// 12 bytes — pad to 16</span>
+<a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a>
+<a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a><span class="w">        </span><span class="c1">// Spot lights</span>
+<a id="__codelineno-25-14" name="__codelineno-25-14" href="#__codelineno-25-14"></a><span class="w">        </span><span class="n">SpotShadowData</span><span class="w"> </span><span class="n">SpotShadows</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w">            </span><span class="c1">// 80 * 4 = 320 bytes</span>
+<a id="__codelineno-25-15" name="__codelineno-25-15" href="#__codelineno-25-15"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w">       </span><span class="n">ActiveSpotShadowCount</span><span class="p">;</span><span class="w">     </span><span class="c1">// 4 bytes</span>
+<a id="__codelineno-25-16" name="__codelineno-25-16" href="#__codelineno-25-16"></a><span class="w">        </span><span class="kt">float</span><span class="w">          </span><span class="n">SpotPadding</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span><span class="w">            </span><span class="c1">// 12 bytes</span>
+<a id="__codelineno-25-17" name="__codelineno-25-17" href="#__codelineno-25-17"></a>
+<a id="__codelineno-25-18" name="__codelineno-25-18" href="#__codelineno-25-18"></a><span class="w">        </span><span class="c1">// Point lights</span>
+<a id="__codelineno-25-19" name="__codelineno-25-19" href="#__codelineno-25-19"></a><span class="w">        </span><span class="n">PointShadowData</span><span class="w"> </span><span class="n">PointShadows</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span><span class="w">          </span><span class="c1">// 400 * 2 = 800 bytes</span>
+<a id="__codelineno-25-20" name="__codelineno-25-20" href="#__codelineno-25-20"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w">        </span><span class="n">ActivePointShadowCount</span><span class="p">;</span><span class="w">   </span><span class="c1">// 4 bytes</span>
+<a id="__codelineno-25-21" name="__codelineno-25-21" href="#__codelineno-25-21"></a><span class="w">        </span><span class="kt">float</span><span class="w">           </span><span class="n">PointPadding</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span><span class="w">          </span><span class="c1">// 12 bytes</span>
+<a id="__codelineno-25-22" name="__codelineno-25-22" href="#__codelineno-25-22"></a>
+<a id="__codelineno-25-23" name="__codelineno-25-23" href="#__codelineno-25-23"></a><span class="w">        </span><span class="c1">// Total: 320 + 16 + 320 + 16 + 800 + 16 = 1488 bytes</span>
+<a id="__codelineno-25-24" name="__codelineno-25-24" href="#__codelineno-25-24"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-25-25" name="__codelineno-25-25" href="#__codelineno-25-25"></a>
+<a id="__codelineno-25-26" name="__codelineno-25-26" href="#__codelineno-25-26"></a><span class="p">}</span><span class="w"> </span><span class="c1">// namespace ZEngine::Rendering::Shadows</span>
+</code></pre></div>
+<p>This buffer is uploaded once per frame via <code>PerFrameUploadHeap::Push</code>. The
+<code>ShadowSystem</code> fills it on the CPU side each frame and pushes it into the current
+frame's heap. The resulting dynamic offset is passed to <code>vkCmdBindDescriptorSets</code> at the
+lighting pass bind point.</p>
+<p>The RRM is not involved in <code>ShadowUniformBuffer</code> upload. The RRM manages static asset
+lifetime (textures, meshes); per-frame CPU-written data always goes through
+<code>PerFrameUploadHeap</code>.</p>
+<hr />
+<h2 id="9-rendergraph-integration">9. RenderGraph Integration<a class="headerlink" href="#9-rendergraph-integration" title="Permanent link">&para;</a></h2>
+<h3 id="91-pass-ordering">9.1 Pass Ordering<a class="headerlink" href="#91-pass-ordering" title="Permanent link">&para;</a></h3>
+<p>Shadow passes are registered in the RenderGraph before the main geometry pass. The graph
+scheduler guarantees execution order via resource dependencies: the shadow map textures
+are declared as outputs of shadow passes and inputs of the lighting pass.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>[ShadowPass CSM 0] ──► ShadowMap[0] ──┐
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>[ShadowPass CSM 1] ──► ShadowMap[1] ──┤
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>[ShadowPass CSM 2] ──► ShadowMap[2] ──┤──► [Lighting Pass]
+<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>[ShadowPass CSM 3] ──► ShadowMap[3] ──┤
+<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>[ShadowPass Spot 0..3] ► SpotMap[0..3]┤
+<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>[ShadowPass Point 0..1]► CubeMap[0..1]┘
+</code></pre></div>
+<h3 id="92-registration-example">9.2 Registration Example<a class="headerlink" href="#92-registration-example" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="c1">// In RenderGraphBuilder (called once on scene load or quality change)</span>
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="kt">void</span><span class="w"> </span><span class="nf">ShadowSystem::RegisterPasses</span><span class="p">(</span><span class="n">RenderGraph</span><span class="o">&amp;</span><span class="w"> </span><span class="n">graph</span><span class="p">,</span><span class="w"> </span><span class="n">ECS</span><span class="o">::</span><span class="n">Scene</span><span class="o">*</span><span class="w"> </span><span class="n">scene</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">    </span><span class="c1">// CSM — directional light</span>
+<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">m_CascadeCount</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="w">        </span><span class="n">ShadowPassSpec</span><span class="w"> </span><span class="n">spec</span><span class="p">{};</span>
+<a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="w">        </span><span class="n">spec</span><span class="p">.</span><span class="n">Width</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="n">m_ShadowResolution</span><span class="p">;</span>
+<a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="w">        </span><span class="n">spec</span><span class="p">.</span><span class="n">Height</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="n">m_ShadowResolution</span><span class="p">;</span>
+<a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a><span class="w">        </span><span class="n">spec</span><span class="p">.</span><span class="n">CascadeIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a>
+<a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="w">        </span><span class="k">auto</span><span class="o">*</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_Arena</span><span class="p">.</span><span class="n">New</span><span class="o">&lt;</span><span class="n">ShadowPassNode</span><span class="o">&gt;</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span><span class="w"> </span><span class="n">m_CSMData</span><span class="p">.</span><span class="n">Cascades</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">LightSpaceMatrix</span><span class="p">,</span><span class="w"> </span><span class="n">scene</span><span class="p">);</span>
+<a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a><span class="w">        </span><span class="n">graph</span><span class="p">.</span><span class="n">AddPass</span><span class="p">(</span><span class="n">node</span><span class="p">);</span>
+<a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a>
+<a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a><span class="w">    </span><span class="c1">// Spot lights</span>
+<a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">spotCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Min</span><span class="p">(</span><span class="n">m_ActiveSpotLights</span><span class="p">.</span><span class="n">Size</span><span class="p">(),</span><span class="w"> </span><span class="kt">uint32_t</span><span class="p">(</span><span class="mi">4</span><span class="p">));</span>
+<a id="__codelineno-27-16" name="__codelineno-27-16" href="#__codelineno-27-16"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">spotCount</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-27-17" name="__codelineno-27-17" href="#__codelineno-27-17"></a><span class="w">        </span><span class="c1">// ... similar registration</span>
+<a id="__codelineno-27-18" name="__codelineno-27-18" href="#__codelineno-27-18"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-27-19" name="__codelineno-27-19" href="#__codelineno-27-19"></a>
+<a id="__codelineno-27-20" name="__codelineno-27-20" href="#__codelineno-27-20"></a><span class="w">    </span><span class="c1">// Point lights</span>
+<a id="__codelineno-27-21" name="__codelineno-27-21" href="#__codelineno-27-21"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ptCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Min</span><span class="p">(</span><span class="n">m_ActivePointLights</span><span class="p">.</span><span class="n">Size</span><span class="p">(),</span><span class="w"> </span><span class="kt">uint32_t</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>
+<a id="__codelineno-27-22" name="__codelineno-27-22" href="#__codelineno-27-22"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ptCount</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-27-23" name="__codelineno-27-23" href="#__codelineno-27-23"></a><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">face</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">face</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">face</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-27-24" name="__codelineno-27-24" href="#__codelineno-27-24"></a><span class="w">            </span><span class="c1">// one pass per cube face</span>
+<a id="__codelineno-27-25" name="__codelineno-27-25" href="#__codelineno-27-25"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-27-26" name="__codelineno-27-26" href="#__codelineno-27-26"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-27-27" name="__codelineno-27-27" href="#__codelineno-27-27"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="93-texture-lifetime">9.3 Texture Lifetime<a class="headerlink" href="#93-texture-lifetime" title="Permanent link">&para;</a></h3>
+<p>Shadow map textures are declared as <strong>transient</strong> resources in the RenderGraph — they are
+valid only within the frame they are produced. They are not retained between frames.
+If the scene has no shadow-casting directional light, the CSM passes are skipped and the
+<code>DirectionalShadowMaps</code> descriptor slots are bound to a 1×1 black depth texture.</p>
+<hr />
+<h2 id="10-shadow-quality-settings">10. Shadow Quality Settings<a class="headerlink" href="#10-shadow-quality-settings" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="c1">// ZEngine/Rendering/Shadows/ShadowQuality.h</span>
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstdint&gt;</span>
+<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>
+<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Rendering</span><span class="o">::</span><span class="nn">Shadows</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a>
+<a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ShadowQualityPreset</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="w">        </span><span class="n">Low</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="c1">// 1 cascade, 512×512 per map</span>
+<a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="w">        </span><span class="n">Medium</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">  </span><span class="c1">// 2 cascades, 1024×1024 per map</span>
+<a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a><span class="w">        </span><span class="n">High</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">  </span><span class="c1">// 4 cascades, 2048×2048 per map  (default)</span>
+<a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a><span class="w">        </span><span class="n">Ultra</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">  </span><span class="c1">// 4 cascades, 4096×4096 per map</span>
+<a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-28-13" name="__codelineno-28-13" href="#__codelineno-28-13"></a>
+<a id="__codelineno-28-14" name="__codelineno-28-14" href="#__codelineno-28-14"></a><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">ShadowQualitySettings</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-28-15" name="__codelineno-28-15" href="#__codelineno-28-15"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">CascadeCount</span><span class="p">;</span>
+<a id="__codelineno-28-16" name="__codelineno-28-16" href="#__codelineno-28-16"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ShadowMapResolution</span><span class="p">;</span>
+<a id="__codelineno-28-17" name="__codelineno-28-17" href="#__codelineno-28-17"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">SpotMapResolution</span><span class="p">;</span>
+<a id="__codelineno-28-18" name="__codelineno-28-18" href="#__codelineno-28-18"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">PointMapResolution</span><span class="p">;</span>
+<a id="__codelineno-28-19" name="__codelineno-28-19" href="#__codelineno-28-19"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-28-20" name="__codelineno-28-20" href="#__codelineno-28-20"></a>
+<a id="__codelineno-28-21" name="__codelineno-28-21" href="#__codelineno-28-21"></a><span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="n">ShadowQualitySettings</span><span class="w"> </span><span class="n">kShadowQualityTable</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-28-22" name="__codelineno-28-22" href="#__codelineno-28-22"></a><span class="w">        </span><span class="c1">// Low</span>
+<a id="__codelineno-28-23" name="__codelineno-28-23" href="#__codelineno-28-23"></a><span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">512</span><span class="p">,</span><span class="w">  </span><span class="mi">512</span><span class="p">,</span><span class="w">  </span><span class="mi">256</span><span class="w">  </span><span class="p">},</span>
+<a id="__codelineno-28-24" name="__codelineno-28-24" href="#__codelineno-28-24"></a><span class="w">        </span><span class="c1">// Medium</span>
+<a id="__codelineno-28-25" name="__codelineno-28-25" href="#__codelineno-28-25"></a><span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span><span class="w"> </span><span class="mi">512</span><span class="w">  </span><span class="p">},</span>
+<a id="__codelineno-28-26" name="__codelineno-28-26" href="#__codelineno-28-26"></a><span class="w">        </span><span class="c1">// High</span>
+<a id="__codelineno-28-27" name="__codelineno-28-27" href="#__codelineno-28-27"></a><span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">2048</span><span class="p">,</span><span class="w"> </span><span class="mi">1024</span><span class="p">,</span><span class="w"> </span><span class="mi">512</span><span class="w">  </span><span class="p">},</span>
+<a id="__codelineno-28-28" name="__codelineno-28-28" href="#__codelineno-28-28"></a><span class="w">        </span><span class="c1">// Ultra</span>
+<a id="__codelineno-28-29" name="__codelineno-28-29" href="#__codelineno-28-29"></a><span class="w">        </span><span class="p">{</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">4096</span><span class="p">,</span><span class="w"> </span><span class="mi">2048</span><span class="p">,</span><span class="w"> </span><span class="mi">1024</span><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-28-30" name="__codelineno-28-30" href="#__codelineno-28-30"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-28-31" name="__codelineno-28-31" href="#__codelineno-28-31"></a>
+<a id="__codelineno-28-32" name="__codelineno-28-32" href="#__codelineno-28-32"></a><span class="w">    </span><span class="kr">inline</span><span class="w"> </span><span class="n">ShadowQualitySettings</span><span class="w"> </span><span class="nf">GetShadowQuality</span><span class="p">(</span><span class="n">ShadowQualityPreset</span><span class="w"> </span><span class="n">preset</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-28-33" name="__codelineno-28-33" href="#__codelineno-28-33"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">kShadowQualityTable</span><span class="p">[</span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">preset</span><span class="p">)];</span>
+<a id="__codelineno-28-34" name="__codelineno-28-34" href="#__codelineno-28-34"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-28-35" name="__codelineno-28-35" href="#__codelineno-28-35"></a>
+<a id="__codelineno-28-36" name="__codelineno-28-36" href="#__codelineno-28-36"></a><span class="p">}</span><span class="w"> </span><span class="c1">// namespace ZEngine::Rendering::Shadows</span>
+</code></pre></div>
+<p>Quality changes are applied at the start of the next frame: the RenderGraph is rebuilt
+with the new pass specs, old transient textures are freed, and new ones are allocated.
+No mid-frame rebuild is needed because shadow maps are transient resources.</p>
+<hr />
+<h2 id="11-file-layout">11. File Layout<a class="headerlink" href="#11-file-layout" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>ZEngine/
+<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>└── Rendering/
+<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>    └── Shadows/
+<a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>        ├── ShadowData.h              — CascadeData, CSMData, SpotShadowData, PointShadowData
+<a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>        ├── ShadowUniformBuffer.h     — ShadowUniformBuffer (full GPU struct)
+<a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a>        ├── ShadowPassSpec.h          — ShadowPassSpec (pass configuration)
+<a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a>        ├── ShadowPassNode.h          — ShadowPassNode class declaration
+<a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a>        ├── ShadowPassNode.cpp        — Setup/Execute implementation
+<a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a>        ├── ShadowQuality.h           — ShadowQualityPreset enum + table
+<a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a>        ├── ShadowSystem.h            — ShadowSystem class (CSM split, pass registration)
+<a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a>        ├── ShadowSystem.cpp          — Cascade frustum computation, light-space matrix build
+<a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a>        └── ShadowCasterComponent.h   — (or lives under ECS/Components/)
+<a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a>ZEngine/
+<a id="__codelineno-29-14" name="__codelineno-29-14" href="#__codelineno-29-14"></a>└── ECS/
+<a id="__codelineno-29-15" name="__codelineno-29-15" href="#__codelineno-29-15"></a>    └── Components/
+<a id="__codelineno-29-16" name="__codelineno-29-16" href="#__codelineno-29-16"></a>        └── ShadowCasterComponent.h   — ShadowCasterComponent struct
+<a id="__codelineno-29-17" name="__codelineno-29-17" href="#__codelineno-29-17"></a>ZEngine/
+<a id="__codelineno-29-18" name="__codelineno-29-18" href="#__codelineno-29-18"></a>└── Assets/
+<a id="__codelineno-29-19" name="__codelineno-29-19" href="#__codelineno-29-19"></a>    └── Shaders/
+<a id="__codelineno-29-20" name="__codelineno-29-20" href="#__codelineno-29-20"></a>        ├── shadow_depth.vert         — Depth-only vertex shader (CSM + spot)
+<a id="__codelineno-29-21" name="__codelineno-29-21" href="#__codelineno-29-21"></a>        ├── point_shadow_depth.vert   — Point light depth vertex shader
+<a id="__codelineno-29-22" name="__codelineno-29-22" href="#__codelineno-29-22"></a>        └── point_shadow_depth.frag   — Linearised depth write
+</code></pre></div>
+<hr />
+<h2 id="12-deliverables-checklist">12. Deliverables Checklist<a class="headerlink" href="#12-deliverables-checklist" title="Permanent link">&para;</a></h2>
+<ul>
+<li>[ ] <code>ShadowData.h</code> — all GPU structs (<code>CascadeData</code>, <code>CSMData</code>, <code>SpotShadowData</code>, <code>PointShadowData</code>)</li>
+<li>[ ] <code>ShadowUniformBuffer.h</code> — full 1488-byte aligned uniform buffer struct</li>
+<li>[ ] <code>ShadowPassSpec.h</code> — pass configuration struct</li>
+<li>[ ] <code>ShadowPassNode.h</code> / <code>.cpp</code> — depth-only render pass implementing <code>IRenderGraphCallbackPass</code></li>
+<li>[ ] <code>ShadowQuality.h</code> — <code>ShadowQualityPreset</code> enum and lookup table</li>
+<li>[ ] <code>ShadowSystem.h</code> / <code>.cpp</code> — frustum splitting, light-space matrix construction, pass registration</li>
+<li>[ ] <code>ShadowCasterComponent.h</code> — ECS component for mesh and light entities</li>
+<li>[ ] <code>shadow_depth.vert</code> — minimal depth-only vertex shader (push-constant light-space matrix)</li>
+<li>[ ] <code>point_shadow_depth.vert</code> / <code>.frag</code> — linearised cube-map depth shader</li>
+<li>[ ] Lighting pass shader updated with CSM cascade selection, PCF lookup, spot/point sampling</li>
+<li>[ ] Descriptor set layout 1 wired with <code>ShadowUniformBuffer</code> binding + texture arrays</li>
+<li>[ ] RenderGraph integration: shadow passes registered before lighting pass; texture resource declarations</li>
+<li>[ ] <code>ShadowQualityPreset</code> exposed in engine settings and changeable at runtime</li>
+<li>[ ] 1×1 fallback depth texture for scenes without a directional light</li>
+<li>[ ] Unit test: cascade split values for lambda=0.7, near=0.1, far=1000, N=4</li>
+<li>[ ] Visual test: Cornell box scene with directional, spot, and point light; verify no acne, correct cascade transitions</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Zodiac Engine contributors
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/JeanPhilippeKernel/RendererEngine" target="_blank" rel="noopener" title="RendererEngine on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://discord.gg/jC3GPVKKsW" target="_blank" rel="noopener" title="Zodiac Engine on Discord" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,2771 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Cross-platform Vulkan engine, editor, and project tooling">
+      
+      
+      
+        <link rel="canonical" href="https://jeanphilippekernel.github.io/zodiac-engine-docs/design/future-plan/thumbnail-generation/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/logo-white.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Thumbnail Generation — Editor Asset Previews - Zodiac Engine</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#thumbnail-generation-editor-asset-previews" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Zodiac Engine" class="md-header__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="../../../assets/logo-white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Zodiac Engine
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Thumbnail Generation — Editor Asset Previews
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="light-blue"  aria-label="Use light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Use light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="light-blue"  aria-label="Use dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Use dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../getting-started/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Get ZEngine
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../editor/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Editor
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../development/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Develop
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../reference/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../project/releases/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Project
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../contributing/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Contribute
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Zodiac Engine" class="md-nav__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="../../../assets/logo-white.png" alt="logo">
+
+    </a>
+    Zodiac Engine
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../getting-started/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Get ZEngine
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Get ZEngine
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/install-with-zodiac-engine-hub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install with Zodiac Engine Hub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/first-project/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create your first project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/update-and-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Update and migration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/supported-platforms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Supported platforms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../editor/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Editor
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Editor
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../editor/assets-and-importing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assets and importing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../editor/scenes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scenes and authoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../development/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Develop
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Develop
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/build-from-source/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build from source
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/run-and-debug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run and debug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/project-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../reference/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rendering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/asset-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/memory-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/zui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ZUI system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/containers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Containers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Releases and changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/rfcs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proposals and RFCs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/archive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Historical records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../contributing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribute
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contribute
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/commit-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commit conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/release-process/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release process
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-thumbnailhandle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. ThumbnailHandle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-thumbnailcache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. ThumbnailCache
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-thumbnailrequest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. ThumbnailRequest
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-thumbnailgenerator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. ThumbnailGenerator
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-offscreenrenderer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. OffscreenRenderer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. OffscreenRenderer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resources-created-once-never-recreated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resources (created once, never recreated)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fixed-directional-light" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fixed directional light
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#camera" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Camera
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#render-flow-called-from-thumbnailgeneratortick-on-the-main-thread" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Render flow (called from ThumbnailGenerator::Tick() on the main thread)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thread-safety" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Thread safety
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-placeholder-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Placeholder Strategy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-projectviewuicomponent-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. ProjectViewUIComponent Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. ProjectViewUIComponent Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-additions-to-projectviewuicomponent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data additions to ProjectViewUIComponent
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#per-cell-render-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-cell render logic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#staleness-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Staleness detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-eviction-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Eviction Policy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Eviction Policy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cap
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lru-mechanism" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LRU mechanism
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fallback-after-eviction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fallback after eviction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholder-entries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Placeholder entries
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-unit-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Unit Tests
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Unit Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-1-cache-hit-uuid-with-stored-handle-returns-it-immediately-no-async-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 1 — Cache hit: UUID with stored handle returns it immediately, no async request
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-2-cache-miss-requestthumbnail-fires-async-job-tick-completes-it-callback-fires-with-valid-handle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 2 — Cache miss: RequestThumbnail fires async job; Tick completes it; callback fires with valid handle
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-3-placeholder-returned-while-request-is-pending" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 3 — Placeholder returned while request is pending
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-4-completion-callback-fires-exactly-once" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 4 — Completion callback fires exactly once
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-5-stale-invalidation-after-metafileio-reports-stale-lookup-returns-invalid-new-request-generated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 5 — Stale invalidation: after MetaFileIO reports Stale, Lookup returns invalid, new request generated
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-6-lru-eviction-after-exceeding-512-oldest-entry-evicted-re-request-falls-back-to-thumb-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 6 — LRU eviction: after exceeding 512, oldest entry evicted; re-request falls back to .thumb file
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-deliverables-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Deliverables Checklist
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/JeanPhilippeKernel/RendererEngine/edit/develop/docs/design/future-plan/thumbnail-generation.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="thumbnail-generation-editor-asset-previews">Thumbnail Generation — Editor Asset Previews<a class="headerlink" href="#thumbnail-generation-editor-asset-previews" title="Permanent link">&para;</a></h1>
+<p><strong>Priority:</strong> P4 — Implement after render-resource-manager, VFS scanner, and import pipeline are live
+<strong>Status:</strong> Design — no blocking correctness issues; editor-only feature
+<strong>Depends on:</strong> <code>render-resource-manager.md</code>, <code>vfs-ticket3-scanner-memory-backend.md</code>, <code>import-pipeline.md</code>
+<strong>Blocks:</strong> Nothing critical — editor UX only
+<strong>Tracked by:</strong> <a href="https://github.com/JeanPhilippeKernel/RendererEngine/issues/423">#423</a>. Its
+title remains valid; implementation must target the current <code>ProjectViewPanel</code>, not the
+historical <code>ProjectViewUIComponent</code> named in older sketches below.</p>
+<p><strong>Goal</strong>: Provide 128×128 RGBA8 thumbnail images for every importable asset (textures,
+meshes, materials) inside the editor's <code>ProjectViewUIComponent</code>, with async off-thread
+generation, GPU-resident cache, LRU eviction, and persistent <code>.thumb</code> files — all
+without RTTI, virtual dispatch in the hot path, exceptions, or <code>new</code>/<code>delete</code> in hot
+paths.</p>
+<hr />
+<h2 id="1-thumbnailhandle">1. <code>ThumbnailHandle</code><a class="headerlink" href="#1-thumbnailhandle" title="Permanent link">&para;</a></h2>
+<p>A generational handle that identifies a single 128×128 RGBA8 GPU image slot, or one
+of the well-known placeholder constants. All editor UI code holds <code>ThumbnailHandle</code>
+values; nothing holds raw GPU image pointers.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// ZEngine/Editor/Thumbnails/ThumbnailHandle.h</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstdint&gt;</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Editor</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">ThumbnailHandle</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">Index</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">Generation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="nf">IsValid</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Generation</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">ThumbnailHandle</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">INVALID_THUMBNAIL</span><span class="w">              </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">};</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">PLACEHOLDER_THUMBNAIL_MESH</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">};</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">PLACEHOLDER_THUMBNAIL_TEXTURE</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">};</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">PLACEHOLDER_THUMBNAIL_MATERIAL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">};</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace ZEngine::Editor</span>
+</code></pre></div>
+<p><strong>Design notes</strong>:</p>
+<ul>
+<li><code>Index</code> is a stable slot index into <code>ThumbnailCache</code>'s internal dense GPU image table.
+  Slot 0 is reserved as the invalid sentinel; slots 1–3 are reserved for the three
+  placeholder images, which are loaded once at editor startup and never evicted.</li>
+<li><code>Generation</code> starts at <code>1</code> for the first occupant of a recyclable slot and increments
+  each time the slot is evicted and reused. Generation <code>0</code> is the sentinel for
+  <code>INVALID_THUMBNAIL</code>. <code>IsValid()</code> is a single compare-to-zero.</li>
+<li>Placeholder constants have <code>Generation = 1</code> and indices in the reserved range <code>[1, 3]</code>.
+  They survive every <code>Evict()</code> call because the eviction loop starts from index <code>4</code>.</li>
+<li><code>operator==</code> is defaulted (C++20). Two handles are equal only when both <code>Index</code> and
+  <code>Generation</code> match, so a stale handle that survived an evict cycle is not mistaken for
+  the new occupant of the same slot.</li>
+<li><code>ThumbnailHandle</code> is 8 bytes and fits in a register. It is safe to copy by value
+  everywhere.</li>
+</ul>
+<hr />
+<h2 id="2-thumbnailcache">2. <code>ThumbnailCache</code><a class="headerlink" href="#2-thumbnailcache" title="Permanent link">&para;</a></h2>
+<p>Maps asset UUIDs to <code>ThumbnailHandle</code> values in memory, persists small PNG snapshots
+(<code>.thumb</code> files) beside <code>.meta</code> files on disk, loads them at editor startup, and
+enforces an LRU eviction cap against GPU memory.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// ZEngine/Editor/Thumbnails/ThumbnailCache.h</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Editor/Thumbnails/ThumbnailHandle.h&gt;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;uuid.h&gt;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;VFS/IVFSContext.h&gt;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Core/Containers/UnorderedHashMap.h&gt;</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Editor</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">ThumbnailCache</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">        </span><span class="c1">// Returns the handle for uuid, or INVALID_THUMBNAIL if not present.</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">        </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">Lookup</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="w"> </span><span class="n">uuid</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">        </span><span class="c1">// Associates uuid with handle and updates its LRU timestamp.</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">        </span><span class="kt">void</span><span class="w">            </span><span class="nf">Store</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="w"> </span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">handle</span><span class="p">);</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">        </span><span class="c1">// Removes uuid from the in-memory map; does NOT delete the .thumb file.</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">        </span><span class="kt">void</span><span class="w">            </span><span class="nf">Invalidate</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="w"> </span><span class="n">uuid</span><span class="p">);</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">        </span><span class="c1">// Walks the asset tree and loads every *.thumb file found beside a *.meta.</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">        </span><span class="c1">// Called once on editor startup before the first frame.</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">        </span><span class="kt">void</span><span class="w">            </span><span class="nf">LoadFromDisk</span><span class="p">(</span><span class="n">VFS</span><span class="o">::</span><span class="n">IVFSContext</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ctx</span><span class="p">);</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">        </span><span class="c1">// Encodes rgba8_128x128 (128*128*4 bytes) as a small PNG and writes it</span>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">        </span><span class="c1">// to &lt;asset_path&gt;.thumb via ctx. Also calls Store() for the handle.</span>
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">        </span><span class="kt">void</span><span class="w">            </span><span class="nf">SaveToDisk</span><span class="p">(</span><span class="n">VFS</span><span class="o">::</span><span class="n">IVFSContext</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ctx</span><span class="p">,</span>
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">                                   </span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="w"> </span><span class="n">uuid</span><span class="p">,</span>
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">                                   </span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="o">*</span><span class="w"> </span><span class="n">rgba8_128x128</span><span class="p">);</span>
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">        </span><span class="c1">// Evicts the (count - max_count) least-recently-used GPU thumbnails when</span>
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">        </span><span class="c1">// the live count exceeds max_count. Placeholder slots are never evicted.</span>
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">        </span><span class="c1">// Evicted entries are removed from m_map; their .thumb files remain on disk.</span>
+<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">        </span><span class="kt">void</span><span class="w">            </span><span class="nf">Evict</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">max_count</span><span class="p">);</span>
+<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>
+<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="w">    </span><span class="k">private</span><span class="o">:</span>
+<a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">Entry</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="w">            </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">Handle</span><span class="p">;</span>
+<a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="w">            </span><span class="kt">uint64_t</span><span class="w">        </span><span class="n">LastAccessFrame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">  </span><span class="c1">// frame counter at last Lookup/Store</span>
+<a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a><span class="w">        </span><span class="p">};</span>
+<a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a>
+<a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a><span class="w">        </span><span class="c1">// UUID → Entry (handle + LRU timestamp)</span>
+<a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">UnorderedHashMap</span><span class="o">&lt;</span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">Entry</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_map</span><span class="p">;</span>
+<a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a>
+<a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="w">        </span><span class="c1">// Monotonically increasing frame counter; incremented by ThumbnailGenerator::Tick().</span>
+<a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a><span class="w">        </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">m_frame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a>
+<a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a><span class="w">        </span><span class="c1">// Slot generation table: m_generations[index] is the current generation for</span>
+<a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a><span class="w">        </span><span class="c1">// that GPU image slot. Incremented each time the slot is recycled.</span>
+<a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_generations</span><span class="p">;</span>
+<a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a>
+<a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a><span class="w">        </span><span class="c1">// Free list of evicted slot indices (&gt;= 4, since 0-3 are reserved).</span>
+<a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_free_slots</span><span class="p">;</span>
+<a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a>
+<a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace ZEngine::Editor</span>
+</code></pre></div>
+<p><strong><code>Lookup(uuid)</code></strong>:
+1. Find <code>uuid</code> in <code>m_map</code>. On miss, return <code>INVALID_THUMBNAIL</code>.
+2. On hit, update <code>entry.LastAccessFrame = m_frame</code>. Return <code>entry.Handle</code>.</p>
+<p><strong><code>Store(uuid, handle)</code></strong>:
+1. Insert or overwrite <code>m_map[uuid] = {handle, m_frame}</code>.</p>
+<p><strong><code>Invalidate(uuid)</code></strong>:
+1. Erase <code>uuid</code> from <code>m_map</code>. The <code>.thumb</code> file is left on disk; it will be
+   regenerated by a subsequent <code>SaveToDisk</code> call after the asset is re-imported.</p>
+<p><strong><code>LoadFromDisk(ctx)</code></strong>:
+1. Enumerate all files matching <code>*.thumb</code> via <code>VFSDirectoryCache</code>.
+2. For each <code>.thumb</code> file: decode the PNG (stb_image or engine's image loader),
+   upload the decoded 128×128 RGBA8 to a new GPU slot, call <code>Store(uuid, handle)</code>.
+3. Placeholder images (mesh icon, texture icon, material icon) are uploaded first
+   and assigned slots 1–3 before any disk thumbnails are processed.</p>
+<p><strong><code>SaveToDisk(ctx, uuid, rgba8_128x128)</code></strong>:
+1. Encode 128×128 RGBA8 to PNG in memory (stb_image_write or equivalent).
+   Target size ≤ 8 KB; use PNG compression level 6.
+2. Derive the <code>.thumb</code> path from the asset's <code>.meta</code> path stored in <code>AssetRegistry</code>
+   (same directory, same stem, extension <code>.thumb</code>).
+3. Write the PNG bytes through <code>ctx</code> (VFS write).
+4. Allocate a GPU slot: pop from <code>m_free_slots</code> if non-empty, else append a new slot
+   and grow <code>m_generations</code>.
+5. Upload the RGBA8 data to the GPU slot via <code>RenderResourceManager</code>.
+6. Build a <code>ThumbnailHandle{slot_index, m_generations[slot_index]}</code> and call
+   <code>Store(uuid, handle)</code>.</p>
+<p><strong><code>Evict(max_count)</code></strong>:
+1. If <code>m_map.Size() &lt;= max_count</code>, return immediately — nothing to evict.
+2. Collect all entries with <code>Handle.Index &gt;= 4</code> (skip reserved placeholders).
+3. Sort by <code>LastAccessFrame</code> ascending (oldest first).
+4. Evict <code>m_map.Size() - max_count</code> entries: release the GPU image slot via
+   <code>RenderResourceManager</code>, push the slot index back onto <code>m_free_slots</code>,
+   increment <code>m_generations[slot_index]</code>, erase from <code>m_map</code>.
+5. <code>.thumb</code> files are not deleted; they become the fallback for the next <code>Lookup</code>
+   + <code>LoadFromDisk</code> cycle.</p>
+<p><strong><code>.thumb</code> file convention</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Asset path</th>
+<th>Meta path</th>
+<th>Thumb path</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Assets/Wood.png</code></td>
+<td><code>Assets/Wood.png.meta</code></td>
+<td><code>Assets/Wood.png.thumb</code></td>
+</tr>
+<tr>
+<td><code>Assets/Cube.fbx</code></td>
+<td><code>Assets/Cube.fbx.meta</code></td>
+<td><code>Assets/Cube.fbx.thumb</code></td>
+</tr>
+<tr>
+<td><code>Assets/Rock.mat</code></td>
+<td><code>Assets/Rock.mat.meta</code></td>
+<td><code>Assets/Rock.mat.thumb</code></td>
+</tr>
+</tbody>
+</table>
+<p>The UUID embedded in the <code>.meta</code> file is used as the cache key. <code>LoadFromDisk</code>
+reads the sibling <code>.meta</code> to extract the UUID before associating the thumb.</p>
+<hr />
+<h2 id="3-thumbnailrequest">3. <code>ThumbnailRequest</code><a class="headerlink" href="#3-thumbnailrequest" title="Permanent link">&para;</a></h2>
+<p>A lightweight value type that describes a single async thumbnail generation request.
+No virtual dispatch; the callback is a <code>std::function</code> invoked exactly once on the
+main thread by <code>ThumbnailGenerator::Tick()</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// ZEngine/Editor/Thumbnails/ThumbnailRequest.h</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Editor/Thumbnails/ThumbnailHandle.h&gt;</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;uuid.h&gt;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;functional&gt;</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Editor</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ThumbnailPriority</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">        </span><span class="n">Prefetch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="c1">// low-priority background generation (not yet visible)</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">        </span><span class="n">Visible</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">  </span><span class="c1">// high-priority: asset is visible in the project view now</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">ThumbnailCallback</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="n">ThumbnailHandle</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">ThumbnailRequest</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">        </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="w">        </span><span class="n">AssetUUID</span><span class="p">;</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">        </span><span class="n">ThumbnailPriority</span><span class="w">  </span><span class="n">Priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ThumbnailPriority</span><span class="o">::</span><span class="n">Visible</span><span class="p">;</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">        </span><span class="n">ThumbnailCallback</span><span class="w">  </span><span class="n">Callback</span><span class="p">;</span><span class="w">   </span><span class="c1">// fired on main thread; never nullptr</span>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace ZEngine::Editor</span>
+</code></pre></div>
+<p><strong>Design notes</strong>:</p>
+<ul>
+<li><code>Priority</code> controls queue ordering. <code>Visible</code> requests are drained first in
+  <code>ThumbnailGenerator::Tick()</code>. <code>Prefetch</code> requests fill idle worker slots.</li>
+<li><code>Callback</code> is always non-null at the time it is enqueued. <code>ThumbnailGenerator</code>
+  asserts this. The callback receives <code>INVALID_THUMBNAIL</code> only on hard failure
+  (asset file missing, decode error); it never receives a placeholder — callers
+  consult <code>ThumbnailCache::Lookup()</code> for the placeholder path.</li>
+<li><code>ThumbnailRequest</code> is moved into the internal queue (no copy of the <code>std::function</code>
+  in the hot enqueue path). The callback's captured variables must be
+  copy-safe (no raw pointers into stack frames).</li>
+</ul>
+<hr />
+<h2 id="4-thumbnailgenerator">4. <code>ThumbnailGenerator</code><a class="headerlink" href="#4-thumbnailgenerator" title="Permanent link">&para;</a></h2>
+<p>Orchestrates the full pipeline: deduplicates in-flight requests, dispatches work to
+<code>ThreadPoolHelper</code>, drains completed results on the main thread via <code>Tick()</code>, uploads
+GPU images, persists <code>.thumb</code> files, and fires callbacks.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// ZEngine/Editor/Thumbnails/ThumbnailGenerator.h</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Editor/Thumbnails/ThumbnailRequest.h&gt;</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Editor/Thumbnails/ThumbnailCache.h&gt;</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Managers/AssetManager.h&gt;</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Core/Containers/UnorderedHashMap.h&gt;</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;atomic&gt;</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutex&gt;</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Editor</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">ThumbnailGenerator</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">    </span><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">        </span><span class="k">explicit</span><span class="w"> </span><span class="n">ThumbnailGenerator</span><span class="p">(</span><span class="n">ThumbnailCache</span><span class="o">*</span><span class="w"> </span><span class="n">cache</span><span class="p">,</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">                                    </span><span class="n">AssetManager</span><span class="o">*</span><span class="w">   </span><span class="n">asset_manager</span><span class="p">);</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">        </span><span class="c1">// Enqueues a request. If uuid already has a valid cache entry, fires the</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">        </span><span class="c1">// callback immediately (synchronously) and returns without enqueuing.</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">        </span><span class="c1">// If a request for uuid is already in-flight, the new callback is appended</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">        </span><span class="c1">// to the existing in-flight entry's callback list (deduplication).</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">RequestThumbnail</span><span class="p">(</span><span class="n">ThumbnailRequest</span><span class="w"> </span><span class="n">request</span><span class="p">);</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">        </span><span class="c1">// Called every frame on the main thread.</span>
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">        </span><span class="c1">// - Promotes completed async results from m_result_queue to the GPU.</span>
+<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">        </span><span class="c1">// - Calls SaveToDisk for each completed result.</span>
+<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">        </span><span class="c1">// - Fires all pending callbacks for that UUID.</span>
+<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="w">        </span><span class="c1">// - Increments the internal frame counter used by LRU.</span>
+<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="w">        </span><span class="c1">// - Triggers Evict(512) if the cache exceeded the cap.</span>
+<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">Tick</span><span class="p">();</span>
+<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>
+<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a><span class="w">    </span><span class="k">private</span><span class="o">:</span>
+<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a><span class="w">        </span><span class="c1">// Dispatched to ThreadPoolHelper. Returns raw 128×128 RGBA8 pixels.</span>
+<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a><span class="w">        </span><span class="c1">// The result is placed into m_result_queue (lock-protected).</span>
+<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="n">GenerateTextureThumbnail</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="w"> </span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">AssetHandle</span><span class="w"> </span><span class="n">handle</span><span class="p">);</span>
+<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">GenerateMeshThumbnail</span><span class="w">    </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="w"> </span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">AssetHandle</span><span class="w"> </span><span class="n">handle</span><span class="p">);</span>
+<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">GenerateMaterialThumbnail</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="w"> </span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">AssetHandle</span><span class="w"> </span><span class="n">handle</span><span class="p">);</span>
+<a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a>
+<a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a><span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">PendingEntry</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a><span class="w">            </span><span class="c1">// All callbacks waiting on this UUID (deduplicated in-flight requests)</span>
+<a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a><span class="w">            </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="n">ThumbnailCallback</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Callbacks</span><span class="p">;</span>
+<a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a><span class="w">            </span><span class="n">ThumbnailPriority</span><span class="w">                          </span><span class="n">Priority</span><span class="p">;</span>
+<a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a><span class="w">        </span><span class="p">};</span>
+<a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a>
+<a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a><span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">CompletedResult</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a><span class="w">            </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="w">                          </span><span class="n">UUID</span><span class="p">;</span>
+<a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a><span class="w">            </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="w">     </span><span class="n">RGBA8_128x128</span><span class="p">;</span><span class="w"> </span><span class="c1">// 128*128*4 bytes</span>
+<a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a><span class="w">            </span><span class="kt">bool</span><span class="w">                                 </span><span class="n">Success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<a id="__codelineno-3-48" name="__codelineno-3-48" href="#__codelineno-3-48"></a><span class="w">        </span><span class="p">};</span>
+<a id="__codelineno-3-49" name="__codelineno-3-49" href="#__codelineno-3-49"></a>
+<a id="__codelineno-3-50" name="__codelineno-3-50" href="#__codelineno-3-50"></a><span class="w">        </span><span class="n">ThumbnailCache</span><span class="o">*</span><span class="w"> </span><span class="n">m_cache</span><span class="p">;</span>
+<a id="__codelineno-3-51" name="__codelineno-3-51" href="#__codelineno-3-51"></a><span class="w">        </span><span class="n">AssetManager</span><span class="o">*</span><span class="w">   </span><span class="n">m_asset_manager</span><span class="p">;</span>
+<a id="__codelineno-3-52" name="__codelineno-3-52" href="#__codelineno-3-52"></a>
+<a id="__codelineno-3-53" name="__codelineno-3-53" href="#__codelineno-3-53"></a><span class="w">        </span><span class="c1">// UUIDs currently in-flight (main-thread only; no mutex needed here)</span>
+<a id="__codelineno-3-54" name="__codelineno-3-54" href="#__codelineno-3-54"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">UnorderedHashMap</span><span class="o">&lt;</span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">PendingEntry</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_pending</span><span class="p">;</span>
+<a id="__codelineno-3-55" name="__codelineno-3-55" href="#__codelineno-3-55"></a>
+<a id="__codelineno-3-56" name="__codelineno-3-56" href="#__codelineno-3-56"></a><span class="w">        </span><span class="c1">// Thread-safe result queue: worker threads push, Tick() drains.</span>
+<a id="__codelineno-3-57" name="__codelineno-3-57" href="#__codelineno-3-57"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="w">                               </span><span class="n">m_result_mutex</span><span class="p">;</span>
+<a id="__codelineno-3-58" name="__codelineno-3-58" href="#__codelineno-3-58"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="n">CompletedResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_result_queue</span><span class="p">;</span>
+<a id="__codelineno-3-59" name="__codelineno-3-59" href="#__codelineno-3-59"></a>
+<a id="__codelineno-3-60" name="__codelineno-3-60" href="#__codelineno-3-60"></a><span class="w">        </span><span class="c1">// Sorted request queues (Visible first, then Prefetch).</span>
+<a id="__codelineno-3-61" name="__codelineno-3-61" href="#__codelineno-3-61"></a><span class="w">        </span><span class="c1">// Mutated only on main thread.</span>
+<a id="__codelineno-3-62" name="__codelineno-3-62" href="#__codelineno-3-62"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_visible_queue</span><span class="p">;</span>
+<a id="__codelineno-3-63" name="__codelineno-3-63" href="#__codelineno-3-63"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_prefetch_queue</span><span class="p">;</span>
+<a id="__codelineno-3-64" name="__codelineno-3-64" href="#__codelineno-3-64"></a>
+<a id="__codelineno-3-65" name="__codelineno-3-65" href="#__codelineno-3-65"></a><span class="w">        </span><span class="c1">// Count of currently active worker tasks.</span>
+<a id="__codelineno-3-66" name="__codelineno-3-66" href="#__codelineno-3-66"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_active_jobs</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<a id="__codelineno-3-67" name="__codelineno-3-67" href="#__codelineno-3-67"></a>
+<a id="__codelineno-3-68" name="__codelineno-3-68" href="#__codelineno-3-68"></a><span class="w">        </span><span class="c1">// Maximum concurrent thumbnail jobs.</span>
+<a id="__codelineno-3-69" name="__codelineno-3-69" href="#__codelineno-3-69"></a><span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">kMaxConcurrentJobs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+<a id="__codelineno-3-70" name="__codelineno-3-70" href="#__codelineno-3-70"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-3-71" name="__codelineno-3-71" href="#__codelineno-3-71"></a>
+<a id="__codelineno-3-72" name="__codelineno-3-72" href="#__codelineno-3-72"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace ZEngine::Editor</span>
+</code></pre></div>
+<p><strong><code>RequestThumbnail(request)</code></strong> (main thread):
+1. Call <code>m_cache-&gt;Lookup(request.AssetUUID)</code>. If <code>IsValid()</code>, invoke <code>request.Callback</code>
+   immediately and return — cache hit requires zero async work.
+2. If <code>request.AssetUUID</code> is already in <code>m_pending</code>, append <code>request.Callback</code> to
+   <code>m_pending[uuid].Callbacks</code> (deduplicate) and update <code>Priority</code> to the higher value.
+   Return.
+3. Otherwise, insert <code>{request.Callbacks = [request.Callback], request.Priority}</code> into
+   <code>m_pending</code>. Push <code>uuid</code> onto <code>m_visible_queue</code> or <code>m_prefetch_queue</code> according to
+   priority.</p>
+<p><strong><code>Tick()</code></strong> (main thread, called once per frame):
+1. Increment the internal frame counter; forward it to <code>m_cache</code> so LRU timestamps
+   are current.
+2. Drain <code>m_result_queue</code> under <code>m_result_mutex</code>. For each <code>CompletedResult</code>:
+   a. If <code>result.Success</code>: call <code>m_cache-&gt;SaveToDisk(ctx, uuid, rgba8_data)</code> which
+      uploads to GPU and calls <code>Store</code>. Fire all callbacks in <code>m_pending[uuid].Callbacks</code>
+      with the resulting handle.
+   b. If <code>!result.Success</code>: fire all callbacks with <code>INVALID_THUMBNAIL</code>.
+   c. Erase <code>uuid</code> from <code>m_pending</code>. Decrement <code>m_active_jobs</code>.
+3. While <code>m_active_jobs &lt; kMaxConcurrentJobs</code>:
+   a. Dequeue from <code>m_visible_queue</code> first, then <code>m_prefetch_queue</code>.
+   b. Look up the asset type in <code>AssetRegistry</code> for the UUID.
+   c. Dispatch the appropriate <code>Generate*Thumbnail</code> method to <code>ThreadPoolHelper</code>.
+   d. Increment <code>m_active_jobs</code>.
+4. Call <code>m_cache-&gt;Evict(512)</code> if the GPU slot count exceeds the cap.</p>
+<p><strong><code>GenerateTextureThumbnail(uuid, handle)</code></strong> (worker thread):
+1. Load the source image bytes through <code>IVFSContext</code> (path from <code>AssetRegistry</code>).
+2. Decode with stb_image to whatever native dimensions.
+3. Downsample to 128×128 using a two-pass box filter (separable, no allocations in
+   the inner loop — write into a pre-allocated 128×128×4 byte buffer).
+4. Push <code>CompletedResult{uuid, pixels, true}</code> into <code>m_result_queue</code>.</p>
+<p><strong><code>GenerateMeshThumbnail(uuid, handle)</code></strong> (worker thread → main-thread GPU work):
+1. Load mesh data (vertex/index buffers) through <code>AssetManager</code>.
+2. Submit an offscreen render command to <code>OffscreenRenderer</code> (Section 5).
+   The offscreen render executes on the main thread's Vulkan queue during the next
+   <code>Tick()</code> call. The worker thread enqueues the mesh data and waits on a
+   <code>std::promise</code>; <code>Tick()</code> resolves it after completing the GPU read-back.
+3. Push the read-back pixels as <code>CompletedResult</code>.</p>
+<p><strong><code>GenerateMaterialThumbnail</code></strong> follows the same pattern as mesh: enqueue a sphere
+render command with the material's shader/texture bindings applied.</p>
+<hr />
+<h2 id="5-offscreenrenderer">5. <code>OffscreenRenderer</code><a class="headerlink" href="#5-offscreenrenderer" title="Permanent link">&para;</a></h2>
+<p>A minimal Vulkan offscreen renderer dedicated to thumbnail generation. It reuses the
+engine's existing <code>VkDevice</code>, <code>VkQueue</code>, descriptor pool, and resources managed by
+<code>RenderResourceManager</code>. No second Vulkan device is created.</p>
+<h3 id="resources-created-once-never-recreated">Resources (created once, never recreated)<a class="headerlink" href="#resources-created-once-never-recreated" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Specification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>VkImage</code> color attachment</td>
+<td>128×128, <code>VK_FORMAT_R8G8B8A8_UNORM</code>, 1 mip, 1 layer</td>
+</tr>
+<tr>
+<td><code>VkImage</code> depth attachment</td>
+<td>128×128, <code>VK_FORMAT_D32_SFLOAT</code>, device-local</td>
+</tr>
+<tr>
+<td><code>VkFramebuffer</code></td>
+<td>Wraps both images; 128×128</td>
+</tr>
+<tr>
+<td><code>VkRenderPass</code></td>
+<td>Single subpass, color + depth, <code>LOAD_OP_CLEAR</code></td>
+</tr>
+<tr>
+<td>Staging <code>VkBuffer</code></td>
+<td>128×128×4 bytes, <code>HOST_VISIBLE | HOST_COHERENT</code></td>
+</tr>
+<tr>
+<td><code>VkCommandBuffer</code></td>
+<td>Pre-allocated from engine's transfer/graphics pool</td>
+</tr>
+<tr>
+<td><code>VkFence</code></td>
+<td>Signaled after each render; re-used (not recreated)</td>
+</tr>
+</tbody>
+</table>
+<p>All of the above are held inside <code>OffscreenRenderer</code> by value (handles, not pointers).
+<code>RenderResourceManager::AllocateImage</code> and <code>AllocateBuffer</code> are used for allocation;
+<code>new</code> is never called.</p>
+<h3 id="fixed-directional-light">Fixed directional light<a class="headerlink" href="#fixed-directional-light" title="Permanent link">&para;</a></h3>
+<p>Mesh and material renders use a single hardcoded directional light:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">struct</span><span class="w"> </span><span class="nc">ThumbnailLight</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="w"> </span><span class="n">Direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">glm</span><span class="o">::</span><span class="n">normalize</span><span class="p">(</span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="p">(</span><span class="mf">0.5f</span><span class="p">,</span><span class="w"> </span><span class="mf">-1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">-0.5f</span><span class="p">));</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="n">glm</span><span class="o">::</span><span class="n">vec3</span><span class="w"> </span><span class="n">Color</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0f</span><span class="p">};</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="kt">float</span><span class="w">     </span><span class="n">Intensity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.2f</span><span class="p">;</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">};</span>
+</code></pre></div>
+<p>There is no UI for adjusting this light; it is a compile-time constant.</p>
+<h3 id="camera">Camera<a class="headerlink" href="#camera" title="Permanent link">&para;</a></h3>
+<p>A fixed orbit camera is placed at a fixed elevation angle (30°) and azimuth (45°),
+at a distance that fits the mesh's bounding sphere within the 128×128 viewport with
+a 10% margin. <code>OffscreenRenderer</code> computes the view/projection matrices from the
+asset's <code>AABB</code> (axis-aligned bounding box) provided by <code>AssetManager</code>.</p>
+<p>For materials, the camera views a unit sphere centered at the origin with the same
+fixed offset.</p>
+<h3 id="render-flow-called-from-thumbnailgeneratortick-on-the-main-thread">Render flow (called from <code>ThumbnailGenerator::Tick()</code> on the main thread)<a class="headerlink" href="#render-flow-called-from-thumbnailgeneratortick-on-the-main-thread" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>BeginRenderPass(framebuffer, clear_color={0.15, 0.15, 0.15, 1})
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>  BindPipeline(thumbnail_pipeline)
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>  BindDescriptorSets(mesh_data, material_data, light_ubo, transform_push_constant)
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>  DrawIndexed(mesh)
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>EndRenderPass()
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>CopyImageToBuffer(color_attachment → staging_buffer)
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>WaitFence()
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>memcpy(staging_buffer → result_pixels)
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>ResetFence()
+</code></pre></div>
+<p><code>thumbnail_pipeline</code> is a separate <code>VkPipeline</code> compiled from simple PBR-lite shaders
+(no deferred shading, no shadow maps). It is compiled once at <code>OffscreenRenderer</code>
+initialization using <code>RenderResourceManager::CreateGraphicsPipeline</code>.</p>
+<h3 id="thread-safety">Thread safety<a class="headerlink" href="#thread-safety" title="Permanent link">&para;</a></h3>
+<p><code>OffscreenRenderer::Render()</code> is called exclusively from the main thread inside
+<code>ThumbnailGenerator::Tick()</code>. Worker threads enqueue work via <code>m_result_queue</code> and
+never call Vulkan APIs directly.</p>
+<hr />
+<h2 id="6-placeholder-strategy">6. Placeholder Strategy<a class="headerlink" href="#6-placeholder-strategy" title="Permanent link">&para;</a></h2>
+<p>While an async generation request is in-flight, <code>ProjectViewUIComponent</code> needs
+something to display immediately. Placeholders are:</p>
+<ul>
+<li><code>PLACEHOLDER_THUMBNAIL_MESH</code> — a small mesh-icon image (loaded from engine assets).</li>
+<li><code>PLACEHOLDER_THUMBNAIL_TEXTURE</code> — a small texture-icon image.</li>
+<li><code>PLACEHOLDER_THUMBNAIL_MATERIAL</code> — a small material-icon image.</li>
+</ul>
+<p>These three GPU slots (indices 1–3) are populated during <code>ThumbnailCache::LoadFromDisk</code>
+before any per-asset thumbnails are loaded, and they are never evicted.</p>
+<p><strong>Lookup logic in <code>ProjectViewUIComponent</code></strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_thumbnail_cache</span><span class="o">-&gt;</span><span class="n">Lookup</span><span class="p">(</span><span class="n">asset_uuid</span><span class="p">);</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">handle</span><span class="p">.</span><span class="n">IsValid</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="c1">// Not yet generated or evicted. Fire a request and show placeholder.</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="n">AssetType</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_asset_registry</span><span class="o">-&gt;</span><span class="n">GetType</span><span class="p">(</span><span class="n">asset_uuid</span><span class="p">);</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="n">handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PlaceholderFor</span><span class="p">(</span><span class="n">type</span><span class="p">);</span><span class="w">   </span><span class="c1">// returns one of the three constants</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="n">m_generator</span><span class="o">-&gt;</span><span class="n">RequestThumbnail</span><span class="p">({</span><span class="n">asset_uuid</span><span class="p">,</span><span class="w"> </span><span class="n">ThumbnailPriority</span><span class="o">::</span><span class="n">Visible</span><span class="p">,</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">        </span><span class="p">[</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="n">asset_uuid</span><span class="p">](</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="w"> </span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">            </span><span class="n">m_cached_handles</span><span class="p">[</span><span class="n">uuid</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h</span><span class="p">;</span><span class="w">   </span><span class="c1">// update per-UUID handle map</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">    </span><span class="p">});</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="p">}</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="n">DrawThumbnail</span><span class="p">(</span><span class="n">handle</span><span class="p">);</span>
+</code></pre></div>
+<p><code>PlaceholderFor</code> is a free function:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kr">inline</span><span class="w"> </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="nf">PlaceholderFor</span><span class="p">(</span><span class="n">AssetType</span><span class="w"> </span><span class="n">type</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">type</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">AssetType</span><span class="o">::</span><span class="no">Mesh</span><span class="p">:</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="n">PLACEHOLDER_THUMBNAIL_MESH</span><span class="p">;</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">AssetType</span><span class="o">::</span><span class="no">Texture</span><span class="p">:</span><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">PLACEHOLDER_THUMBNAIL_TEXTURE</span><span class="p">;</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">        </span><span class="k">case</span><span class="w"> </span><span class="no">AssetType</span><span class="o">::</span><span class="no">Material</span><span class="p">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">PLACEHOLDER_THUMBNAIL_MATERIAL</span><span class="p">;</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">        </span><span class="k">default</span><span class="o">:</span><span class="w">                  </span><span class="k">return</span><span class="w"> </span><span class="n">PLACEHOLDER_THUMBNAIL_TEXTURE</span><span class="p">;</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="p">}</span>
+</code></pre></div>
+<p>The placeholder is shown for at most a few frames on a typical machine. Once the
+callback fires, <code>m_cached_handles[uuid]</code> is updated and the next <code>DrawThumbnail</code> call
+uses the real image.</p>
+<hr />
+<h2 id="7-projectviewuicomponent-integration">7. <code>ProjectViewUIComponent</code> Integration<a class="headerlink" href="#7-projectviewuicomponent-integration" title="Permanent link">&para;</a></h2>
+<p><strong>Correction:</strong> the active project-view implementation is ZUI based. The legacy
+ImGui code in this section is historical cache-lifetime pseudocode only and is
+not an implementation or API dependency. The production panel uses ZUI image
+draw-list commands and the mailbox payload lifetime described in rendering-flow.md.</p>
+<p><code>ProjectViewPanel</code> is the ZUI panel that lists project assets in a grid. Before this
+feature it displayed only file names and type icons. After this feature each asset cell
+shows its thumbnail through the ZUI image/draw-list path.</p>
+<h3 id="data-additions-to-projectviewuicomponent">Data additions to <code>ProjectViewUIComponent</code><a class="headerlink" href="#data-additions-to-projectviewuicomponent" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">// Added members:</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">ThumbnailGenerator</span><span class="o">*</span><span class="w">  </span><span class="n">m_generator</span><span class="p">;</span><span class="w">           </span><span class="c1">// injected at construction</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">ThumbnailCache</span><span class="o">*</span><span class="w">      </span><span class="n">m_cache</span><span class="p">;</span><span class="w">               </span><span class="c1">// injected at construction</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">AssetRegistry</span><span class="o">*</span><span class="w">       </span><span class="n">m_asset_registry</span><span class="p">;</span><span class="w">      </span><span class="c1">// already present</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1">// Per-asset handle cache (UUID → last-known ThumbnailHandle).</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1">// Avoids a Lookup() call per visible cell per frame by caching the handle</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="c1">// at callback time and only re-querying after invalidation.</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">UnorderedHashMap</span><span class="o">&lt;</span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">ThumbnailHandle</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_cached_handles</span><span class="p">;</span>
+</code></pre></div>
+<h3 id="per-cell-render-logic">Per-cell render logic<a class="headerlink" href="#per-cell-render-logic" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">ProjectViewUIComponent::DrawAssetCell</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">AssetEntry</span><span class="o">&amp;</span><span class="w"> </span><span class="n">entry</span><span class="p">)</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="p">{</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">INVALID_THUMBNAIL</span><span class="p">;</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="c1">// 1. Check local per-frame cache first (avoids hash lookup on every frame</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">    </span><span class="c1">//    for already-resolved thumbnails).</span>
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_cached_handles</span><span class="p">.</span><span class="n">Find</span><span class="p">(</span><span class="n">entry</span><span class="p">.</span><span class="n">UUID</span><span class="p">);</span>
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">it</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">m_cached_handles</span><span class="p">.</span><span class="n">End</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">        </span><span class="n">handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">it</span><span class="o">-&gt;</span><span class="n">second</span><span class="p">;</span>
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">    </span><span class="c1">// 2. If not cached locally, ask ThumbnailCache.</span>
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">handle</span><span class="p">.</span><span class="n">IsValid</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="w">        </span><span class="n">handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_cache</span><span class="o">-&gt;</span><span class="n">Lookup</span><span class="p">(</span><span class="n">entry</span><span class="p">.</span><span class="n">UUID</span><span class="p">);</span>
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">handle</span><span class="p">.</span><span class="n">IsValid</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="w">            </span><span class="n">m_cached_handles</span><span class="p">[</span><span class="n">entry</span><span class="p">.</span><span class="n">UUID</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">handle</span><span class="p">;</span>
+<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>
+<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a><span class="w">    </span><span class="c1">// 3. If still invalid, placeholder + enqueue async request.</span>
+<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">handle</span><span class="p">.</span><span class="n">IsValid</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a><span class="w">        </span><span class="n">handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PlaceholderFor</span><span class="p">(</span><span class="n">m_asset_registry</span><span class="o">-&gt;</span><span class="n">GetType</span><span class="p">(</span><span class="n">entry</span><span class="p">.</span><span class="n">UUID</span><span class="p">));</span>
+<a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a><span class="w">        </span><span class="n">m_generator</span><span class="o">-&gt;</span><span class="n">RequestThumbnail</span><span class="p">({</span>
+<a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a><span class="w">            </span><span class="n">entry</span><span class="p">.</span><span class="n">UUID</span><span class="p">,</span>
+<a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a><span class="w">            </span><span class="n">ThumbnailPriority</span><span class="o">::</span><span class="n">Visible</span><span class="p">,</span>
+<a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a><span class="w">            </span><span class="p">[</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="n">uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">entry</span><span class="p">.</span><span class="n">UUID</span><span class="p">](</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-9-27" name="__codelineno-9-27" href="#__codelineno-9-27"></a><span class="w">                </span><span class="n">m_cached_handles</span><span class="p">[</span><span class="n">uuid</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h</span><span class="p">.</span><span class="n">IsValid</span><span class="p">()</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">PlaceholderFor</span><span class="p">(</span>
+<a id="__codelineno-9-28" name="__codelineno-9-28" href="#__codelineno-9-28"></a><span class="w">                    </span><span class="n">m_asset_registry</span><span class="o">-&gt;</span><span class="n">GetType</span><span class="p">(</span><span class="n">uuid</span><span class="p">));</span>
+<a id="__codelineno-9-29" name="__codelineno-9-29" href="#__codelineno-9-29"></a><span class="w">            </span><span class="p">}</span>
+<a id="__codelineno-9-30" name="__codelineno-9-30" href="#__codelineno-9-30"></a><span class="w">        </span><span class="p">});</span>
+<a id="__codelineno-9-31" name="__codelineno-9-31" href="#__codelineno-9-31"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-9-32" name="__codelineno-9-32" href="#__codelineno-9-32"></a>
+<a id="__codelineno-9-33" name="__codelineno-9-33" href="#__codelineno-9-33"></a><span class="w">    </span><span class="c1">// 4. Draw. RenderResourceManager provides an ImTextureID for a given handle.</span>
+<a id="__codelineno-9-34" name="__codelineno-9-34" href="#__codelineno-9-34"></a><span class="w">    </span><span class="n">ImTextureID</span><span class="w"> </span><span class="n">tex_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_render_resource_manager</span><span class="o">-&gt;</span><span class="n">GetImTextureID</span><span class="p">(</span><span class="n">handle</span><span class="p">);</span>
+<a id="__codelineno-9-35" name="__codelineno-9-35" href="#__codelineno-9-35"></a><span class="w">    </span><span class="n">ImGui</span><span class="o">::</span><span class="n">Image</span><span class="p">(</span><span class="n">tex_id</span><span class="p">,</span><span class="w"> </span><span class="n">ImVec2</span><span class="p">(</span><span class="mf">128.f</span><span class="p">,</span><span class="w"> </span><span class="mf">128.f</span><span class="p">));</span>
+<a id="__codelineno-9-36" name="__codelineno-9-36" href="#__codelineno-9-36"></a><span class="w">    </span><span class="n">ImGui</span><span class="o">::</span><span class="n">TextUnformatted</span><span class="p">(</span><span class="n">entry</span><span class="p">.</span><span class="n">Name</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+<a id="__codelineno-9-37" name="__codelineno-9-37" href="#__codelineno-9-37"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="staleness-detection">Staleness detection<a class="headerlink" href="#staleness-detection" title="Permanent link">&para;</a></h3>
+<p><code>MetaFileIO</code> already tracks asset staleness via its <code>Stale</code> flag. When an asset is
+re-imported, the asset pipeline calls:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">m_thumbnail_cache</span><span class="o">-&gt;</span><span class="n">Invalidate</span><span class="p">(</span><span class="n">uuid</span><span class="p">);</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">m_cached_handles</span><span class="p">.</span><span class="n">Erase</span><span class="p">(</span><span class="n">uuid</span><span class="p">);</span><span class="w">    </span><span class="c1">// ProjectViewUIComponent clears its local entry</span>
+</code></pre></div>
+<p>On the next <code>DrawAssetCell</code> call for that UUID, step 2 returns <code>INVALID_THUMBNAIL</code>,
+step 3 shows the placeholder, and a new <code>RequestThumbnail</code> is queued — no special
+invalidation path needed in the UI code.</p>
+<hr />
+<h2 id="8-eviction-policy">8. Eviction Policy<a class="headerlink" href="#8-eviction-policy" title="Permanent link">&para;</a></h2>
+<h3 id="cap">Cap<a class="headerlink" href="#cap" title="Permanent link">&para;</a></h3>
+<p>512 GPU thumbnails in memory at any time. This corresponds to:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>512 × 128 × 128 × 4 bytes = 33,554,432 bytes ≈ 32 MB GPU memory
+</code></pre></div>
+<p>This is well within the budget allocated to the editor on integrated and discrete GPUs.</p>
+<h3 id="lru-mechanism">LRU mechanism<a class="headerlink" href="#lru-mechanism" title="Permanent link">&para;</a></h3>
+<p>Each <code>ThumbnailCache::Entry</code> stores <code>LastAccessFrame</code> (a <code>uint64_t</code> frame counter
+incremented in <code>ThumbnailGenerator::Tick()</code>). Every <code>Lookup()</code> and <code>Store()</code> updates
+<code>LastAccessFrame</code> to the current frame. <code>Evict(max_count)</code> is called at the end of
+each <code>Tick()</code> when the live entry count exceeds <code>max_count</code>.</p>
+<p>Eviction procedure:
+1. Collect all <code>(uuid, entry)</code> pairs where <code>entry.Handle.Index &gt;= 4</code>.
+2. Partial-sort (or nth-element) by <code>LastAccessFrame</code> ascending to identify the
+   <code>excess_count</code> oldest entries. Full sort is not required; <code>std::nth_element</code> is O(N).
+3. For each evicted entry:
+   - Call <code>RenderResourceManager::ReleaseImage(handle)</code> to free the GPU allocation.
+   - Push <code>handle.Index</code> onto <code>m_free_slots</code>.
+   - Increment <code>m_generations[handle.Index]</code> (stales any outstanding handles to this slot).
+   - Erase <code>uuid</code> from <code>m_map</code>.</p>
+<h3 id="fallback-after-eviction">Fallback after eviction<a class="headerlink" href="#fallback-after-eviction" title="Permanent link">&para;</a></h3>
+<p>After eviction, <code>ThumbnailCache::Lookup(uuid)</code> returns <code>INVALID_THUMBNAIL</code> for the
+evicted UUID. <code>ProjectViewUIComponent</code> detects this on the next frame (its local
+<code>m_cached_handles</code> entry still exists but its handle's generation no longer matches the
+slot's current generation — the handle is stale). The component clears the stale local
+entry and re-enqueues a <code>RequestThumbnail</code>.</p>
+<p><code>ThumbnailGenerator::RequestThumbnail</code> checks the cache first. On a miss it then
+checks whether a <code>.thumb</code> file exists (via <code>IVFSContext</code>) before launching a full
+render job:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Lookup() → miss
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>  → try LoadFromDisk for this single UUID
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>      → .thumb found: decode + upload, no render job needed
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>      → .thumb not found: dispatch full Generate* job
+</code></pre></div>
+<p>This means re-display of recently evicted thumbnails is nearly instantaneous (just a
+PNG decode + GPU upload), whereas newly encountered assets require full generation.</p>
+<h3 id="placeholder-entries">Placeholder entries<a class="headerlink" href="#placeholder-entries" title="Permanent link">&para;</a></h3>
+<p>Slots 0–3 are never inserted into the LRU logic. <code>Evict()</code> skips any entry whose
+<code>Handle.Index &lt; 4</code>. Placeholder images are permanent residents.</p>
+<hr />
+<h2 id="9-unit-tests">9. Unit Tests<a class="headerlink" href="#9-unit-tests" title="Permanent link">&para;</a></h2>
+<p>File: <code>ZEngine/tests/Editor/Thumbnails/ThumbnailTest.cpp</code></p>
+<h3 id="test-1-cache-hit-uuid-with-stored-handle-returns-it-immediately-no-async-request">Test 1 — Cache hit: UUID with stored handle returns it immediately, no async request<a class="headerlink" href="#test-1-cache-hit-uuid-with-stored-handle-returns-it-immediately-no-async-request" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">ThumbnailCache</span><span class="p">,</span><span class="w"> </span><span class="n">CacheHitReturnsImmediately</span><span class="p">)</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="p">{</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="n">ThumbnailCache</span><span class="w"> </span><span class="n">cache</span><span class="p">;</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="w"> </span><span class="n">uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid_system_generator</span><span class="p">{}();</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">    </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">expected</span><span class="p">{</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">};</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">    </span><span class="n">cache</span><span class="p">.</span><span class="n">Store</span><span class="p">(</span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">expected</span><span class="p">);</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">callback_fired</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">    </span><span class="n">MockThumbnailGenerator</span><span class="w"> </span><span class="nf">generator</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cache</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">    </span><span class="n">generator</span><span class="p">.</span><span class="n">RequestThumbnail</span><span class="p">({</span>
+<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="w">        </span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">ThumbnailPriority</span><span class="o">::</span><span class="n">Visible</span><span class="p">,</span>
+<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="w">        </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="w">            </span><span class="n">callback_fired</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="w">            </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">expected</span><span class="p">);</span>
+<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="w">    </span><span class="p">});</span>
+<a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>
+<a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a><span class="w">    </span><span class="c1">// Callback must fire synchronously (cache hit path) — no Tick() needed.</span>
+<a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a><span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">callback_fired</span><span class="p">);</span>
+<a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a><span class="w">    </span><span class="c1">// No async job was dispatched.</span>
+<a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">generator</span><span class="p">.</span><span class="n">ActiveJobCount</span><span class="p">(),</span><span class="w"> </span><span class="mi">0u</span><span class="p">);</span>
+<a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="test-2-cache-miss-requestthumbnail-fires-async-job-tick-completes-it-callback-fires-with-valid-handle">Test 2 — Cache miss: RequestThumbnail fires async job; Tick completes it; callback fires with valid handle<a class="headerlink" href="#test-2-cache-miss-requestthumbnail-fires-async-job-tick-completes-it-callback-fires-with-valid-handle" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">ThumbnailGenerator</span><span class="p">,</span><span class="w"> </span><span class="n">CacheMissFiresAsyncJobAndCallback</span><span class="p">)</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="p">{</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="n">ThumbnailCache</span><span class="w"> </span><span class="n">cache</span><span class="p">;</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="n">MockAssetManager</span><span class="w"> </span><span class="n">asset_manager</span><span class="p">;</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span><span class="n">ThumbnailGenerator</span><span class="w"> </span><span class="nf">generator</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cache</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">asset_manager</span><span class="p">);</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">    </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="w"> </span><span class="n">uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid_system_generator</span><span class="p">{}();</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">    </span><span class="n">asset_manager</span><span class="p">.</span><span class="n">RegisterFakeTexture</span><span class="p">(</span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="cm">/* 256×256 checkerboard */</span><span class="w"> </span><span class="n">MakeCheckerboard</span><span class="p">());</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">    </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">received</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">INVALID_THUMBNAIL</span><span class="p">;</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="w">    </span><span class="n">generator</span><span class="p">.</span><span class="n">RequestThumbnail</span><span class="p">({</span>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="w">        </span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">ThumbnailPriority</span><span class="o">::</span><span class="n">Visible</span><span class="p">,</span>
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="w">        </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">received</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="w">    </span><span class="p">});</span>
+<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>
+<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="w">    </span><span class="c1">// Pump until callback fires (at most 100 ticks to avoid infinite loop).</span>
+<a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">received</span><span class="p">.</span><span class="n">IsValid</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span>
+<a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a><span class="w">        </span><span class="n">generator</span><span class="p">.</span><span class="n">Tick</span><span class="p">();</span>
+<a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a>
+<a id="__codelineno-14-20" name="__codelineno-14-20" href="#__codelineno-14-20"></a><span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">received</span><span class="p">.</span><span class="n">IsValid</span><span class="p">());</span>
+<a id="__codelineno-14-21" name="__codelineno-14-21" href="#__codelineno-14-21"></a><span class="w">    </span><span class="n">EXPECT_NE</span><span class="p">(</span><span class="n">received</span><span class="p">,</span><span class="w"> </span><span class="n">INVALID_THUMBNAIL</span><span class="p">);</span>
+<a id="__codelineno-14-22" name="__codelineno-14-22" href="#__codelineno-14-22"></a><span class="w">    </span><span class="c1">// Cache now holds the result.</span>
+<a id="__codelineno-14-23" name="__codelineno-14-23" href="#__codelineno-14-23"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">cache</span><span class="p">.</span><span class="n">Lookup</span><span class="p">(</span><span class="n">uuid</span><span class="p">),</span><span class="w"> </span><span class="n">received</span><span class="p">);</span>
+<a id="__codelineno-14-24" name="__codelineno-14-24" href="#__codelineno-14-24"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="test-3-placeholder-returned-while-request-is-pending">Test 3 — Placeholder returned while request is pending<a class="headerlink" href="#test-3-placeholder-returned-while-request-is-pending" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">ThumbnailGenerator</span><span class="p">,</span><span class="w"> </span><span class="n">PlaceholderReturnedWhilePending</span><span class="p">)</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="p">{</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="n">ThumbnailCache</span><span class="w"> </span><span class="n">cache</span><span class="p">;</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="n">MockAssetManager</span><span class="w"> </span><span class="n">asset_manager</span><span class="p">;</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">    </span><span class="n">ThumbnailGenerator</span><span class="w"> </span><span class="nf">generator</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cache</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">asset_manager</span><span class="p">);</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">    </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="w"> </span><span class="n">uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid_system_generator</span><span class="p">{}();</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">    </span><span class="n">asset_manager</span><span class="p">.</span><span class="n">RegisterFakeMesh</span><span class="p">(</span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">MakeCubeMesh</span><span class="p">());</span>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">    </span><span class="c1">// Before any request, Lookup returns invalid.</span>
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="w">    </span><span class="n">EXPECT_FALSE</span><span class="p">(</span><span class="n">cache</span><span class="p">.</span><span class="n">Lookup</span><span class="p">(</span><span class="n">uuid</span><span class="p">).</span><span class="n">IsValid</span><span class="p">());</span>
+<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>
+<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="w">    </span><span class="c1">// Enqueue but do not Tick().</span>
+<a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="w">    </span><span class="n">generator</span><span class="p">.</span><span class="n">RequestThumbnail</span><span class="p">({</span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">ThumbnailPriority</span><span class="o">::</span><span class="n">Visible</span><span class="p">,</span><span class="w"> </span><span class="p">[](</span><span class="k">auto</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="p">){}});</span>
+<a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a>
+<a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="w">    </span><span class="c1">// UI code: Lookup still invalid (no Tick yet), so it shows placeholder.</span>
+<a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a><span class="w">    </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cache</span><span class="p">.</span><span class="n">Lookup</span><span class="p">(</span><span class="n">uuid</span><span class="p">);</span>
+<a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">h</span><span class="p">.</span><span class="n">IsValid</span><span class="p">())</span>
+<a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a><span class="w">        </span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PlaceholderFor</span><span class="p">(</span><span class="n">AssetType</span><span class="o">::</span><span class="n">Mesh</span><span class="p">);</span>
+<a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a>
+<a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">PLACEHOLDER_THUMBNAIL_MESH</span><span class="p">);</span>
+<a id="__codelineno-15-22" name="__codelineno-15-22" href="#__codelineno-15-22"></a><span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">h</span><span class="p">.</span><span class="n">IsValid</span><span class="p">());</span>
+<a id="__codelineno-15-23" name="__codelineno-15-23" href="#__codelineno-15-23"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="test-4-completion-callback-fires-exactly-once">Test 4 — Completion callback fires exactly once<a class="headerlink" href="#test-4-completion-callback-fires-exactly-once" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">ThumbnailGenerator</span><span class="p">,</span><span class="w"> </span><span class="n">CallbackFiresExactlyOnce</span><span class="p">)</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="p">{</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="n">ThumbnailCache</span><span class="w"> </span><span class="n">cache</span><span class="p">;</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span><span class="n">MockAssetManager</span><span class="w"> </span><span class="n">asset_manager</span><span class="p">;</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">    </span><span class="n">ThumbnailGenerator</span><span class="w"> </span><span class="nf">generator</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cache</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">asset_manager</span><span class="p">);</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="w">    </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="w"> </span><span class="n">uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid_system_generator</span><span class="p">{}();</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="w">    </span><span class="n">asset_manager</span><span class="p">.</span><span class="n">RegisterFakeTexture</span><span class="p">(</span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">MakeCheckerboard</span><span class="p">());</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">fire_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="w">    </span><span class="n">generator</span><span class="p">.</span><span class="n">RequestThumbnail</span><span class="p">({</span>
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="w">        </span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">ThumbnailPriority</span><span class="o">::</span><span class="n">Visible</span><span class="p">,</span>
+<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="w">        </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="n">ThumbnailHandle</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">++</span><span class="n">fire_count</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="w">    </span><span class="p">});</span>
+<a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>
+<a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a><span class="w">    </span><span class="c1">// Tick many more times than needed.</span>
+<a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">200</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span>
+<a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a><span class="w">        </span><span class="n">generator</span><span class="p">.</span><span class="n">Tick</span><span class="p">();</span>
+<a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a>
+<a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">fire_count</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="test-5-stale-invalidation-after-metafileio-reports-stale-lookup-returns-invalid-new-request-generated">Test 5 — Stale invalidation: after MetaFileIO reports Stale, Lookup returns invalid, new request generated<a class="headerlink" href="#test-5-stale-invalidation-after-metafileio-reports-stale-lookup-returns-invalid-new-request-generated" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">ThumbnailCache</span><span class="p">,</span><span class="w"> </span><span class="n">StaleInvalidationTriggersNewRequest</span><span class="p">)</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="p">{</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">    </span><span class="n">ThumbnailCache</span><span class="w"> </span><span class="n">cache</span><span class="p">;</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="n">MockAssetManager</span><span class="w"> </span><span class="n">asset_manager</span><span class="p">;</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">    </span><span class="n">ThumbnailGenerator</span><span class="w"> </span><span class="nf">generator</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cache</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">asset_manager</span><span class="p">);</span>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">    </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="w"> </span><span class="n">uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid_system_generator</span><span class="p">{}();</span>
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">    </span><span class="n">asset_manager</span><span class="p">.</span><span class="n">RegisterFakeTexture</span><span class="p">(</span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">MakeCheckerboard</span><span class="p">());</span>
+<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>
+<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">    </span><span class="c1">// Generate initial thumbnail.</span>
+<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="w">    </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">INVALID_THUMBNAIL</span><span class="p">;</span>
+<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="w">    </span><span class="n">generator</span><span class="p">.</span><span class="n">RequestThumbnail</span><span class="p">({</span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">ThumbnailPriority</span><span class="o">::</span><span class="n">Visible</span><span class="p">,</span>
+<a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="w">        </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">h</span><span class="p">){</span><span class="w"> </span><span class="n">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h</span><span class="p">;</span><span class="w"> </span><span class="p">}});</span>
+<a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">first</span><span class="p">.</span><span class="n">IsValid</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">Tick</span><span class="p">();</span>
+<a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="w">    </span><span class="n">ASSERT_TRUE</span><span class="p">(</span><span class="n">first</span><span class="p">.</span><span class="n">IsValid</span><span class="p">());</span>
+<a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a>
+<a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="w">    </span><span class="c1">// Simulate MetaFileIO marking the asset stale → pipeline calls Invalidate.</span>
+<a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a><span class="w">    </span><span class="n">cache</span><span class="p">.</span><span class="n">Invalidate</span><span class="p">(</span><span class="n">uuid</span><span class="p">);</span>
+<a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a><span class="w">    </span><span class="n">EXPECT_FALSE</span><span class="p">(</span><span class="n">cache</span><span class="p">.</span><span class="n">Lookup</span><span class="p">(</span><span class="n">uuid</span><span class="p">).</span><span class="n">IsValid</span><span class="p">());</span>
+<a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a>
+<a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a><span class="w">    </span><span class="c1">// New request should be accepted (not deduplicated against old).</span>
+<a id="__codelineno-17-22" name="__codelineno-17-22" href="#__codelineno-17-22"></a><span class="w">    </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">second</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">INVALID_THUMBNAIL</span><span class="p">;</span>
+<a id="__codelineno-17-23" name="__codelineno-17-23" href="#__codelineno-17-23"></a><span class="w">    </span><span class="n">generator</span><span class="p">.</span><span class="n">RequestThumbnail</span><span class="p">({</span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">ThumbnailPriority</span><span class="o">::</span><span class="n">Visible</span><span class="p">,</span>
+<a id="__codelineno-17-24" name="__codelineno-17-24" href="#__codelineno-17-24"></a><span class="w">        </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">h</span><span class="p">){</span><span class="w"> </span><span class="n">second</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h</span><span class="p">;</span><span class="w"> </span><span class="p">}});</span>
+<a id="__codelineno-17-25" name="__codelineno-17-25" href="#__codelineno-17-25"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">second</span><span class="p">.</span><span class="n">IsValid</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">Tick</span><span class="p">();</span>
+<a id="__codelineno-17-26" name="__codelineno-17-26" href="#__codelineno-17-26"></a>
+<a id="__codelineno-17-27" name="__codelineno-17-27" href="#__codelineno-17-27"></a><span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">second</span><span class="p">.</span><span class="n">IsValid</span><span class="p">());</span>
+<a id="__codelineno-17-28" name="__codelineno-17-28" href="#__codelineno-17-28"></a><span class="w">    </span><span class="c1">// The new handle may reuse the same GPU slot (same Index) but must be current.</span>
+<a id="__codelineno-17-29" name="__codelineno-17-29" href="#__codelineno-17-29"></a><span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">cache</span><span class="p">.</span><span class="n">Lookup</span><span class="p">(</span><span class="n">uuid</span><span class="p">).</span><span class="n">IsValid</span><span class="p">());</span>
+<a id="__codelineno-17-30" name="__codelineno-17-30" href="#__codelineno-17-30"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="test-6-lru-eviction-after-exceeding-512-oldest-entry-evicted-re-request-falls-back-to-thumb-file">Test 6 — LRU eviction: after exceeding 512, oldest entry evicted; re-request falls back to .thumb file<a class="headerlink" href="#test-6-lru-eviction-after-exceeding-512-oldest-entry-evicted-re-request-falls-back-to-thumb-file" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">ThumbnailCache</span><span class="p">,</span><span class="w"> </span><span class="n">LRUEvictionFallsBackToThumbFile</span><span class="p">)</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="p">{</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">    </span><span class="n">MockVFSContext</span><span class="w"> </span><span class="n">vfs</span><span class="p">;</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">    </span><span class="n">ThumbnailCache</span><span class="w"> </span><span class="n">cache</span><span class="p">;</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="w">    </span><span class="c1">// Fill cache with 512 entries (slots 4..515).</span>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">    </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&gt;</span><span class="w"> </span><span class="n">uuids_list</span><span class="p">;</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">512</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="w">        </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid_system_generator</span><span class="p">{}();</span>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="w">        </span><span class="n">uuids_list</span><span class="p">.</span><span class="n">PushBack</span><span class="p">(</span><span class="n">u</span><span class="p">);</span>
+<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="w">        </span><span class="c1">// Fake RGBA8 data (all zeros for simplicity).</span>
+<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="w">        </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">pixels</span><span class="p">[</span><span class="mi">128</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">128</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">4</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="w">        </span><span class="n">cache</span><span class="p">.</span><span class="n">SaveToDisk</span><span class="p">(</span><span class="n">vfs</span><span class="p">,</span><span class="w"> </span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">pixels</span><span class="p">);</span><span class="w">   </span><span class="c1">// stores + writes .thumb</span>
+<a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a>
+<a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a><span class="w">    </span><span class="c1">// The oldest UUID (uuids_list[0]) should be evicted when we add entry 513.</span>
+<a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a><span class="w">    </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="w"> </span><span class="n">overflow_uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid_system_generator</span><span class="p">{}();</span>
+<a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a><span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">pixels</span><span class="p">[</span><span class="mi">128</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">128</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">4</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a><span class="w">    </span><span class="n">cache</span><span class="p">.</span><span class="n">SaveToDisk</span><span class="p">(</span><span class="n">vfs</span><span class="p">,</span><span class="w"> </span><span class="n">overflow_uuid</span><span class="p">,</span><span class="w"> </span><span class="n">pixels</span><span class="p">);</span>
+<a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a><span class="w">    </span><span class="n">cache</span><span class="p">.</span><span class="n">Evict</span><span class="p">(</span><span class="mi">512</span><span class="p">);</span>
+<a id="__codelineno-18-21" name="__codelineno-18-21" href="#__codelineno-18-21"></a>
+<a id="__codelineno-18-22" name="__codelineno-18-22" href="#__codelineno-18-22"></a><span class="w">    </span><span class="c1">// Oldest entry is gone from GPU cache.</span>
+<a id="__codelineno-18-23" name="__codelineno-18-23" href="#__codelineno-18-23"></a><span class="w">    </span><span class="n">EXPECT_FALSE</span><span class="p">(</span><span class="n">cache</span><span class="p">.</span><span class="n">Lookup</span><span class="p">(</span><span class="n">uuids_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]).</span><span class="n">IsValid</span><span class="p">());</span>
+<a id="__codelineno-18-24" name="__codelineno-18-24" href="#__codelineno-18-24"></a>
+<a id="__codelineno-18-25" name="__codelineno-18-25" href="#__codelineno-18-25"></a><span class="w">    </span><span class="c1">// Re-requesting it should load from .thumb (no full render job).</span>
+<a id="__codelineno-18-26" name="__codelineno-18-26" href="#__codelineno-18-26"></a><span class="w">    </span><span class="n">MockThumbnailGenerator</span><span class="w"> </span><span class="nf">generator</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cache</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
+<a id="__codelineno-18-27" name="__codelineno-18-27" href="#__codelineno-18-27"></a><span class="w">    </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">reloaded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">INVALID_THUMBNAIL</span><span class="p">;</span>
+<a id="__codelineno-18-28" name="__codelineno-18-28" href="#__codelineno-18-28"></a><span class="w">    </span><span class="n">generator</span><span class="p">.</span><span class="n">RequestThumbnail</span><span class="p">({</span>
+<a id="__codelineno-18-29" name="__codelineno-18-29" href="#__codelineno-18-29"></a><span class="w">        </span><span class="n">uuids_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">ThumbnailPriority</span><span class="o">::</span><span class="n">Visible</span><span class="p">,</span>
+<a id="__codelineno-18-30" name="__codelineno-18-30" href="#__codelineno-18-30"></a><span class="w">        </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="n">ThumbnailHandle</span><span class="w"> </span><span class="n">h</span><span class="p">){</span><span class="w"> </span><span class="n">reloaded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-18-31" name="__codelineno-18-31" href="#__codelineno-18-31"></a><span class="w">    </span><span class="p">});</span>
+<a id="__codelineno-18-32" name="__codelineno-18-32" href="#__codelineno-18-32"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">reloaded</span><span class="p">.</span><span class="n">IsValid</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">Tick</span><span class="p">();</span>
+<a id="__codelineno-18-33" name="__codelineno-18-33" href="#__codelineno-18-33"></a>
+<a id="__codelineno-18-34" name="__codelineno-18-34" href="#__codelineno-18-34"></a><span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">reloaded</span><span class="p">.</span><span class="n">IsValid</span><span class="p">());</span>
+<a id="__codelineno-18-35" name="__codelineno-18-35" href="#__codelineno-18-35"></a><span class="w">    </span><span class="c1">// Verify .thumb path was read, not a render job (checked via MockVFSContext).</span>
+<a id="__codelineno-18-36" name="__codelineno-18-36" href="#__codelineno-18-36"></a><span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">vfs</span><span class="p">.</span><span class="n">WasThumbFileRead</span><span class="p">(</span><span class="n">uuids_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span>
+<a id="__codelineno-18-37" name="__codelineno-18-37" href="#__codelineno-18-37"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">generator</span><span class="p">.</span><span class="n">RenderJobCount</span><span class="p">(),</span><span class="w"> </span><span class="mi">0u</span><span class="p">);</span>
+<a id="__codelineno-18-38" name="__codelineno-18-38" href="#__codelineno-18-38"></a><span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="10-deliverables-checklist">10. Deliverables Checklist<a class="headerlink" href="#10-deliverables-checklist" title="Permanent link">&para;</a></h2>
+<ul>
+<li>[ ] <code>ZEngine/Editor/Thumbnails/ThumbnailHandle.h</code> — generational handle struct,
+      <code>INVALID_THUMBNAIL</code>, <code>PLACEHOLDER_THUMBNAIL_MESH/TEXTURE/MATERIAL</code> constants,
+      <code>IsValid()</code>, <code>operator==</code></li>
+<li>[ ] <code>ZEngine/Editor/Thumbnails/ThumbnailCache.h</code> + <code>.cpp</code> — <code>Lookup</code>, <code>Store</code>,
+      <code>Invalidate</code>, <code>LoadFromDisk</code>, <code>SaveToDisk</code>, <code>Evict</code>; LRU entry struct with frame
+      timestamp; slot generation table; free-list recycling; placeholder slots 1–3 never
+      evicted</li>
+<li>[ ] <code>ZEngine/Editor/Thumbnails/ThumbnailRequest.h</code> — <code>ThumbnailPriority</code> enum,
+      <code>ThumbnailCallback</code> alias, <code>ThumbnailRequest</code> struct</li>
+<li>[ ] <code>ZEngine/Editor/Thumbnails/ThumbnailGenerator.h</code> + <code>.cpp</code> — <code>RequestThumbnail</code>
+      with cache-hit fast path and in-flight deduplication; <code>Tick()</code> draining result
+      queue, uploading GPU images, firing callbacks; separate visible/prefetch queues;
+      <code>kMaxConcurrentJobs = 4</code>; <code>GenerateTextureThumbnail</code>, <code>GenerateMeshThumbnail</code>,
+      <code>GenerateMaterialThumbnail</code> dispatched via <code>ThreadPoolHelper</code></li>
+<li>[ ] <code>ZEngine/Editor/Thumbnails/OffscreenRenderer.h</code> + <code>.cpp</code> — single 128×128
+      <code>VkFramebuffer</code>; reuses engine <code>VkDevice</code>; fixed directional light constant;
+      bounding-sphere-fitted camera; PNG read-back via staging buffer; <code>VkFence</code> reuse;
+      no <code>new</code>/<code>delete</code>; <code>RenderResourceManager</code> for all Vulkan resource allocation</li>
+<li>[ ] <code>ZEngine/Editor/Thumbnails/PlaceholderFor.h</code> — <code>PlaceholderFor(AssetType)</code>
+      free function returning the appropriate placeholder constant</li>
+<li>[ ] <code>ProjectViewUIComponent</code> updated — <code>DrawAssetCell</code> uses <code>ThumbnailHandle</code>; local
+      <code>m_cached_handles</code> map; calls <code>RequestThumbnail(Visible)</code> on first miss; updates
+      <code>m_cached_handles</code> in callback; calls <code>cache.Invalidate</code> + local map erase on
+      MetaFileIO stale notification</li>
+<li>[ ] <code>ThumbnailCache::LoadFromDisk</code> called during editor startup (before first frame)
+      in <code>EditorLayer::OnAttach</code> or equivalent initialization path</li>
+<li>[ ] Placeholder GPU images (mesh/texture/material icons) uploaded to slots 1–3 during
+      <code>LoadFromDisk</code>; never inserted into LRU sort; never evicted</li>
+<li>[ ] <code>.thumb</code> file convention documented and followed: <code>&lt;asset_path&gt;.thumb</code> adjacent to
+      <code>&lt;asset_path&gt;.meta</code>; PNG format; target size ≤ 8 KB; UUID read from sibling <code>.meta</code></li>
+<li>[ ] Eviction cap set to <code>512</code> GPU thumbnails (<code>≈ 32 MB</code>); <code>Evict(512)</code> called at end
+      of every <code>Tick()</code>; evicted entries fall back to <code>.thumb</code> file on next request</li>
+<li>[ ] <code>ThumbnailGenerator</code> never calls <code>new</code>/<code>delete</code> in hot paths; all buffers
+      allocated via <code>Core::Containers::Array</code> or <code>RenderResourceManager</code></li>
+<li>[ ] <code>tests/Editor/Thumbnails/ThumbnailTest.cpp</code> — all 6 tests pass under
+      AddressSanitizer and UBSanitizer</li>
+<li>[ ] Manual smoke test: open a project with 600 assets; scroll through the entire
+      <code>ProjectViewUIComponent</code>; verify all thumbnails load within 5 seconds; GPU memory
+      usage stays below 40 MB for thumbnails; no ASAN errors; <code>.thumb</code> files appear on
+      disk beside each <code>.meta</code> file</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Zodiac Engine contributors
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/JeanPhilippeKernel/RendererEngine" target="_blank" rel="noopener" title="RendererEngine on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://discord.gg/jC3GPVKKsW" target="_blank" rel="noopener" title="Zodiac Engine on Discord" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

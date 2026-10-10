@@ -1,0 +1,3343 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Cross-platform Vulkan engine, editor, and project tooling">
+      
+      
+      
+        <link rel="canonical" href="https://jeanphilippekernel.github.io/zodiac-engine-docs/reference/rendering/">
+      
+      
+        <link rel="prev" href="../architecture/">
+      
+      
+        <link rel="next" href="../asset-pipeline/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/logo-white.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Rendering - Zodiac Engine</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#rendering-domain" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Zodiac Engine" class="md-header__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="../../assets/logo-white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Zodiac Engine
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Rendering
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="light-blue"  aria-label="Use light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Use light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="light-blue"  aria-label="Use dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Use dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Get ZEngine
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../editor/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Editor
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../development/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Develop
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../project/releases/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Project
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../contributing/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Contribute
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Zodiac Engine" class="md-nav__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="../../assets/logo-white.png" alt="logo">
+
+    </a>
+    Zodiac Engine
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../getting-started/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Get ZEngine
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Get ZEngine
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/install-with-zodiac-engine-hub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install with Zodiac Engine Hub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/first-project/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create your first project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/update-and-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Update and migration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/supported-platforms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Supported platforms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../editor/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Editor
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Editor
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../editor/assets-and-importing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assets and importing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../editor/scenes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scenes and authoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../development/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Develop
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Develop
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/build-from-source/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build from source
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/run-and-debug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run and debug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/project-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rendering
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rendering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#thread-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Thread Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#per-frame-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-Frame Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#renderresourcemanager-rrm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RenderResourceManager (RRM)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RenderResourceManager (RRM)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#upload-command-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upload command buffer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#global-geometry-buffers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Global Geometry Buffers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Global Geometry Buffers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#compaction-on-scene-reload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compaction on scene reload
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#render-graph-and-passes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Render Graph and Passes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Render Graph and Passes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#barrier-derivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Barrier derivation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layout-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layout tracking
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transient-render-targets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transient render targets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#viewport-resize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Viewport resize
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pass-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pass order
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scene-passes-depthprepass-gbufferpass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scene passes (DepthPrePass, GbufferPass)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rendergraph-public-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RenderGraph public API
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rendergraphresourcebuilder-register-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RenderGraphResourceBuilder (Register phase)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rendergraphresourceinspector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RenderGraphResourceInspector
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#irendergraphcallbackpass-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IRenderGraphCallbackPass interface
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#g-buffer-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        G-Buffer Layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lightingpass-deferred-pbr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LightingPass — Deferred PBR
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="LightingPass — Deferred PBR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#light-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Light data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#brdf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BRDF
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#position-reconstruction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Position reconstruction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tone-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tone mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#builtin-geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Builtin Geometry
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scene-mesh-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scene Mesh Pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Scene Mesh Pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#submeshallocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SubMeshAllocation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#material-and-texture-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Material and Texture Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shutdown-and-teardown" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shutdown and Teardown
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Shutdown and Teardown">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#arena-allocation-rule-for-vulkan-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Arena-allocation rule for Vulkan objects
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#known-gaps-and-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known Gaps and Open Issues
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Known Gaps and Open Issues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remaining-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remaining work
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recently-fixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recently fixed
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../asset-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../memory-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ZUI system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../containers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Containers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../design/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Releases and changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/rfcs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proposals and RFCs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project/archive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Historical records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../contributing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribute
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contribute
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/commit-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commit conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/release-process/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release process
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#thread-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Thread Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#per-frame-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-Frame Flow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#renderresourcemanager-rrm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RenderResourceManager (RRM)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RenderResourceManager (RRM)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#upload-command-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Upload command buffer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#global-geometry-buffers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Global Geometry Buffers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Global Geometry Buffers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#compaction-on-scene-reload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compaction on scene reload
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#render-graph-and-passes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Render Graph and Passes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Render Graph and Passes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#barrier-derivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Barrier derivation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layout-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layout tracking
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#transient-render-targets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Transient render targets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#viewport-resize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Viewport resize
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pass-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pass order
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scene-passes-depthprepass-gbufferpass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scene passes (DepthPrePass, GbufferPass)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rendergraph-public-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RenderGraph public API
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rendergraphresourcebuilder-register-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RenderGraphResourceBuilder (Register phase)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rendergraphresourceinspector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RenderGraphResourceInspector
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#irendergraphcallbackpass-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IRenderGraphCallbackPass interface
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#g-buffer-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        G-Buffer Layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lightingpass-deferred-pbr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LightingPass — Deferred PBR
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="LightingPass — Deferred PBR">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#light-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Light data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#brdf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BRDF
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#position-reconstruction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Position reconstruction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tone-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tone mapping
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#builtin-geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Builtin Geometry
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scene-mesh-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scene Mesh Pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Scene Mesh Pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#submeshallocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SubMeshAllocation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#material-and-texture-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Material and Texture Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shutdown-and-teardown" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shutdown and Teardown
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Shutdown and Teardown">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#arena-allocation-rule-for-vulkan-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Arena-allocation rule for Vulkan objects
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#known-gaps-and-open-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known Gaps and Open Issues
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Known Gaps and Open Issues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remaining-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remaining work
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recently-fixed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recently fixed
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/JeanPhilippeKernel/RendererEngine/edit/develop/docs/reference/rendering.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="rendering-domain">Rendering Domain<a class="headerlink" href="#rendering-domain" title="Permanent link">&para;</a></h1>
+<p>Authoritative reference for the ZEngine rendering domain. Update it whenever a significant change lands in <code>develop</code>.</p>
+<p>See also: <a href="../architecture/">Engine Architecture</a> · <a href="../asset-pipeline/">Asset Manager</a> · <a href="../memory-management/">Memory Management</a></p>
+<hr />
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="#architecture-overview">Architecture Overview</a></li>
+<li><a href="#thread-model">Thread Model</a></li>
+<li><a href="#per-frame-flow">Per-Frame Flow</a></li>
+<li><a href="#renderresourcemanager-rrm">RenderResourceManager (RRM)</a></li>
+<li><a href="#global-geometry-buffers">Global Geometry Buffers</a></li>
+<li><a href="#render-graph-and-passes">Render Graph and Passes</a></li>
+<li><a href="#g-buffer-layout">G-Buffer Layout</a></li>
+<li><a href="#lightingpass-deferred-pbr">LightingPass — Deferred PBR</a></li>
+<li><a href="#builtin-geometry">Builtin Geometry</a></li>
+<li><a href="#scene-mesh-pipeline">Scene Mesh Pipeline</a></li>
+<li><a href="#material-and-texture-pipeline">Material and Texture Pipeline</a></li>
+<li><a href="#shutdown-and-teardown">Shutdown and Teardown</a></li>
+<li><a href="#known-gaps-and-open-issues">Known Gaps and Open Issues</a></li>
+</ul>
+<hr />
+<h2 id="architecture-overview">Architecture Overview<a class="headerlink" href="#architecture-overview" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+    ecs["ECS::Scene\nActorManager\nWorldTick"]
+    bridge["ECS → Render synchronization\nhierarchy, transform, and light sync"]
+    rs["RenderScene::MeshInstance[]"]
+    arp["AppRenderPipeline\nbuilds scene buffers and indirect draws"]
+    rrm["RenderResourceManager\nglobal VB / global IB\nbindless TextureArray\nMatSB upload"]
+    registry["AssetRegistry callbacks\nOnAssetReady → m_pending"]
+    rg["RenderGraph\npass DAG"]
+    dev["VulkanDevice\nVMA, command pools\nswapchain, semaphores"]
+
+    ecs --&gt;|main-thread derived snapshot| bridge --&gt; rs
+    rs --&gt; arp
+    arp --&gt; rrm
+    registry --&gt; rrm
+    rrm --&gt; rg
+    rg --&gt; dev</code></pre>
+<p><strong>Key design rule:</strong> <code>RenderResourceManager</code> is the lifetime authority for Vulkan buffers and
+images. Asset and ECS code may request/render-bind resources through established integration
+points, but must not independently allocate, destroy, or retire Vulkan resources.</p>
+<hr />
+<h2 id="thread-model">Thread Model<a class="headerlink" href="#thread-model" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Thread</th>
+<th>Responsibilities</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Main thread</td>
+<td>Fixed-timestep ECS simulation, prepares <code>RenderFrameState</code>, and publishes independent ZUI payloads</td>
+</tr>
+<tr>
+<td>Render thread</td>
+<td><code>BeginFrame</code> → <code>FlushPendingUploads</code> → <code>RenderGraph::Execute</code> → present → <code>EndFrame</code></td>
+</tr>
+<tr>
+<td>Asset/import thread</td>
+<td><code>AssetManager::IngestMesh</code> / <code>IngestTextures</code> → pushes <code>PendingUpload</code> via <code>m_pending_mutex</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>FlushPendingUploads</code> is the only point where GPU uploads happen. The asset thread never touches Vulkan directly.</p>
+<hr />
+<h2 id="per-frame-flow">Per-Frame Flow<a class="headerlink" href="#per-frame-flow" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Main as Main Thread
+    participant Render as Render Thread
+
+    Main-&gt;&gt;Main: WorldTick::Tick (ECS)
+    Main-&gt;&gt;Main: ActorManager::Tick
+    Main-&gt;&gt;Main: Scene::SnapshotTransforms
+    Main-&gt;&gt;Render: Publish newest RenderFrameState
+
+    Render-&gt;&gt;Render: Swapchain::AcquireNextImage
+    Render-&gt;&gt;Render: RRM::BeginFrame(frame_index)
+    Note over Render: FlushPendingUploads
+    Render-&gt;&gt;Render: ResetGeometryBuffersInternal (if scene reload)
+    Render-&gt;&gt;Render: BeginBatchUpload
+    Render-&gt;&gt;Render: DoUploadMesh × N — ONE GPU submission
+    Render-&gt;&gt;Render: EndBatchUpload
+    Render-&gt;&gt;Render: DoUploadTexture × M (per-texture timeline)
+
+    Render-&gt;&gt;Render: AppRenderPipeline::RenderScene
+    Note over Render: Snapshot instances then rebuild submesh and culling input
+    Render-&gt;&gt;Render: Upload TransformSB + DrawDataSB + CullingInputSB
+
+    Render-&gt;&gt;Render: RenderGraph::Execute
+    Note over Render: Depth → G-buffer → Lighting → environment → editor overlays
+
+    Render-&gt;&gt;Render: ZUI Draw → swapchain
+    Render-&gt;&gt;Render: Swapchain::Present
+    Render-&gt;&gt;Render: RRM::EndFrame — finish deferred batch work</code></pre>
+<p>SkyEnvironment selects an HDRI environment-background pass, analytic SkySphere pass, or
+atmosphere composition for each frame; its fallback remains valid while an update loads or fails.</p>
+<hr />
+<h2 id="renderresourcemanager-rrm">RenderResourceManager (RRM)<a class="headerlink" href="#renderresourcemanager-rrm" title="Permanent link">&para;</a></h2>
+<p><strong>File:</strong> <code>ZEngine/ZEngine/Rendering/RenderResourceManager.h/.cpp</code></p>
+<p>Single authority over GPU buffer and image lifetime.</p>
+<h3 id="responsibilities">Responsibilities<a class="headerlink" href="#responsibilities" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>graph LR
+    geo["Geometry\nOwns dynamically sized global VB/IB\n128–512 MiB each\nappends via DoUploadMesh\ntracks byte cursors"]
+    tex["Textures\nAllocates VkImages\nper-frame timeline semaphores\nbindless TextureArray"]
+    pending["Pending queue\nthread-safe m_pending[1024]\ndrained in FlushPendingUploads"]
+    deferred["Deferred deletion\nDeferredFreeQueue (2048 slots)\nstamped with timeline value\ndrains when GPU completes"]
+    fallback["Fallback texture\n4×4 hot-pink (255,20,147)\nGetOrCreateFallbackTexture()"]</code></pre>
+<h3 id="upload-command-buffer">Upload command buffer<a class="headerlink" href="#upload-command-buffer" title="Permanent link">&para;</a></h3>
+<p>RRM owns a dedicated upload command pool (<code>m_upload_pool</code>, <code>m_upload_cmd</code>, <code>m_upload_fence</code>) isolated from the swapchain timeline. In batch mode all <code>vkCmdCopyBuffer</code> calls are recorded into one command buffer and submitted in a single <code>vkQueueSubmit + vkWaitForFences</code>.</p>
+<hr />
+<h2 id="global-geometry-buffers">Global Geometry Buffers<a class="headerlink" href="#global-geometry-buffers" title="Permanent link">&para;</a></h2>
+<p>Streamable scene geometry lives in two device-local packed buffers. Each buffer's capacity is
+derived from 15% of the largest device-local heap, split evenly between vertex and index data,
+and clamped to 128–512 MiB; generated <code>project.json</code> may override the combined streaming budget.</p>
+<table>
+<thead>
+<tr>
+<th>Buffer</th>
+<th>Size</th>
+<th>Usage flags</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>global vertex buffer</td>
+<td>128–512 MiB</td>
+<td><code>STORAGE_BUFFER \| VERTEX_BUFFER \| TRANSFER_DST</code></td>
+</tr>
+<tr>
+<td>global index buffer</td>
+<td>128–512 MiB</td>
+<td><code>STORAGE_BUFFER \| INDEX_BUFFER \| TRANSFER_DST</code></td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid"><code>graph LR
+    subgraph VB["streamable global vertex buffer (128–512 MiB)"]
+        SceneV["Scene mesh data\nDoUploadMesh per asset →"]
+        CurV["vtx_cursor →"]
+    end
+    subgraph IB["streamable global index buffer (128–512 MiB)"]
+        SceneI["Scene mesh indices\nDoUploadMesh per asset →"]
+        CurI["idx_cursor →"]
+    end</code></pre>
+<p><strong>DrawVertex format (32 bytes):</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>offset  0 : float x, y, z      (position)
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>offset 12 : float nx, ny, nz   (normal)
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>offset 24 : float u, v          (UV)
+</code></pre></div></p>
+<p>The grid compatibility path only needs position, so it zeroes unused fields. All builtin geometry uses stride = 32 (<code>sizeof(float) * 8</code>).</p>
+<h3 id="compaction-on-scene-reload">Compaction on scene reload<a class="headerlink" href="#compaction-on-scene-reload" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Editor as EditorScene::ExtractAsync
+    participant RRM as RenderResourceManager
+    participant GPU as GPU
+
+    Editor-&gt;&gt;RRM: ResetGeometryBuffers() — atomic flag
+    Note over RRM: Next BeginFrame
+    RRM-&gt;&gt;RRM: ResetGeometryBuffersInternal()
+    RRM-&gt;&gt;RRM: vtx_cursor = 0, idx_cursor = 0
+    RRM-&gt;&gt;RRM: all MeshSlots cleared (Generation = 0)
+    RRM-&gt;&gt;RRM: uuid_to_buffer map cleared
+    RRM-&gt;&gt;GPU: new scene meshes upload from offset 0 (single batched submit)</code></pre>
+<p>Sky and compatibility-grid geometry reside in dedicated 1 MiB built-in vertex/index buffers so
+streaming reset, eviction, and compaction cannot invalidate their offsets. The production editor
+grid remains an analytic overlay described in <code>docs/design/future-plan/editor-grid.md</code> and must
+not rely on the finite compatibility mesh.</p>
+<hr />
+<h2 id="render-graph-and-passes">Render Graph and Passes<a class="headerlink" href="#render-graph-and-passes" title="Permanent link">&para;</a></h2>
+<p><strong>Files:</strong> <code>ZEngine/ZEngine/Rendering/Renderers/RenderGraph.h/.cpp</code> and callback-pass headers</p>
+<h3 id="data-model">Data model<a class="headerlink" href="#data-model" title="Permanent link">&para;</a></h3>
+<p>The graph stores passes and resources in flat arrays indexed by typed handles:</p>
+<ul>
+<li><code>Array&lt;RGPass&gt;</code> — one entry per registered pass</li>
+<li><code>Array&lt;RGResource&gt;</code> — one entry per declared resource; indexed by <code>RGResourceHandle</code> (typed <code>uint32_t</code> index + version field)</li>
+</ul>
+<p>String-keyed maps are eliminated. All lookups are O(1) array dereferences.</p>
+<h3 id="barrier-derivation">Barrier derivation<a class="headerlink" href="#barrier-derivation" title="Permanent link">&para;</a></h3>
+<p><code>RGAccess</code> is an enum describing how a pass uses a resource. A compile-time <code>kAccessTable</code> maps every <code>RGAccess</code> value to <code>(VkPipelineStageFlags, VkAccessFlags, VkImageLayout)</code>. The graph derives every <code>vkCmdPipelineBarrier</code> call from this table — passes never emit barriers manually.</p>
+<table>
+<thead>
+<tr>
+<th><code>RGAccess</code></th>
+<th>Stage</th>
+<th>Access</th>
+<th>Layout</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td><code>TOP_OF_PIPE</code></td>
+<td>0</td>
+<td><code>UNDEFINED</code></td>
+</tr>
+<tr>
+<td><code>ColorWrite</code></td>
+<td><code>COLOR_ATTACHMENT_OUTPUT</code></td>
+<td><code>COLOR_ATTACHMENT_WRITE</code></td>
+<td><code>COLOR_ATTACHMENT_OPTIMAL</code></td>
+</tr>
+<tr>
+<td><code>DepthWrite</code></td>
+<td><code>EARLY_FRAGMENT_TESTS \| LATE_FRAGMENT_TESTS</code></td>
+<td><code>DEPTH_STENCIL_WRITE \| READ</code></td>
+<td><code>DEPTH_STENCIL_ATTACHMENT_OPTIMAL</code></td>
+</tr>
+<tr>
+<td><code>DepthRead</code></td>
+<td><code>EARLY_FRAGMENT_TESTS</code></td>
+<td><code>DEPTH_STENCIL_READ</code></td>
+<td><code>DEPTH_STENCIL_ATTACHMENT_OPTIMAL</code></td>
+</tr>
+<tr>
+<td><code>ShaderRead</code></td>
+<td><code>FRAGMENT_SHADER</code></td>
+<td><code>SHADER_READ</code></td>
+<td><code>SHADER_READ_ONLY_OPTIMAL</code></td>
+</tr>
+<tr>
+<td><code>ShaderReadWrite</code></td>
+<td><code>COMPUTE_SHADER</code></td>
+<td><code>SHADER_READ \| WRITE</code></td>
+<td><code>GENERAL</code></td>
+</tr>
+<tr>
+<td><code>TransferRead</code></td>
+<td><code>TRANSFER</code></td>
+<td><code>TRANSFER_READ</code></td>
+<td><code>TRANSFER_SRC_OPTIMAL</code></td>
+</tr>
+<tr>
+<td><code>TransferWrite</code></td>
+<td><code>TRANSFER</code></td>
+<td><code>TRANSFER_WRITE</code></td>
+<td><code>TRANSFER_DST_OPTIMAL</code></td>
+</tr>
+<tr>
+<td><code>Present</code></td>
+<td><code>BOTTOM_OF_PIPE</code></td>
+<td>0</td>
+<td><code>PRESENT_SRC_KHR</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><code>DepthRead</code> uses <code>DEPTH_STENCIL_ATTACHMENT_OPTIMAL</code> (not <code>READ_ONLY_OPTIMAL</code>) for MoltenVK compatibility. Read-only depth testing works correctly when <code>depthWriteEnable = VK_FALSE</code> in the pipeline.</p>
+</blockquote>
+<p><strong>Barrier emission algorithm</strong> (runs in <code>Execute()</code> per frame, before each pass):</p>
+<pre class="mermaid"><code>flowchart TD
+    A["For each Write/Read in pass"]
+    B{"RuntimeState.Layout == dst.Layout\nAND RuntimeState.Access == dst.Access?"}
+    C["Skip — resource already in target state"]
+    D["Build VkImageMemoryBarrier\noldLayout = RuntimeState.Layout\nnewLayout = dst.Layout\nsrcAccess = RuntimeState.Access\ndstAccess = dst.Access\n+ correct aspect (depth vs colour)"]
+    E["Accumulate srcStageMask |= RuntimeState.Stage\ndstStageMask |= dst.Stage"]
+    F["Update RuntimeState = {dst.Stage, dst.Access, dst.Layout}"]
+    G{"Any barriers accumulated?"}
+    H["vkCmdPipelineBarrier(srcStage, dstStage, barriers)"]
+    I["pass.Callback-&gt;Execute(...)"]
+
+    A --&gt; B
+    B -- yes --&gt; C
+    B -- no --&gt; D --&gt; E --&gt; F --&gt; G
+    G -- yes --&gt; H --&gt; I
+    G -- no --&gt; I</code></pre>
+<p><strong>Example: FrameDepth across three consecutive passes</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Frame start: FrameDepth.RuntimeState = {TOP_OF_PIPE, 0, UNDEFINED}
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>DepthPrePass  (DepthWrite)  → barrier UNDEFINED → DEPTH_STENCIL_ATTACHMENT_OPTIMAL
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>                               RuntimeState = {EARLY|LATE, DEPTH_WRITE|READ, DEPTH_STENCIL_ATTACHMENT_OPTIMAL}
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>GbufferPass   (DepthRead)   → memory-only barrier (no layout change; only access mask differs)
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>                               RuntimeState = {EARLY_FRAGMENT, DEPTH_READ, DEPTH_STENCIL_ATTACHMENT_OPTIMAL}
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>LightingPass  (ShaderRead)  → barrier DEPTH_STENCIL_ATTACHMENT_OPTIMAL → SHADER_READ_ONLY_OPTIMAL
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>                               RuntimeState = {FRAGMENT_SHADER, SHADER_READ, SHADER_READ_ONLY_OPTIMAL}
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>EnvironmentBackgroundPass (DepthRead) → barrier SHADER_READ_ONLY_OPTIMAL → DEPTH_STENCIL_ATTACHMENT_OPTIMAL
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>                                        RuntimeState = {EARLY_FRAGMENT, DEPTH_READ, DEPTH_STENCIL_ATTACHMENT_OPTIMAL}
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>Frame N+1: RuntimeState carries across — no reset to UNDEFINED
+</code></pre></div>
+<h3 id="layout-tracking">Layout tracking<a class="headerlink" href="#layout-tracking" title="Permanent link">&para;</a></h3>
+<p>Each resource carries two state fields:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Purpose</th>
+<th>Initial value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CurrentState</code></td>
+<td>Compile-time simulation — used by <code>BuildBarriers</code> to pre-compute static barriers</td>
+<td>Reset to <code>UNDEFINED</code> at each <code>BuildLifetimes</code> call</td>
+</tr>
+<tr>
+<td><code>RuntimeState</code></td>
+<td>Per-frame tracking — drives the live barrier algorithm in <code>Execute()</code></td>
+<td><code>UNDEFINED</code> at startup; preserved across frames; reset to <code>UNDEFINED</code> on resize</td>
+</tr>
+</tbody>
+</table>
+<p><code>RuntimeState</code> starting at <code>UNDEFINED</code> ensures the very first barrier for each resource always performs a full layout + access transition, regardless of driver-internal state.</p>
+<h3 id="transient-render-targets">Transient render targets<a class="headerlink" href="#transient-render-targets" title="Permanent link">&para;</a></h3>
+<p>All render targets — including <code>FrameColor</code> and <code>FrameDepth</code> — are transient resources owned and allocated by the graph. No render target is an externally managed <code>Image2DBuffer</code> that passes hold a raw pointer to.</p>
+<ul>
+<li><code>DepthPrePass::Setup</code> declares <code>FrameDepth</code> via <code>WriteDepthAttachment</code>.</li>
+<li><code>LightingPass::Setup</code> declares <code>FrameColor</code> via <code>WriteColorAttachment</code>.</li>
+<li><code>GbufferPass::Setup</code> declares the three G-buffer targets (<code>GBufferAlbedoAO</code>, <code>GBufferNormalRoughness</code>, <code>GBufferMetallicEmissive</code>) via <code>WriteColorAttachment</code> and reads <code>FrameDepth</code> via <code>ReadDepth</code>.</li>
+</ul>
+<h3 id="viewport-resize">Viewport resize<a class="headerlink" href="#viewport-resize" title="Permanent link">&para;</a></h3>
+<p>Resize uses a swap-and-reuse strategy to keep <code>TextureHandle</code> indices stable across frames:</p>
+<ol>
+<li>Save the old <code>VkFramebuffer</code> and <code>VkImage</code> handles.</li>
+<li>Allocate new <code>VkImage</code> / <code>VkImageView</code> at the new dimensions and write them into the existing <code>Image2DBuffer</code> slot in place — the <code>TextureHandle</code> index does not change.</li>
+<li>Submit the old Vulkan objects to <code>DeferFree</code>; they are destroyed after the GPU timeline value covering the last frame that referenced them completes.</li>
+</ol>
+<p>Descriptor sets that reference the bindless <code>TextureArray</code> remain valid across resize because the <code>TextureHandle</code> index is unchanged.</p>
+<h3 id="pass-order">Pass order<a class="headerlink" href="#pass-order" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>flowchart LR
+    DP["DepthPrePass\ndepth_prepass_scene shader\nDrawIndirect — all scene meshes\ndepth only"]
+    GBP["GbufferPass\ng_buffer shader\nDrawIndirect — all scene meshes\nwrites 3 G-buffer RTs\nreads FrameDepth"]
+    LP["LightingPass\ndeferred_lighting shader\nDraw(3) full-screen triangle\nreads G-buffer + FrameDepth\nwrites FrameColor"]
+    SP["Sky modes\nHDI/analytic bake + composite or SkySphere"]
+    TM["Tone mapping\nFrameColor"]
+    GP["GridPass\nfinite XZ compatibility quad"]
+
+    DP --&gt; GBP --&gt; LP --&gt; SP --&gt; TM --&gt; GP</code></pre>
+<h3 id="scene-passes-depthprepass-gbufferpass">Scene passes (DepthPrePass, GbufferPass)<a class="headerlink" href="#scene-passes-depthprepass-gbufferpass" title="Permanent link">&para;</a></h3>
+<p>Use <code>vkCmdDrawIndirect</code> with commands written by <code>FrustumCullingPass</code> into the
+per-frame device-local culled-indirect buffer. <code>AppRenderPipeline::RenderScene()</code>
+rebuilds transforms, submesh draw data, and culling input from an instance
+snapshot every rendered frame; it clears <code>InstancesDirty</code> but does not use that
+flag as a rebuild gate. The per-frame upload heap currently carries camera UBO
+data; the scene storage buffers are updated through RRM.</p>
+<h3 id="rendergraph-public-api">RenderGraph public API<a class="headerlink" href="#rendergraph-public-api" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GetPass(name)</code></td>
+<td>Returns <code>RGPass*</code> — O(1) typed-index lookup; for setup and configuration only</td>
+</tr>
+<tr>
+<td><code>SetPassEnabled(name, bool)</code></td>
+<td>Toggles a pass on or off at runtime without recompiling the graph</td>
+</tr>
+</tbody>
+</table>
+<h3 id="rendergraphresourcebuilder-register-phase">RenderGraphResourceBuilder (Register phase)<a class="headerlink" href="#rendergraphresourcebuilder-register-phase" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>WriteColorAttachment(name, spec)</code></td>
+<td>Declares a transient color render target owned by the graph</td>
+</tr>
+<tr>
+<td><code>WriteDepthAttachment(name, spec)</code></td>
+<td>Declares a transient depth render target owned by the graph</td>
+</tr>
+<tr>
+<td><code>ReadTexture(name, binding_key)</code></td>
+<td>Declares a sampled texture read; resource transitions to <code>ShaderRead</code></td>
+</tr>
+<tr>
+<td><code>ReadDepth(name)</code></td>
+<td>Declares a depth read; resource stays in <code>DEPTH_STENCIL_ATTACHMENT_OPTIMAL</code></td>
+</tr>
+<tr>
+<td><code>AttachRenderTarget(name, handle)</code></td>
+<td>Attaches an external <code>TextureHandle</code> not owned by the graph</td>
+</tr>
+</tbody>
+</table>
+<h3 id="rendergraphresourceinspector">RenderGraphResourceInspector<a class="headerlink" href="#rendergraphresourceinspector" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GetTextureHandle(RGResourceHandle)</code></td>
+<td>Returns <code>TextureHandle</code> — O(1) array dereference</td>
+</tr>
+<tr>
+<td><code>GetRenderTarget(name)</code></td>
+<td>Returns <code>TextureHandle</code> by name</td>
+</tr>
+<tr>
+<td><code>GetTexture(name)</code></td>
+<td>Returns <code>TextureHandle</code> by name</td>
+</tr>
+</tbody>
+</table>
+<h3 id="irendergraphcallbackpass-interface">IRenderGraphCallbackPass interface<a class="headerlink" href="#irendergraphcallbackpass-interface" title="Permanent link">&para;</a></h3>
+<p>Persistent callback passes use the current graph lifecycle:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Phase</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Register(device, name, frame_context, res_builder, res_inspector)</code></td>
+<td>Per-frame graph construction</td>
+<td>Declare reads/writes and opt into this frame.</td>
+</tr>
+<tr>
+<td>Pipeline description / compute shader query</td>
+<td>Backend graph preparation</td>
+<td>Supply static pipeline requirements; the graph owns attachment compatibility.</td>
+</tr>
+<tr>
+<td><code>Prepare(device, scene, inspector, pass)</code></td>
+<td>After graph compilation</td>
+<td>Refresh frame-local descriptors and constants.</td>
+</tr>
+<tr>
+<td><code>Execute(...)</code> or <code>RecordDraw(...)</code></td>
+<td>Command recording</td>
+<td>Record pass work outside or inside graph-managed rendering.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="g-buffer-layout">G-Buffer Layout<a class="headerlink" href="#g-buffer-layout" title="Permanent link">&para;</a></h2>
+<p>GbufferPass writes three transient color attachments plus the shared <code>FrameDepth</code> depth attachment from DepthPrePass. World-space position is not stored as a separate render target — it is reconstructed from depth in LightingPass.</p>
+<table>
+<thead>
+<tr>
+<th>Attachment</th>
+<th>Name</th>
+<th>Format</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RT0</td>
+<td><code>GBufferAlbedoAO</code></td>
+<td><code>R8G8B8A8_UNORM</code></td>
+<td>RGB: albedo. A: ambient occlusion (ORM texture R channel)</td>
+</tr>
+<tr>
+<td>RT1</td>
+<td><code>GBufferNormalRoughness</code></td>
+<td><code>R16G16B16A16_SFLOAT</code></td>
+<td>RGB: world-space normal packed from ±1 to [0,1] via <code>n * 0.5 + 0.5</code>. A: roughness (ORM texture G channel)</td>
+</tr>
+<tr>
+<td>RT2</td>
+<td><code>GBufferMetallicEmissive</code></td>
+<td><code>R8G8B8A8_UNORM</code></td>
+<td>R: metallic (ORM texture B channel). G: emissive intensity. BA: reserved</td>
+</tr>
+<tr>
+<td>Depth</td>
+<td><code>FrameDepth</code></td>
+<td>device depth format</td>
+<td>Shared from DepthPrePass via <code>ReadDepth</code>; not stored as a color channel</td>
+</tr>
+</tbody>
+</table>
+<p>ORM texture channel mapping: R = occlusion, G = roughness, B = metallic.</p>
+<hr />
+<h2 id="lightingpass-deferred-pbr">LightingPass — Deferred PBR<a class="headerlink" href="#lightingpass-deferred-pbr" title="Permanent link">&para;</a></h2>
+<p>LightingPass is a full-screen triangle pass that reads the three G-buffer targets and <code>FrameDepth</code> as <code>ShaderRead</code> inputs, plus a <code>LightBuffer</code> SSBO, and writes the final shaded result to <code>FrameColor</code>.</p>
+<h3 id="light-data">Light data<a class="headerlink" href="#light-data" title="Permanent link">&para;</a></h3>
+<p><code>LightArrayUBO</code> is uploaded each frame:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>DirectionalLights[4]
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    Direction   vec4
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    Color       vec4
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    Intensity   float
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>PointLights[8]
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    Position    vec4
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    Color       vec4
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    Intensity   float
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    Radius      float
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>DirectionalCount  uint
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>PointCount        uint
+</code></pre></div>
+<h3 id="brdf">BRDF<a class="headerlink" href="#brdf" title="Permanent link">&para;</a></h3>
+<p>Cook-Torrance specular BRDF:</p>
+<ul>
+<li>Distribution: GGX (Trowbridge-Reitz)</li>
+<li>Geometry: Smith (GGX correlated)</li>
+<li>Fresnel: Schlick approximation</li>
+</ul>
+<h3 id="position-reconstruction">Position reconstruction<a class="headerlink" href="#position-reconstruction" title="Permanent link">&para;</a></h3>
+<p>World-space position is reconstructed from the depth buffer using the inverse view-projection matrix. <code>Camera.InvViewProj</code> is added to <code>UBOCameraLayout</code> and exposed in <code>geometry_bindings.glsl</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ndc.xy  = uv * 2.0 - 1.0
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>ndc.z   = sample(FrameDepth, uv)
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>world   = InvViewProj * vec4(ndc, 1.0)
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>world  /= world.w
+</code></pre></div>
+<h3 id="tone-mapping">Tone mapping<a class="headerlink" href="#tone-mapping" title="Permanent link">&para;</a></h3>
+<p><code>ToneMappingPass</code> converts linear HDR scene colour into the sampled <code>FrameColor</code>
+target. The current <code>tone_mapping.frag</code> uses fitted ACES followed by a
+<code>pow(color, 1.0 / 2.2)</code> display transform; it is a separate pass after lighting,
+not Reinhard logic inside <code>LightingPass</code>.</p>
+<hr />
+<h2 id="builtin-geometry">Builtin Geometry<a class="headerlink" href="#builtin-geometry" title="Permanent link">&para;</a></h2>
+<p>The current grid mesh is temporary compatibility geometry, not the production grid renderer:</p>
+<ul>
+<li><strong>Grid compatibility path:</strong> 4 vertices (flat quad) used only until the serialized arbitrary-plane analytic grid passes its visual and validation gates</li>
+</ul>
+<hr />
+<h2 id="scene-mesh-pipeline">Scene Mesh Pipeline<a class="headerlink" href="#scene-mesh-pipeline" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+    src["Source file\n.glb / .fbx"]
+    cook["GltfImporter / AssimpImporter\n(ThreadPool via ImportCoordinator)\nCook → .zemesh + .zematerial + textures"]
+    ingest["AssetManager::IngestMesh\nAssetManager::IngestTextures\nAssetManager::IngestMaterial"]
+    setLoaded["AssetRegistry::SetState(Loaded)\n→ RRM::OnAssetReady → pending upload queue"]
+    flush["RRM::FlushPendingUploads\n(render thread, next BeginFrame)\nDoUploadMesh → AppendToGlobalBuffer\nMeshSlot registered"]
+    pipeline["AppRenderPipeline::RenderScene\nper-frame instance snapshot\nsubmesh allocations + culling input\n→ DrawIndirect"]
+
+    src --&gt; cook --&gt; ingest --&gt; setLoaded --&gt; flush --&gt; pipeline</code></pre>
+<h3 id="submeshallocation">SubMeshAllocation<a class="headerlink" href="#submeshallocation" title="Permanent link">&para;</a></h3>
+<p>Each submesh of each mesh instance produces one draw command:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">struct</span><span class="w"> </span><span class="nc">SubMeshAllocation</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">VertexOffset</span><span class="p">;</span><span class="w">    </span><span class="c1">// first DrawVertex element in global VB</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">IndexOffset</span><span class="p">;</span><span class="w">     </span><span class="c1">// first uint32 element in global IB</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">VertexCount</span><span class="p">;</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">IndexCount</span><span class="p">;</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">InstanceCount</span><span class="p">;</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">TransformId</span><span class="p">;</span><span class="w">     </span><span class="c1">// index into TransformSB</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">MaterialId</span><span class="p">;</span><span class="w">      </span><span class="c1">// index into GPUMeshMaterials / MatSB</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="p">};</span>
+</code></pre></div>
+<hr />
+<h2 id="material-and-texture-pipeline">Material and Texture Pipeline<a class="headerlink" href="#material-and-texture-pipeline" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+    zematerial[".zematerial (JSON)\nMaterial UUID\nPer-slot texture VFS paths\nColour vectors"]
+    ingestMat["AssetManager::IngestMaterial\nCopy colours → GPUMeshMaterials[slot]\ntex_handle per slot:\n  1. UUID lookup → TextureHandle.Index\n  2. path fallback → IngestTexture → upload"]
+    gpuMat["GPUMeshMaterials[slot]\nMeshMaterial struct\nAlbedoMap = bindless index K\nor INVALID_MAP_HANDLE (0xFFFFFFFF)"]
+    update["GraphicRenderer::DrawScene\nevery frame:\nRRM::UpdateBuffer(MaterialBuffer, GPUMeshMaterials)"]
+    matSB["MatSB (set 0, binding 5)\nGPU storage buffer\nread by g_buffer.frag"]
+    shader["g_buffer.frag\nmat = FetchMaterial(MaterialIdx)\nif mat.AlbedoMap &lt; 0xFFFFFFFF:\n  sample TextureArray[mat.AlbedoMap]"]
+
+    zematerial --&gt; ingestMat --&gt; gpuMat --&gt; update --&gt; matSB --&gt; shader</code></pre>
+<p><code>.zematerial</code> files are JSON (nlohmann/json). Texture paths are inline in <code>.zematerial</code> — <code>.zetextures</code> files are eliminated.</p>
+<p><code>EditorScene::ExtractAsync</code> currently processes materials <strong>before</strong> meshes so
+texture handles are available when mesh submeshes reference them. It is a
+compatibility scene-extraction path, not the staged UUID-based scene-document
+load contract described in <code>scene-serialization.md</code>.</p>
+<hr />
+<h2 id="shutdown-and-teardown">Shutdown and Teardown<a class="headerlink" href="#shutdown-and-teardown" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart TD
+    T1["Signal render loop to terminate"]
+    T2["Join render thread\nNO GPU work after this"]
+    T3["ECS::ActorManager::Shutdown\nECS::Scene::Shutdown"]
+    T4["RRM::Shutdown\nQueueWaitAll\ndestroy upload/transfer pools\nfree global buffers"]
+    T5["AssetManager::Shutdown"]
+    T6["AppRenderPipeline::Shutdown\nRenderGraph callback/resource teardown\nZUI renderer/payload shutdown"]
+    T7["VFS::Shutdown"]
+    T8["VulkanDevice::Deinitialize\nQueueWaitAll\n1st PendingFree drain\nSwapchainPtr→Dispose\nCommandBufferMgr::Deinit\n2nd PendingFree drain"]
+    T9["Window::Deinitialize"]
+    T10["VulkanDevice::Dispose\nfinal PendingFree drain\nGpuMem::Shutdown\nvkDestroyDevice"]
+
+    T1 --&gt; T2 --&gt; T3 --&gt; T4 --&gt; T5 --&gt; T6 --&gt; T7 --&gt; T8 --&gt; T9 --&gt; T10</code></pre>
+<h3 id="arena-allocation-rule-for-vulkan-objects">Arena-allocation rule for Vulkan objects<a class="headerlink" href="#arena-allocation-rule-for-vulkan-objects" title="Permanent link">&para;</a></h3>
+<p>All rendering objects are arena-allocated. Arena release frees raw memory pages without calling C++ destructors — every subsystem must call destructors <strong>explicitly</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Strategy</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CommandPool</code></td>
+<td>Direct — <code>vkDestroyCommandPool</code> in <code>~CommandPool()</code></td>
+<td>Always freed at GPU-idle</td>
+</tr>
+<tr>
+<td><code>Semaphore</code> / <code>Fence</code></td>
+<td>Deferred — <code>Device-&gt;DeferFree()</code> in destructor</td>
+<td>Can be signalled mid-frame</td>
+</tr>
+<tr>
+<td><code>FramebufferVNext</code></td>
+<td>Direct — <code>vkDestroyFramebuffer</code> in <code>Dispose()</code></td>
+<td>Called after <code>QueueWaitAll</code></td>
+</tr>
+<tr>
+<td><code>GraphicPipeline</code></td>
+<td>Direct — <code>vkDestroyPipeline[Layout]</code> in <code>Dispose()</code></td>
+<td>Same</td>
+</tr>
+</tbody>
+</table>
+<p>See <a href="../memory-management/#arena-allocated-vulkan-objects">Memory Management — Arena-Allocated Vulkan Objects</a> for the full rules.</p>
+<hr />
+<h2 id="known-gaps-and-open-issues">Known Gaps and Open Issues<a class="headerlink" href="#known-gaps-and-open-issues" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Area</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Authoring render bindings</td>
+<td>Scene lifecycle</td>
+<td>Transform/light synchronization is live for bound instances. Staged scene load, create/delete, and undo restoration still need to rebuild MeshComponent to RenderScene bindings before publication; see scene-serialization.md and editor-undo-redo.md.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/JeanPhilippeKernel/RendererEngine/issues/753">#753</a></td>
+<td>RRM tests</td>
+<td>A headless <em>VulkanDevice</em> fixture is needed to unskip GPU-level texture/reload lifetime tests.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/JeanPhilippeKernel/RendererEngine/issues/663">#663</a></td>
+<td>Visibility</td>
+<td>GPU frustum rejection exists; compacted <code>vkDrawIndirectCount</code> submission remains. The issue's CPU-only description is stale.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/JeanPhilippeKernel/RendererEngine/issues/312">#312</a></td>
+<td>Transient memory</td>
+<td>Exact-match transient reuse exists. True overlapping-memory aliasing is a separate, measured-pressure optimization.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/JeanPhilippeKernel/RendererEngine/issues/314">#314</a></td>
+<td>Transparency</td>
+<td>A production transparent submission pass is still absent.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/JeanPhilippeKernel/RendererEngine/issues/318">#318</a></td>
+<td>Shader validation</td>
+<td>Runtime shader compilation needs automated behavioral coverage.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/JeanPhilippeKernel/RendererEngine/issues/821">#821</a></td>
+<td>Environment policy</td>
+<td>Settings UI is open work, but RendererEngine must not directly persist the Hub-generated <code>project.json</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="remaining-work">Remaining work<a class="headerlink" href="#remaining-work" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Production editor scene binding rebuild and immutable render snapshots</li>
+<li>Advanced visibility: compacted indirect-count, occlusion/Hi-Z, and material-sort policy</li>
+<li>Texture batching/streaming policy beyond the current upload and release paths</li>
+</ul>
+<h3 id="recently-fixed">Recently fixed<a class="headerlink" href="#recently-fixed" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>PR</th>
+<th>Area</th>
+<th>What was fixed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/JeanPhilippeKernel/RendererEngine/pull/641">#641</a></td>
+<td>Rendering</td>
+<td>Render graph redesign (typed indices, <code>RGAccess</code> barrier table), deferred PBR pipeline (3-RT G-buffer + LightingPass with Cook-Torrance BRDF), stable viewport resize via swap-and-reuse slot</td>
+</tr>
+<tr>
+<td><a href="https://github.com/JeanPhilippeKernel/RendererEngine/pull/634">#634</a></td>
+<td>Material/texture</td>
+<td>Material texture handles now bound to mesh submeshes at draw time; <code>IngestMaterial</code> self-heals missing texture handles via path fallback; <code>.zmesh</code> drag-drop loads associated <code>.zematerial</code> files</td>
+</tr>
+<tr>
+<td><a href="https://github.com/JeanPhilippeKernel/RendererEngine/pull/633">#633</a></td>
+<td>Importer</td>
+<td>GLB texture extraction fixed: <code>fastgltf::visitor</code> + <code>std::visit</code> dispatch failure replaced with explicit <code>std::get_if</code> chains; texture loop optimized (pre-resolved buffer ptrs, <code>fopen</code>/<code>fwrite</code>, no heap in hot path)</td>
+</tr>
+<tr>
+<td><a href="https://github.com/JeanPhilippeKernel/RendererEngine/pull/632">#632</a></td>
+<td>Importer</td>
+<td>Dangling path pointers in <code>AssetImporterUIComponent</code>; <code>.zematerial</code> routing to wrong directory; GltfImporter texture <code>dest_dir</code> dropped workspace; codec writes migrated to VFS atomic rename</td>
+</tr>
+<tr>
+<td><a href="https://github.com/JeanPhilippeKernel/RendererEngine/pull/612">#612</a></td>
+<td>Vulkan shutdown</td>
+<td>All <code>vkDestroyDevice</code> validation errors eliminated</td>
+</tr>
+<tr>
+<td><a href="https://github.com/JeanPhilippeKernel/RendererEngine/pull/611">#611</a></td>
+<td>Rendering</td>
+<td>Legacy builtin background/grid geometry migrated into RRM global buffers; mesh upload batching (N submissions → 1); geometry compaction on scene reload</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../architecture/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Engine architecture">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Engine architecture
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../asset-pipeline/" class="md-footer__link md-footer__link--next" aria-label="Next: Asset pipeline">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Asset pipeline
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Zodiac Engine contributors
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/JeanPhilippeKernel/RendererEngine" target="_blank" rel="noopener" title="RendererEngine on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://discord.gg/jC3GPVKKsW" target="_blank" rel="noopener" title="Zodiac Engine on Discord" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

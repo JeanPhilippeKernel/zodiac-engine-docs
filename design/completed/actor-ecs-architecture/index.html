@@ -1,0 +1,2893 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Cross-platform Vulkan engine, editor, and project tooling">
+      
+      
+      
+        <link rel="canonical" href="https://jeanphilippekernel.github.io/zodiac-engine-docs/design/completed/actor-ecs-architecture/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/logo-white.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>ZEngine — Hybrid Actor-ECS Architecture - Zodiac Engine</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#zengine-hybrid-actor-ecs-architecture" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Zodiac Engine" class="md-header__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="../../../assets/logo-white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Zodiac Engine
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ZEngine — Hybrid Actor-ECS Architecture
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="light-blue"  aria-label="Use light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Use light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="light-blue"  aria-label="Use dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Use dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../getting-started/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Get ZEngine
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../editor/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Editor
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../development/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Develop
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../reference/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../project/releases/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Project
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../contributing/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Contribute
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Zodiac Engine" class="md-nav__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="../../../assets/logo-white.png" alt="logo">
+
+    </a>
+    Zodiac Engine
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../getting-started/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Get ZEngine
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Get ZEngine
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/install-with-zodiac-engine-hub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install with Zodiac Engine Hub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/first-project/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create your first project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/update-and-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Update and migration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/supported-platforms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Supported platforms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../editor/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Editor
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Editor
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../editor/assets-and-importing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assets and importing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../editor/scenes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scenes and authoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../development/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Develop
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Develop
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/build-from-source/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build from source
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/run-and-debug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run and debug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/project-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../reference/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rendering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/asset-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/memory-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/zui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ZUI system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/containers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Containers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Releases and changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/rfcs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proposals and RFCs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/archive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Historical records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../contributing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribute
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contribute
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/commit-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commit conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/release-process/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release process
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#capacity-constants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Capacity constants
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-tier-2-pure-ecs-entity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Tier 2 — Pure ECS Entity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-tier-1-actor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Tier 1 — Actor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Tier 1 — Actor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-actor-base-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Actor base class
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-subclassing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Subclassing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-actormanager" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 ActorManager
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-lifetime-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Lifetime Rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-component-access-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Component Access Implementation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-ecs-core" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. ECS Core
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. ECS Core">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#concepts-archetype-and-sparse-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts: Archetype and Sparse-Set
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#41-entityid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 EntityID
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-componenttypeid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 ComponentTypeID
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-archetypemask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 ArchetypeMask
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-componentstoraget" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 ComponentStorage&lt;T&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-entityregistry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 EntityRegistry
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-ecsscene" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 ECS::Scene
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#47-queryts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.7 Query&lt;Ts...&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#48-worldtick" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.8 WorldTick
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-component-ownership-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Component Ownership Rules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-cross-tier-interaction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Cross-Tier Interaction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-worldcommands-deferred-entity-mutations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. WorldCommands — Deferred Entity Mutations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. WorldCommands — Deferred Entity Mutations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#71-worldcommands-declaration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 WorldCommands declaration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#72-usage-pattern-inside-a-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 Usage pattern inside a system
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#73-flush-ordering-in-the-main-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 Flush ordering in the main loop
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#74-what-is-not-in-worldcommands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 What is NOT in WorldCommands
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#75-thread-safety-per-system-staging-buffers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5 Thread safety — per-system staging buffers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-memory-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Memory Layout
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Memory Layout">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-a-handle-resolves-to-component-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How a Handle resolves to component data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-lives-where-at-runtime-example-200-actors-5000-tier-2-entities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What lives where at runtime (example: 200 Actors + 5000 Tier 2 entities)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-file-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. File Layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-what-is-not-in-this-document" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. What Is Not in This Document
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-deliverables-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Deliverables Checklist
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/JeanPhilippeKernel/RendererEngine/edit/develop/docs/design/completed/actor-ecs-architecture.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="zengine-hybrid-actor-ecs-architecture">ZEngine — Hybrid Actor-ECS Architecture<a class="headerlink" href="#zengine-hybrid-actor-ecs-architecture" title="Permanent link">&para;</a></h1>
+<p><strong>Priority:</strong> P1
+<strong>Status:</strong> Core implemented — ECS, Actor, WorldTick, WorldCommands, MeshComponent, NameComponent, hierarchy sync, and ECS-to-RenderScene transform/light sync are live. Editor-wide selection, authoring transactions, durable scene serialization, and complete lifecycle/render binding restoration remain separate work.
+<strong>Blocks:</strong> <code>system-scheduler.md</code>, <code>animation-system.md</code>, <code>scene-serialization.md</code></p>
+<h2 id="capacity-constants">Capacity constants<a class="headerlink" href="#capacity-constants" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Value</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ActorManager::MAX_ACTORS</code></td>
+<td>1024</td>
+<td>Tier 1 objects are few by design (players, cameras, lights, key NPCs, vehicles). Rarely exceeds a few hundred in practice.</td>
+</tr>
+<tr>
+<td><code>EntityRegistry::MAX_ENTITIES</code></td>
+<td>65536</td>
+<td>Covers all EntityIDs — Tier 1 Actors + Tier 2 pure ECS entities combined. Sufficient for mid-scale games (action, RPG, ~32-player shooters). High-density objects (foliage, particles, building pieces) belong in dedicated systems, not the ECS.</td>
+</tr>
+</tbody>
+</table>
+<p>Memory cost at these limits (ECS sub-arena budget: 128 MB):
+- <code>EntityRegistry</code> slots: 65536 × 12 bytes = ~750 KB
+- <code>ActorManager</code> handle array: 1024 × sizeof(Actor) — Actor base is ~24 bytes = ~25 KB
+- <code>ComponentStorage&lt;T&gt;</code> dense arrays dominate; with 8 component types at 30% occupancy: ~75 MB</p>
+<hr />
+<h2 id="1-overview">1. Overview<a class="headerlink" href="#1-overview" title="Permanent link">&para;</a></h2>
+<p>ZEngine uses a two-tier object model:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Name</th>
+<th>Use case</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Actor</strong></td>
+<td>Few, complex, identity-bearing objects</td>
+<td>Player, camera, directional light, key NPC</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>ECS Entity</strong></td>
+<td>Many, simple, data-only objects</td>
+<td>Foliage, particles, projectiles, crowd agents</td>
+</tr>
+</tbody>
+</table>
+<p>Both tiers live in the same <code>ECS::Scene</code>. Both are backed by an <code>EntityID</code>. ECS systems query
+both tiers uniformly — a <code>ForEach&lt;TransformComponent, RigidBodyComponent&gt;</code> hits Actors and
+pure ECS entities alike with no special cases.</p>
+<p>Editor consequence: global selection, inspector, picking, gizmo, and undo/redo operate on
+ECS entities. ActorHandle is an optional Tier 1 façade and must not be used as the editor's
+universal identity; see editor-entity-selection.md and editor-undo-redo.md.</p>
+<p>The programmer decides explicitly which tier an object belongs to. There is no automatic
+promotion or demotion.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────────────────────────────────────────────────┐
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│                        ECS::Scene                           │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>│                                                             │
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│  EntityRegistry   ComponentStorage&lt;T&gt;...   ArchetypeMasks   │
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│                                                             │
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│  Tier 1 entities ──────────────────────────────────────┐   │
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  (Actor-backed)    same slots, same dense arrays        │   │
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│  Tier 2 entities ──────────────────────────────────────┘   │
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  (pure ECS)                                                 │
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>└──────────────────────────┬──────────────────────────────────┘
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>                           │ EntityID
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>              ┌────────────▼────────────┐
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>              │          Actor          │
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>              │  owns EntityID          │
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>              │  delegates component    │
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>              │  access to Scene        │
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>              │  has virtual OnTick()   │
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>              └─────────────────────────┘
+</code></pre></div>
+<hr />
+<h2 id="2-tier-2-pure-ecs-entity">2. Tier 2 — Pure ECS Entity<a class="headerlink" href="#2-tier-2-pure-ecs-entity" title="Permanent link">&para;</a></h2>
+<p>A Tier 2 entity is a bare <code>EntityID</code>. No heap object. No vtable. Just data in component
+storage arrays.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// Create a Tier 2 entity</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">EntityID</span><span class="w"> </span><span class="n">grass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">scene</span><span class="p">.</span><span class="n">CreateEntity</span><span class="p">();</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">scene</span><span class="p">.</span><span class="n">AddComponent</span><span class="o">&lt;</span><span class="n">TransformComponent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">grass</span><span class="p">,</span><span class="w"> </span><span class="p">{});</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">scene</span><span class="p">.</span><span class="n">AddComponent</span><span class="o">&lt;</span><span class="n">MeshComponent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">grass</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">mesh_handle</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div>
+<p>Lifetime: <code>scene.DestroyEntity(id)</code> — removes the entity and all its components in one call.</p>
+<hr />
+<h2 id="3-tier-1-actor">3. Tier 1 — Actor<a class="headerlink" href="#3-tier-1-actor" title="Permanent link">&para;</a></h2>
+<p>An Actor is a C++ object that:
+- Owns exactly one <code>EntityID</code>
+- Holds a non-owning reference to the <code>ECS::Scene</code> it lives in
+- Exposes component access as thin wrappers over <code>Scene</code>
+- Has virtual lifecycle hooks (<code>OnCreate</code>, <code>OnDestroy</code>, <code>OnTick</code>)
+- Is accessed externally via <code>Helpers::Handle&lt;Actor*&gt;</code> — a generational index into <code>ActorManager</code>'s arena-backed slot array</p>
+<p><strong><code>Ref&lt;Actor&gt;</code> (intrusive ref-counting) is NOT used.</strong> Ref-counting is incompatible with the arena allocator model: the destructor would fire at an unpredictable time driven by the last pointer going out of scope, rather than at an explicit engine-controlled point. <code>Handle&lt;Actor*&gt;</code> provides the same stale-handle safety via generation checks with zero atomic overhead and no heap allocation.</p>
+<h3 id="31-actor-base-class">3.1 <code>Actor</code> base class<a class="headerlink" href="#31-actor-base-class" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// ZEngine/ECS/Actor.h</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ECS/Scene.h&gt;</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Helpers/HandleManager.h&gt;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">ECS</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">Actor</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">        </span><span class="p">[[</span><span class="na">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="n">EntityID</span><span class="w">      </span><span class="n">GetEntityID</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_entity_id</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">        </span><span class="p">[[</span><span class="na">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="kt">bool</span><span class="w">          </span><span class="n">IsAlive</span><span class="p">()</span><span class="w">     </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">        </span><span class="c1">// Component access — delegates to m_scene</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">        </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">        </span><span class="kt">void</span><span class="w">             </span><span class="n">AddComponent</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">component</span><span class="p">);</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">        </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">        </span><span class="p">[[</span><span class="na">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="n">T</span><span class="o">*</span><span class="w"> </span><span class="n">GetComponent</span><span class="p">();</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">        </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">        </span><span class="p">[[</span><span class="na">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">*</span><span class="w"> </span><span class="n">GetComponent</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">        </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="w">        </span><span class="p">[[</span><span class="na">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">HasComponent</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>
+<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="w">        </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="w">        </span><span class="kt">void</span><span class="w">             </span><span class="n">RemoveComponent</span><span class="p">();</span>
+<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>
+<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a><span class="w">        </span><span class="c1">// Lifecycle — override in subclasses</span>
+<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">        </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">OnCreate</span><span class="p">()</span><span class="w">        </span><span class="p">{}</span>
+<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="w">        </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">OnDestroy</span><span class="p">()</span><span class="w">       </span><span class="p">{}</span>
+<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="w">        </span><span class="k">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">OnTick</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">dt</span><span class="p">)</span><span class="w">  </span><span class="p">{}</span>
+<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>
+<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="w">    </span><span class="k">protected</span><span class="o">:</span>
+<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="w">        </span><span class="n">Actor</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span>
+<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="w">        </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">Actor</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span>
+<a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a>
+<a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="w">    </span><span class="k">private</span><span class="o">:</span>
+<a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a><span class="w">        </span><span class="k">friend</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ActorManager</span><span class="p">;</span><span class="w">   </span><span class="c1">// only ActorManager sets these fields</span>
+<a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a>
+<a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a><span class="w">        </span><span class="n">EntityID</span><span class="w">  </span><span class="n">m_entity_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">INVALID_ENTITY</span><span class="p">;</span>
+<a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a><span class="w">        </span><span class="n">Scene</span><span class="o">*</span><span class="w">    </span><span class="n">m_scene</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span><span class="w">  </span><span class="c1">// non-owning; set by ActorManager::Create</span>
+<a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a>
+<a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace ZEngine::ECS</span>
+</code></pre></div>
+<p>Actors are allocated inside <code>ActorManager</code>'s <code>HandleManager&lt;Actor*&gt;</code> slot array (arena-backed).
+External code holds <code>Helpers::Handle&lt;Actor*&gt;</code> — 16 bytes (<code>{Index, Generation}</code>), no vtable, no count.
+Destruction is explicit: <code>ActorManager::Destroy(handle)</code> calls <code>OnDestroy()</code> then <code>scene.DestroyEntity(id)</code>.
+No <code>Detach()</code> method needed — <code>ActorManager::Shutdown()</code> runs before <code>Scene::Shutdown()</code>, guaranteed by engine lifecycle order.</p>
+<h3 id="32-subclassing">3.2 Subclassing<a class="headerlink" href="#32-subclassing" title="Permanent link">&para;</a></h3>
+<p>Gameplay objects subclass <code>Actor</code> and override the lifecycle hooks:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">PlayerActor</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">ZEngine</span><span class="o">::</span><span class="n">ECS</span><span class="o">::</span><span class="n">Actor</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">OnCreate</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">        </span><span class="n">AddComponent</span><span class="o">&lt;</span><span class="n">TransformComponent</span><span class="o">&gt;</span><span class="p">({});</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">        </span><span class="n">AddComponent</span><span class="o">&lt;</span><span class="n">RigidBodyComponent</span><span class="o">&gt;</span><span class="p">({});</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">        </span><span class="n">AddComponent</span><span class="o">&lt;</span><span class="n">CameraComponent</span><span class="o">&gt;</span><span class="p">({});</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">OnTick</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">dt</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">        </span><span class="k">auto</span><span class="o">*</span><span class="w"> </span><span class="n">transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetComponent</span><span class="o">&lt;</span><span class="n">TransformComponent</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">        </span><span class="c1">// read input, move transform ...</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="p">};</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="c1">// Creation — returns a Handle&lt;Actor*&gt;, not a pointer or Ref</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="n">Helpers</span><span class="o">::</span><span class="n">Handle</span><span class="o">&lt;</span><span class="n">Actor</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">player</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">actor_manager</span><span class="p">.</span><span class="n">Create</span><span class="o">&lt;</span><span class="n">PlayerActor</span><span class="o">&gt;</span><span class="p">();</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="c1">// Access</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Actor</span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">actor_manager</span><span class="p">.</span><span class="n">Access</span><span class="p">(</span><span class="n">player</span><span class="p">))</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">    </span><span class="n">a</span><span class="o">-&gt;</span><span class="n">OnTick</span><span class="p">(</span><span class="n">dt</span><span class="p">);</span>
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="c1">// Destruction — explicit, engine-controlled</span>
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="n">actor_manager</span><span class="p">.</span><span class="n">Destroy</span><span class="p">(</span><span class="n">player</span><span class="p">);</span>
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="c1">// player handle is now stale; actor_manager.Access(player) returns nullptr</span>
+</code></pre></div>
+<h3 id="33-actormanager">3.3 <code>ActorManager</code><a class="headerlink" href="#33-actormanager" title="Permanent link">&para;</a></h3>
+<p><code>ActorManager</code> owns all Actor objects in a <code>HandleManager&lt;Actor*&gt;</code> backed by the ECS sub-arena.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// ZEngine/ECS/ActorManager.h</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">ActorManager</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">MAX_ACTORS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1024</span><span class="p">;</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">Initialize</span><span class="p">(</span><span class="n">Core</span><span class="o">::</span><span class="n">Memory</span><span class="o">::</span><span class="n">ArenaAllocator</span><span class="o">*</span><span class="w"> </span><span class="n">arena</span><span class="p">,</span><span class="w"> </span><span class="n">Scene</span><span class="o">&amp;</span><span class="w"> </span><span class="n">scene</span><span class="p">);</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="c1">// Allocates an Actor slot, creates an EntityID, calls OnCreate().</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="c1">// Returns a generational handle — 16 bytes, no heap, no ref count.</span>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Actor</span><span class="o">&gt;</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="n">Helpers</span><span class="o">::</span><span class="n">Handle</span><span class="o">&lt;</span><span class="n">Actor</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">Create</span><span class="p">();</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span><span class="c1">// Calls OnDestroy(), destroys the EntityID, frees the slot.</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">    </span><span class="c1">// Stale handles (already destroyed) are silently ignored.</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">Destroy</span><span class="p">(</span><span class="n">Helpers</span><span class="o">::</span><span class="n">Handle</span><span class="o">&lt;</span><span class="n">Actor</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">handle</span><span class="p">);</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">    </span><span class="c1">// Returns nullptr if handle is stale.</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">    </span><span class="n">Actor</span><span class="o">*</span><span class="w">       </span><span class="nf">Access</span><span class="p">(</span><span class="n">Helpers</span><span class="o">::</span><span class="n">Handle</span><span class="o">&lt;</span><span class="n">Actor</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">handle</span><span class="p">);</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">Actor</span><span class="o">*</span><span class="w"> </span><span class="nf">Access</span><span class="p">(</span><span class="n">Helpers</span><span class="o">::</span><span class="n">Handle</span><span class="o">&lt;</span><span class="n">Actor</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">handle</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="nf">IsLive</span><span class="p">(</span><span class="n">Helpers</span><span class="o">::</span><span class="n">Handle</span><span class="o">&lt;</span><span class="n">Actor</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">handle</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w">    </span><span class="c1">// Calls OnTick(dt) on all live Actors.</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">Tick</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">dt</span><span class="p">);</span>
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="w">    </span><span class="c1">// Destroys all live Actors in reverse creation order, then shuts down the handle array.</span>
+<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="w">    </span><span class="c1">// Must be called before Scene::Shutdown().</span>
+<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">Shutdown</span><span class="p">();</span>
+<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>
+<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="k">private</span><span class="o">:</span>
+<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a><span class="w">    </span><span class="n">Helpers</span><span class="o">::</span><span class="n">HandleManager</span><span class="o">&lt;</span><span class="n">Actor</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">m_handles</span><span class="p">;</span>
+<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a><span class="w">    </span><span class="n">Scene</span><span class="o">*</span><span class="w">                        </span><span class="n">m_scene</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a><span class="p">};</span>
+</code></pre></div>
+<h3 id="33-lifetime-rules">3.3 Lifetime Rules<a class="headerlink" href="#33-lifetime-rules" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>ActorManager::Create&lt;T&gt;()</code> allocates a slot in the arena, creates an <code>EntityID</code> in the
+  scene, sets <code>Actor::m_scene</code> and <code>Actor::m_entity_id</code>, then calls <code>OnCreate()</code>.
+  Returns a <code>Handle&lt;Actor*&gt;</code> — the only way to reference an Actor externally.</li>
+<li><code>ActorManager::Destroy(handle)</code> calls <code>OnDestroy()</code>, calls <code>m_scene-&gt;DestroyEntity(id)</code>,
+  then frees the slot (increments generation). All existing handles to this Actor become stale.</li>
+<li><code>ActorManager::Shutdown()</code> is called by the engine before <code>Scene::Shutdown()</code>, guaranteed
+  by the engine lifecycle order defined in <code>engine-lifecycle.md</code>. No manual <code>Detach()</code> needed.</li>
+<li>Two Actors must never wrap the same <code>EntityID</code>. Asserted in debug builds in <code>Create()</code>.</li>
+<li>Actors are never heap-allocated individually. The arena owns the backing memory.</li>
+</ul>
+<h3 id="34-component-access-implementation">3.4 Component Access Implementation<a class="headerlink" href="#34-component-access-implementation" title="Permanent link">&para;</a></h3>
+<p>All component methods on <code>Actor</code> delegate directly to <code>m_scene</code>. There is no intermediate
+storage. The component data lives entirely in <code>ComponentStorage&lt;T&gt;</code> inside the Scene.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kt">void</span><span class="w"> </span><span class="n">Actor</span><span class="o">::</span><span class="n">AddComponent</span><span class="p">(</span><span class="n">T</span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">component</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="n">ZENGINE_VALIDATE_ASSERT</span><span class="p">(</span><span class="n">IsAlive</span><span class="p">(),</span><span class="w"> </span><span class="s">"Actor entity is not alive"</span><span class="p">)</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">    </span><span class="n">m_scene</span><span class="o">-&gt;</span><span class="n">AddComponent</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_entity_id</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">component</span><span class="p">));</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="p">}</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="n">T</span><span class="o">*</span><span class="w"> </span><span class="n">Actor</span><span class="o">::</span><span class="n">GetComponent</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="n">ZENGINE_VALIDATE_ASSERT</span><span class="p">(</span><span class="n">IsAlive</span><span class="p">(),</span><span class="w"> </span><span class="s">"Actor entity is not alive"</span><span class="p">)</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">m_scene</span><span class="o">-&gt;</span><span class="n">GetComponent</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_entity_id</span><span class="p">);</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="4-ecs-core">4. ECS Core<a class="headerlink" href="#4-ecs-core" title="Permanent link">&para;</a></h2>
+<h3 id="concepts-archetype-and-sparse-set">Concepts: Archetype and Sparse-Set<a class="headerlink" href="#concepts-archetype-and-sparse-set" title="Permanent link">&para;</a></h3>
+<p>Two ideas underpin the entire ECS implementation. Understanding them makes every design
+decision in this section obvious.</p>
+<p><strong>Archetype</strong></p>
+<p>An archetype is the set of component types an entity has — its "shape". An entity with
+<code>{TransformComponent, RigidBodyComponent}</code> has a different archetype from one with just
+<code>{TransformComponent}</code>. We encode the archetype as a bitmask: one bit per component type.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>ComponentTypeID:     0                   1                  2
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>                     TransformComponent  RigidBodyComponent  MeshComponent
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>Entity A  mask:      1                   1                  0   = 0b011
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>Entity B  mask:      1                   0                  1   = 0b101
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>Entity C  mask:      1                   1                  1   = 0b111
+</code></pre></div>
+<p><code>ForEach&lt;TransformComponent, RigidBodyComponent&gt;</code> computes <code>required = 0b011</code> and
+eliminates non-matching entities with a single bitwise AND — O(1) per entity. Without
+this guard, <code>ForEach</code> would call <code>ComponentStorage::Get</code> on every entity for every
+component type, degrading to O(entities × types). The mask check is not an optimization;
+it is a correctness-preserving performance requirement.</p>
+<p><strong>Sparse-Set</strong></p>
+<p>A sparse-set gives O(1) lookup by <code>EntityID</code> while keeping component data in a dense,
+packed array for cache-friendly iteration. Three arrays work together:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>m_sparse    [entity Index → dense index, or INVALID if absent]
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>m_dense     [packed component data, no holes]
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>m_dense_ids [full EntityID at each dense slot — for generation check]
+</code></pre></div>
+<p>Example — 4 entities, entities 0 and 3 have <code>TransformComponent</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>m_sparse:    [0]   [INV] [INV] [1]     entity 0 → dense[0], entity 3 → dense[1]
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>m_dense:     [T0]  [T3]                packed, no gaps
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>m_dense_ids: [{0,1}] [{3,1}]           full EntityID stored for generation check
+</code></pre></div>
+<p><code>Get(entity 3)</code>: <code>m_sparse[3] = 1</code> → check <code>m_dense_ids[1] == {3,1}</code> → return <code>&amp;m_dense[1]</code>.</p>
+<p><code>Remove(entity 0)</code> uses swap-and-pop to keep the dense array packed:
+swap <code>m_dense[0]</code> with the last element, update <code>m_sparse</code> for the moved entity, pop.
+The dense array stays contiguous — <code>ForEach</code> iterates it with zero cache misses.</p>
+<p><strong>How they work together</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>ForEach&lt;TransformComponent, RigidBodyComponent&gt;(fn)
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    |
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    +-- EntityRegistry::ForEachAlive   iterate live entity slots
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    |       for each entity:
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    |           MaskMatches(mask, required)?  &lt;- ARCHETYPE check, O(1)
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    |               no  -&gt; skip (one bitwise AND)
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    |               yes -&gt; call fn(id, transform, rigidbody)
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>    |
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>    +-- ComponentStorage::Get          &lt;- SPARSE-SET lookup, O(1)
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>            m_sparse[id.Index] -&gt; dense_idx
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>            generation check (m_dense_ids[dense_idx] == id?)
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>            return &amp;m_dense[dense_idx]   direct pointer into packed array
+</code></pre></div>
+<p>Archetype filtering keeps the number of <code>Get</code> calls small.
+Sparse-set makes each <code>Get</code> O(1) with cache-friendly data for the entities that do match.</p>
+<hr />
+<h3 id="41-entityid">4.1 <code>EntityID</code><a class="headerlink" href="#41-entityid" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">// ZEngine/ECS/EntityID.h</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">EntityID</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">Index</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">Generation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="nf">IsValid</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Generation</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">EntityID</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="p">};</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="k">constexpr</span><span class="w"> </span><span class="n">EntityID</span><span class="w"> </span><span class="n">INVALID_ENTITY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">};</span>
+</code></pre></div>
+<ul>
+<li><code>Index</code> is a stable slot index, reused across entity lifetimes.</li>
+<li><code>Generation</code> starts at 1. 0 is the sentinel for <code>INVALID_ENTITY</code>.</li>
+<li>Stale handles (pointing to a recycled slot) are automatically rejected — the stored
+  generation in the slot will have incremented.</li>
+</ul>
+<h3 id="42-componenttypeid">4.2 <code>ComponentTypeID</code><a class="headerlink" href="#42-componenttypeid" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1">// ZEngine/ECS/ComponentTypeID.h</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="k">using</span><span class="w"> </span><span class="n">ComponentTypeID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">uint32_t</span><span class="p">;</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">detail</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">    </span><span class="kr">inline</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="nf">NextTypeID</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">counter</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">counter</span><span class="p">.</span><span class="n">fetch_add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_acq_rel</span><span class="p">);</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="p">}</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="n">ComponentTypeID</span><span class="w"> </span><span class="n">ComponentTypeOf</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">detail</span><span class="o">::</span><span class="n">NextTypeID</span><span class="p">();</span>
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="p">}</span>
+</code></pre></div>
+<p>Counter is atomic — safe when types are registered from multiple threads during startup.
+IDs are process-stable; not serializable across runs.</p>
+<h3 id="43-archetypemask">4.3 <code>ArchetypeMask</code><a class="headerlink" href="#43-archetypemask" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1">// ZEngine/ECS/ArchetypeMask.h</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">using</span><span class="w"> </span><span class="n">ArchetypeMask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">uint64_t</span><span class="p">;</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="kr">inline</span><span class="w"> </span><span class="n">ArchetypeMask</span><span class="w"> </span><span class="nf">MaskBit</span><span class="p">(</span><span class="n">ComponentTypeID</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">    </span><span class="n">ZENGINE_VALIDATE_ASSERT</span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">UINT32_MAX</span><span class="p">,</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">        </span><span class="s">"MaskBit: ComponentTypeID is UINT32_MAX — uninitialized or invalid type ID"</span><span class="p">);</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">    </span><span class="n">ZENGINE_VALIDATE_ASSERT</span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">        </span><span class="s">"MaskBit: component type ID %u exceeds ArchetypeMask v1 capacity (64)"</span><span class="p">,</span><span class="w"> </span><span class="n">id</span><span class="p">);</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="kt">uint64_t</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">id</span><span class="p">;</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="p">}</span>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">MaskHas</span><span class="p">(</span><span class="n">ArchetypeMask</span><span class="w"> </span><span class="n">mask</span><span class="p">,</span><span class="w"> </span><span class="n">ComponentTypeID</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">mask</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="p">}</span>
+<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>
+<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="kr">inline</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">MaskMatches</span><span class="p">(</span><span class="n">ArchetypeMask</span><span class="w"> </span><span class="n">mask</span><span class="p">,</span><span class="w"> </span><span class="n">ArchetypeMask</span><span class="w"> </span><span class="n">required</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">mask</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">required</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">required</span><span class="p">;</span>
+<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="p">}</span>
+</code></pre></div>
+<p>v1 cap: 64 component types. v2 path: replace <code>uint64_t</code> with <code>std::bitset&lt;128&gt;</code>.</p>
+<h3 id="44-componentstoraget">4.4 <code>ComponentStorage&lt;T&gt;</code><a class="headerlink" href="#44-componentstoraget" title="Permanent link">&para;</a></h3>
+<p>Sparse-set. One per component type, owned by <code>ECS::Scene</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>m_dense      — packed array of T, contiguous, no holes
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>m_dense_ids  — EntityID at each dense index (stores index + generation)
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>m_sparse     — entity Index → dense index (UINT32_MAX = absent)
+</code></pre></div>
+<p><strong>Generation check on Get/Has/Remove</strong> — <code>m_dense_ids</code> stores the full <code>EntityID</code> (not just
+the index). Before returning a pointer, compare the stored <code>EntityID</code> against the requested
+one. This prevents a stale handle from seeing a recycled slot's component:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">T</span><span class="o">*</span><span class="w"> </span><span class="nf">Get</span><span class="p">(</span><span class="n">EntityID</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">.</span><span class="n">Index</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">m_sparse</span><span class="p">.</span><span class="n">Size</span><span class="p">())</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">dense_idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_sparse</span><span class="p">[</span><span class="n">id</span><span class="p">.</span><span class="n">Index</span><span class="p">];</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dense_idx</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">UINT32_MAX</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_dense_ids</span><span class="p">[</span><span class="n">dense_idx</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span><span class="w">  </span><span class="c1">// generation mismatch = stale</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_dense</span><span class="p">[</span><span class="n">dense_idx</span><span class="p">];</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="p">}</span>
+</code></pre></div>
+<p><code>Has()</code> and <code>Remove()</code> apply the same generation check.</p>
+<h3 id="45-entityregistry">4.5 <code>EntityRegistry</code><a class="headerlink" href="#45-entityregistry" title="Permanent link">&para;</a></h3>
+<p>Generational slot allocator with free-list.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">MAX_ENTITIES</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">65536</span><span class="p">;</span><span class="w">  </span><span class="c1">// Tier 1 + Tier 2 combined</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>m_slots      — Array&lt;EntitySlot{Generation, ArchetypeMask}&gt;  (MAX_ENTITIES slots, arena-allocated)
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>m_free_list  — Array&lt;uint32_t&gt; of recyclable slot indices
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>m_alive_count
+</code></pre></div>
+<p><code>Create()</code>: pop from free-list or append new slot. Increment generation, skip 0.
+<code>Destroy(id)</code>: assert alive, increment generation (skip 0), push index onto free-list.
+<code>IsAlive(id)</code>: <code>id.Generation != 0 &amp;&amp; id.Index &lt; m_slots.Size() &amp;&amp; m_slots[id.Index].Generation == id.Generation</code>.</p>
+<blockquote>
+<p><strong>Note:</strong> The <code>id.Generation != 0</code> guard ensures <code>INVALID_ENTITY {0,0}</code> is never considered alive, even if slot 0 exists with generation 0.</p>
+</blockquote>
+<h3 id="46-ecsscene">4.6 <code>ECS::Scene</code><a class="headerlink" href="#46-ecsscene" title="Permanent link">&para;</a></h3>
+<p>Top-level context. Owns the registry and all component storages.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Scene</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">    </span><span class="c1">// Tier 2 entity lifetime</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="n">EntityID</span><span class="w"> </span><span class="n">CreateEntity</span><span class="p">();</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">    </span><span class="kt">void</span><span class="w">     </span><span class="nf">DestroyEntity</span><span class="p">(</span><span class="n">EntityID</span><span class="w"> </span><span class="n">id</span><span class="p">);</span><span class="w">   </span><span class="c1">// removes all components, frees slot</span>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">    </span><span class="kt">bool</span><span class="w">     </span><span class="nf">IsAlive</span><span class="p">(</span><span class="n">EntityID</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">    </span><span class="n">ArchetypeMask</span><span class="w"> </span><span class="nf">GetMask</span><span class="p">(</span><span class="n">EntityID</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>
+<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="w">    </span><span class="c1">// Component access</span>
+<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"> </span><span class="kt">void</span><span class="w">     </span><span class="n">AddComponent</span><span class="p">(</span><span class="n">EntityID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">component</span><span class="p">);</span>
+<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">T</span><span class="o">*</span><span class="w">       </span><span class="n">GetComponent</span><span class="p">(</span><span class="n">EntityID</span><span class="w"> </span><span class="n">id</span><span class="p">);</span>
+<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">*</span><span class="w"> </span><span class="n">GetComponent</span><span class="p">(</span><span class="n">EntityID</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"> </span><span class="kt">void</span><span class="w">     </span><span class="n">RemoveComponent</span><span class="p">(</span><span class="n">EntityID</span><span class="w"> </span><span class="n">id</span><span class="p">);</span>
+<a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"> </span><span class="kt">bool</span><span class="w">     </span><span class="n">HasComponent</span><span class="p">(</span><span class="n">EntityID</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a>
+<a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="w">    </span><span class="c1">// Returns the ArchetypeMask for a living entity (0 for dead/invalid).</span>
+<a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="w">    </span><span class="p">[[</span><span class="na">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="n">ArchetypeMask</span><span class="w"> </span><span class="n">GetMask</span><span class="p">(</span><span class="n">EntityID</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a>
+<a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a><span class="w">    </span><span class="c1">// Query — hits ALL living entities (both tiers).</span>
+<a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a><span class="w">    </span><span class="c1">// Fn must be callable as: void(EntityID, Ts&amp;...)</span>
+<a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a><span class="w">    </span><span class="c1">// A stateless lambda or a free function matching this signature is required.</span>
+<a id="__codelineno-17-22" name="__codelineno-17-22" href="#__codelineno-17-22"></a><span class="w">    </span><span class="c1">// Passing a callable with the wrong signature produces a compile-time error.</span>
+<a id="__codelineno-17-23" name="__codelineno-17-23" href="#__codelineno-17-23"></a><span class="w">    </span><span class="c1">// Example:</span>
+<a id="__codelineno-17-24" name="__codelineno-17-24" href="#__codelineno-17-24"></a><span class="w">    </span><span class="c1">//   scene.ForEach&lt;TransformComponent, RigidBodyComponent&gt;(</span>
+<a id="__codelineno-17-25" name="__codelineno-17-25" href="#__codelineno-17-25"></a><span class="w">    </span><span class="c1">//       [](EntityID id, TransformComponent&amp; t, RigidBodyComponent&amp; rb) { ... });</span>
+<a id="__codelineno-17-26" name="__codelineno-17-26" href="#__codelineno-17-26"></a><span class="w">    </span><span class="c1">// Template avoids std::function heap allocation and virtual dispatch in hot path.</span>
+<a id="__codelineno-17-27" name="__codelineno-17-27" href="#__codelineno-17-27"></a><span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span><span class="w"> </span><span class="n">Ts</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">Fn</span><span class="o">&gt;</span>
+<a id="__codelineno-17-28" name="__codelineno-17-28" href="#__codelineno-17-28"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">ForEach</span><span class="p">(</span><span class="n">Fn</span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">fn</span><span class="p">);</span>
+<a id="__codelineno-17-29" name="__codelineno-17-29" href="#__codelineno-17-29"></a>
+<a id="__codelineno-17-30" name="__codelineno-17-30" href="#__codelineno-17-30"></a><span class="k">private</span><span class="o">:</span>
+<a id="__codelineno-17-31" name="__codelineno-17-31" href="#__codelineno-17-31"></a><span class="w">    </span><span class="n">EntityRegistry</span><span class="w"> </span><span class="n">m_registry</span><span class="p">;</span>
+<a id="__codelineno-17-32" name="__codelineno-17-32" href="#__codelineno-17-32"></a><span class="w">    </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">UnorderedHashMap</span><span class="o">&lt;</span>
+<a id="__codelineno-17-33" name="__codelineno-17-33" href="#__codelineno-17-33"></a><span class="w">        </span><span class="n">ComponentTypeID</span><span class="p">,</span>
+<a id="__codelineno-17-34" name="__codelineno-17-34" href="#__codelineno-17-34"></a><span class="w">        </span><span class="n">IComponentStorage</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">m_storages</span><span class="p">;</span><span class="w">  </span><span class="c1">// arena-owned; destructor must not fire at scope exit</span>
+<a id="__codelineno-17-35" name="__codelineno-17-35" href="#__codelineno-17-35"></a><span class="p">};</span>
+</code></pre></div>
+<p><code>DestroyEntity</code> iterates all storages and calls <code>RemoveRaw(id)</code> on each before calling
+<code>m_registry.Destroy(id)</code>. This ensures no orphaned component data.</p>
+<h3 id="47-queryts">4.7 <code>Query&lt;Ts...&gt;</code><a class="headerlink" href="#47-queryts" title="Permanent link">&para;</a></h3>
+<p>Reusable query object. Pre-computes <code>ArchetypeMask</code> once at construction; reuses it every
+frame. Wraps <code>Scene::ForEach</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span><span class="w"> </span><span class="n">Ts</span><span class="o">&gt;</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">Query</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">    </span><span class="k">explicit</span><span class="w"> </span><span class="n">Query</span><span class="p">(</span><span class="n">Scene</span><span class="o">&amp;</span><span class="w"> </span><span class="n">scene</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_scene</span><span class="p">(</span><span class="n">scene</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">        </span><span class="n">m_mask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">MaskBit</span><span class="p">(</span><span class="n">ComponentTypeOf</span><span class="o">&lt;</span><span class="n">Ts</span><span class="o">&gt;</span><span class="p">())</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">...);</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">    </span><span class="c1">// Template Fn — avoids std::function heap allocation and virtual dispatch.</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="w">    </span><span class="c1">// Fn must be callable as void(EntityID, Ts&amp;...).</span>
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">Fn</span><span class="o">&gt;</span>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">ForEach</span><span class="p">(</span><span class="n">Fn</span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">fn</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="w">        </span><span class="n">m_scene</span><span class="p">.</span><span class="n">ForEach</span><span class="o">&lt;</span><span class="n">Ts</span><span class="p">...</span><span class="o">&gt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Fn</span><span class="o">&gt;</span><span class="p">(</span><span class="n">fn</span><span class="p">));</span>
+<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="k">private</span><span class="o">:</span>
+<a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="w">    </span><span class="n">Scene</span><span class="o">&amp;</span><span class="w">        </span><span class="n">m_scene</span><span class="p">;</span>
+<a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="w">    </span><span class="n">ArchetypeMask</span><span class="w"> </span><span class="n">m_mask</span><span class="p">;</span>
+<a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a><span class="p">};</span>
+</code></pre></div>
+<p><strong>Critical implementation note for <code>Scene::ForEach</code></strong>: the mask-and early-exit
+<strong>must</strong> be the first check in the loop body, before any <code>ComponentStorage::Get</code> call:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="p">...</span><span class="w"> </span><span class="n">Ts</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">Fn</span><span class="o">&gt;</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="kt">void</span><span class="w"> </span><span class="n">Scene</span><span class="o">::</span><span class="n">ForEach</span><span class="p">(</span><span class="n">Fn</span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">fn</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">ArchetypeMask</span><span class="w"> </span><span class="n">required</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">MaskBit</span><span class="p">(</span><span class="n">ComponentTypeOf</span><span class="o">&lt;</span><span class="n">Ts</span><span class="o">&gt;</span><span class="p">())</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="p">...);</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">    </span><span class="n">m_registry</span><span class="p">.</span><span class="n">ForEachAlive</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">EntityID</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">        </span><span class="c1">// Skip entities that don't have all required components — O(1) bitmask test.</span>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">        </span><span class="c1">// Without this guard, ForEach degrades to O(entities × component_types)</span>
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="w">        </span><span class="c1">// because ComponentStorage::Get must walk the sparse array for every entity.</span>
+<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">MaskMatches</span><span class="p">(</span><span class="n">m_registry</span><span class="p">.</span><span class="n">GetMask</span><span class="p">(</span><span class="n">id</span><span class="p">),</span><span class="w"> </span><span class="n">required</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="w">        </span><span class="n">fn</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">GetComponent</span><span class="o">&lt;</span><span class="n">Ts</span><span class="o">&gt;</span><span class="p">(</span><span class="n">id</span><span class="p">)...);</span>
+<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="w">    </span><span class="p">});</span>
+<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a><span class="p">}</span>
+</code></pre></div>
+<p>Omitting the <code>MaskMatches</code> guard is a correctness-preserving but catastrophic performance
+bug on scenes with thousands of entities. The guard must not be "added as an optimization
+later" — it belongs in the first implementation.</p>
+<h3 id="48-worldtick">4.8 <code>WorldTick</code><a class="headerlink" href="#48-worldtick" title="Permanent link">&para;</a></h3>
+<p><code>WorldTick</code> is defined in full in <code>system-scheduler.md</code>. It owns the DAG, system
+registration, conflict detection, and parallel wave dispatch. Do not implement
+<code>WorldTick</code> from this document — use <code>system-scheduler.md</code> as the authoritative source.</p>
+<hr />
+<h2 id="5-component-ownership-rules">5. Component Ownership Rules<a class="headerlink" href="#5-component-ownership-rules" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Components are plain data structs — no virtual methods, no behavior</td>
+<td>Keeps dense arrays cache-clean; behavior lives in systems or Actor subclasses</td>
+</tr>
+<tr>
+<td>Every component header must include <code>static_assert(sizeof(T) &lt;= 64, "Component exceeds cache line")</code> and <code>static_assert(alignof(T) &lt;= 16, "Component misaligned")</code></td>
+<td>Prevents accidental padding and cache-inefficient layouts</td>
+</tr>
+<tr>
+<td>Component types live in <code>ZEngine::ECS::Components</code> namespace</td>
+<td>Separate from the old <code>ZEngine::Rendering::Components</code> types during transition</td>
+</tr>
+<tr>
+<td>The existing <code>TransformComponent</code> in <code>Rendering/Components/</code> is <strong>not</strong> reused</td>
+<td>It has methods and a computed <code>Mat4f</code> — not plain data. A new <code>ECS::Components::TransformComponent</code> with plain <code>Vec3f position/rotation/scale</code> replaces it in ECS context</td>
+</tr>
+<tr>
+<td>Actor component access always goes through <code>Scene</code></td>
+<td>No component data lives on the Actor object itself</td>
+</tr>
+<tr>
+<td>One component type per entity — no duplicate <code>AddComponent&lt;T&gt;</code> on the same entity</td>
+<td>Asserted in <code>ComponentStorage::Add</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-cross-tier-interaction">6. Cross-Tier Interaction<a class="headerlink" href="#6-cross-tier-interaction" title="Permanent link">&para;</a></h2>
+<p>Because Actor component data lives in the same <code>ComponentStorage&lt;T&gt;</code> arrays as Tier 2
+entities, ECS systems require no special handling:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1">// This hits both PlayerActor (Tier 1) and foliage entities (Tier 2)</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="n">scene</span><span class="p">.</span><span class="n">ForEach</span><span class="o">&lt;</span><span class="n">TransformComponent</span><span class="p">,</span><span class="w"> </span><span class="n">RigidBodyComponent</span><span class="o">&gt;</span><span class="p">(</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">    </span><span class="p">[</span><span class="n">dt</span><span class="p">](</span><span class="n">EntityID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">TransformComponent</span><span class="o">&amp;</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">RigidBodyComponent</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rb</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">        </span><span class="n">t</span><span class="p">.</span><span class="n">Position</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">rb</span><span class="p">.</span><span class="n">Velocity</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">dt</span><span class="p">;</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">    </span><span class="p">});</span>
+</code></pre></div>
+<p>The Actor <code>OnTick</code> is called separately by the engine's Actor manager — it is the Actor's
+private update slot for gameplay logic that does not belong in a shared system (input
+reading, camera control, etc.). It runs after all ECS systems have ticked, so it sees
+the updated component state.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>Frame N:
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>  1. WorldTick::Tick(scene, dt)   — all ECS systems (hits Tier 1 + Tier 2)
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>  2. ActorManager::Tick(dt)       — calls OnTick on each live Actor
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>  3. Render
+</code></pre></div>
+<hr />
+<h2 id="7-worldcommands-deferred-entity-mutations">7. <code>WorldCommands</code> — Deferred Entity Mutations<a class="headerlink" href="#7-worldcommands-deferred-entity-mutations" title="Permanent link">&para;</a></h2>
+<p>ECS systems run in parallel across multiple threads during <code>WorldTick::Tick</code>. Calling
+<code>scene.DestroyEntity()</code>, <code>scene.AddComponent()</code>, or <code>scene.RemoveComponent()</code> from within
+a system is <strong>not safe</strong> — it mutates the entity registry and component storage arrays
+while other workers may be iterating them.</p>
+<p>The solution is a <code>WorldCommands</code> buffer: a per-frame accumulator of deferred mutations
+that is applied atomically after all waves in <code>WorldTick::Tick</code> have completed.</p>
+<h3 id="71-worldcommands-declaration">7.1 <code>WorldCommands</code> declaration<a class="headerlink" href="#71-worldcommands-declaration" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1">// ZEngine/ECS/WorldCommands.h</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ECS/EntityID.h&gt;</span>
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;ECS/ComponentTypeID.h&gt;</span>
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Core/Containers/Array.h&gt;</span>
+<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>
+<a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">ECS</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a>
+<a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a><span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">Scene</span><span class="p">;</span>
+<a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a>
+<a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a><span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">WorldCommands</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-22-12" name="__codelineno-22-12" href="#__codelineno-22-12"></a><span class="w">    </span><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-22-13" name="__codelineno-22-13" href="#__codelineno-22-13"></a><span class="w">        </span><span class="c1">// Queue entity creation. The new EntityID is not available until Flush().</span>
+<a id="__codelineno-22-14" name="__codelineno-22-14" href="#__codelineno-22-14"></a><span class="w">        </span><span class="c1">// Use a callback to receive it: SpawnEntity({.Fn = &amp;MyFn, .Context = this})</span>
+<a id="__codelineno-22-15" name="__codelineno-22-15" href="#__codelineno-22-15"></a><span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">SpawnCallback</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-22-16" name="__codelineno-22-16" href="#__codelineno-22-16"></a><span class="w">            </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">Context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<a id="__codelineno-22-17" name="__codelineno-22-17" href="#__codelineno-22-17"></a><span class="w">            </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">Fn</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">EntityID</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<a id="__codelineno-22-18" name="__codelineno-22-18" href="#__codelineno-22-18"></a><span class="w">        </span><span class="p">};</span>
+<a id="__codelineno-22-19" name="__codelineno-22-19" href="#__codelineno-22-19"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">SpawnEntity</span><span class="p">(</span><span class="n">SpawnCallback</span><span class="w"> </span><span class="n">on_spawned</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{});</span>
+<a id="__codelineno-22-20" name="__codelineno-22-20" href="#__codelineno-22-20"></a>
+<a id="__codelineno-22-21" name="__codelineno-22-21" href="#__codelineno-22-21"></a><span class="w">        </span><span class="c1">// Queue entity destruction. Safe to call on an entity that is already</span>
+<a id="__codelineno-22-22" name="__codelineno-22-22" href="#__codelineno-22-22"></a><span class="w">        </span><span class="c1">// queued for destruction — duplicate destroys are silently ignored.</span>
+<a id="__codelineno-22-23" name="__codelineno-22-23" href="#__codelineno-22-23"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">DestroyEntity</span><span class="p">(</span><span class="n">EntityID</span><span class="w"> </span><span class="n">id</span><span class="p">);</span>
+<a id="__codelineno-22-24" name="__codelineno-22-24" href="#__codelineno-22-24"></a>
+<a id="__codelineno-22-25" name="__codelineno-22-25" href="#__codelineno-22-25"></a><span class="w">        </span><span class="c1">// Queue component add. T must be a registered component type.</span>
+<a id="__codelineno-22-26" name="__codelineno-22-26" href="#__codelineno-22-26"></a><span class="w">        </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<a id="__codelineno-22-27" name="__codelineno-22-27" href="#__codelineno-22-27"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="n">AddComponent</span><span class="p">(</span><span class="n">EntityID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">component</span><span class="p">);</span>
+<a id="__codelineno-22-28" name="__codelineno-22-28" href="#__codelineno-22-28"></a>
+<a id="__codelineno-22-29" name="__codelineno-22-29" href="#__codelineno-22-29"></a><span class="w">        </span><span class="c1">// Queue component removal.</span>
+<a id="__codelineno-22-30" name="__codelineno-22-30" href="#__codelineno-22-30"></a><span class="w">        </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<a id="__codelineno-22-31" name="__codelineno-22-31" href="#__codelineno-22-31"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="n">RemoveComponent</span><span class="p">(</span><span class="n">EntityID</span><span class="w"> </span><span class="n">id</span><span class="p">);</span>
+<a id="__codelineno-22-32" name="__codelineno-22-32" href="#__codelineno-22-32"></a>
+<a id="__codelineno-22-33" name="__codelineno-22-33" href="#__codelineno-22-33"></a><span class="w">        </span><span class="c1">// Apply all queued commands to the scene in submission order.</span>
+<a id="__codelineno-22-34" name="__codelineno-22-34" href="#__codelineno-22-34"></a><span class="w">        </span><span class="c1">// Called by the engine once per frame AFTER WorldTick::Tick completes.</span>
+<a id="__codelineno-22-35" name="__codelineno-22-35" href="#__codelineno-22-35"></a><span class="w">        </span><span class="c1">// Must not be called from within a system.</span>
+<a id="__codelineno-22-36" name="__codelineno-22-36" href="#__codelineno-22-36"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">Flush</span><span class="p">(</span><span class="n">Scene</span><span class="o">&amp;</span><span class="w"> </span><span class="n">scene</span><span class="p">);</span>
+<a id="__codelineno-22-37" name="__codelineno-22-37" href="#__codelineno-22-37"></a>
+<a id="__codelineno-22-38" name="__codelineno-22-38" href="#__codelineno-22-38"></a><span class="w">        </span><span class="c1">// Discard all queued commands without applying them.</span>
+<a id="__codelineno-22-39" name="__codelineno-22-39" href="#__codelineno-22-39"></a><span class="w">        </span><span class="c1">// Used when transitioning scenes or resetting world state.</span>
+<a id="__codelineno-22-40" name="__codelineno-22-40" href="#__codelineno-22-40"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">Clear</span><span class="p">();</span>
+<a id="__codelineno-22-41" name="__codelineno-22-41" href="#__codelineno-22-41"></a>
+<a id="__codelineno-22-42" name="__codelineno-22-42" href="#__codelineno-22-42"></a><span class="w">        </span><span class="p">[[</span><span class="na">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">IsEmpty</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-22-43" name="__codelineno-22-43" href="#__codelineno-22-43"></a>
+<a id="__codelineno-22-44" name="__codelineno-22-44" href="#__codelineno-22-44"></a><span class="w">    </span><span class="k">private</span><span class="o">:</span>
+<a id="__codelineno-22-45" name="__codelineno-22-45" href="#__codelineno-22-45"></a><span class="w">        </span><span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">CommandKind</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-22-46" name="__codelineno-22-46" href="#__codelineno-22-46"></a><span class="w">            </span><span class="n">SpawnEntity</span><span class="p">,</span><span class="w"> </span><span class="n">DestroyEntity</span><span class="p">,</span><span class="w"> </span><span class="n">AddComponent</span><span class="p">,</span><span class="w"> </span><span class="n">RemoveComponent</span>
+<a id="__codelineno-22-47" name="__codelineno-22-47" href="#__codelineno-22-47"></a><span class="w">        </span><span class="p">};</span>
+<a id="__codelineno-22-48" name="__codelineno-22-48" href="#__codelineno-22-48"></a><span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">Command</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-22-49" name="__codelineno-22-49" href="#__codelineno-22-49"></a><span class="w">            </span><span class="n">CommandKind</span><span class="w"> </span><span class="n">Kind</span><span class="p">;</span>
+<a id="__codelineno-22-50" name="__codelineno-22-50" href="#__codelineno-22-50"></a><span class="w">            </span><span class="n">EntityID</span><span class="w">    </span><span class="n">Target</span><span class="p">;</span><span class="w">           </span><span class="c1">// INVALID_ENTITY for SpawnEntity</span>
+<a id="__codelineno-22-51" name="__codelineno-22-51" href="#__codelineno-22-51"></a><span class="w">            </span><span class="n">ComponentTypeID</span><span class="w"> </span><span class="n">TypeID</span><span class="p">;</span><span class="w">       </span><span class="c1">// 0 for entity-only commands</span>
+<a id="__codelineno-22-52" name="__codelineno-22-52" href="#__codelineno-22-52"></a><span class="w">            </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">Data</span><span class="p">[</span><span class="mi">256</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span><span class="w">  </span><span class="c1">// Components are serialized into this fixed buffer; static_assert rejects T &gt; 256 bytes</span>
+<a id="__codelineno-22-53" name="__codelineno-22-53" href="#__codelineno-22-53"></a><span class="w">            </span><span class="n">SpawnCallback</span><span class="w">                    </span><span class="n">OnSpawned</span><span class="p">;</span>
+<a id="__codelineno-22-54" name="__codelineno-22-54" href="#__codelineno-22-54"></a><span class="w">        </span><span class="p">};</span>
+<a id="__codelineno-22-55" name="__codelineno-22-55" href="#__codelineno-22-55"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="n">Command</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_commands</span><span class="p">;</span>
+<a id="__codelineno-22-56" name="__codelineno-22-56" href="#__codelineno-22-56"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-22-57" name="__codelineno-22-57" href="#__codelineno-22-57"></a>
+<a id="__codelineno-22-58" name="__codelineno-22-58" href="#__codelineno-22-58"></a><span class="p">}</span><span class="w"> </span><span class="c1">// namespace ZEngine::ECS</span>
+</code></pre></div>
+<h3 id="72-usage-pattern-inside-a-system">7.2 Usage pattern inside a system<a class="headerlink" href="#72-usage-pattern-inside-a-system" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1">// Plain callback function — no capture, no heap allocation</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">ProjectileSpawnCtx</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Core</span><span class="o">::</span><span class="n">Maths</span><span class="o">::</span><span class="n">Vec3f</span><span class="w"> </span><span class="n">SpawnPos</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">OnProjectileSpawned</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">EntityID</span><span class="w"> </span><span class="n">proj_id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="w">    </span><span class="c1">// This runs in Flush() on the main thread — safe to call scene methods here</span>
+<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="w">    </span><span class="k">auto</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">ProjectileSpawnCtx</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="w">    </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">data</span><span class="p">;</span><span class="w"> </span><span class="c1">// add components in a separate queued AddComponent call</span>
+<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="p">}</span>
+<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a>
+<a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="c1">// Systems receive WorldCommands&amp; as a third parameter</span>
+<a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a><span class="kt">void</span><span class="w"> </span><span class="nf">SpawnProjectileSystem</span><span class="p">(</span><span class="n">Scene</span><span class="o">&amp;</span><span class="w"> </span><span class="n">scene</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">dt</span><span class="p">,</span><span class="w"> </span><span class="n">WorldCommands</span><span class="o">&amp;</span><span class="w"> </span><span class="n">commands</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a><span class="w">    </span><span class="n">scene</span><span class="p">.</span><span class="n">ForEach</span><span class="o">&lt;</span><span class="n">WeaponComponent</span><span class="p">,</span><span class="w"> </span><span class="n">TransformComponent</span><span class="o">&gt;</span><span class="p">(</span>
+<a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a><span class="w">        </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="n">EntityID</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">WeaponComponent</span><span class="o">&amp;</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">TransformComponent</span><span class="o">&amp;</span><span class="w"> </span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-23-14" name="__codelineno-23-14" href="#__codelineno-23-14"></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">w</span><span class="p">.</span><span class="n">ShouldFire</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-23-15" name="__codelineno-23-15" href="#__codelineno-23-15"></a><span class="w">                </span><span class="n">ProjectileSpawnCtx</span><span class="w"> </span><span class="n">ctx</span><span class="p">{</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">Position</span><span class="w"> </span><span class="p">};</span>
+<a id="__codelineno-23-16" name="__codelineno-23-16" href="#__codelineno-23-16"></a><span class="w">                </span><span class="n">commands</span><span class="p">.</span><span class="n">SpawnEntity</span><span class="p">({</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">OnProjectileSpawned</span><span class="w"> </span><span class="p">});</span>
+<a id="__codelineno-23-17" name="__codelineno-23-17" href="#__codelineno-23-17"></a><span class="w">                </span><span class="n">w</span><span class="p">.</span><span class="n">ShouldFire</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<a id="__codelineno-23-18" name="__codelineno-23-18" href="#__codelineno-23-18"></a><span class="w">            </span><span class="p">}</span>
+<a id="__codelineno-23-19" name="__codelineno-23-19" href="#__codelineno-23-19"></a><span class="w">        </span><span class="p">});</span>
+<a id="__codelineno-23-20" name="__codelineno-23-20" href="#__codelineno-23-20"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="73-flush-ordering-in-the-main-loop">7.3 Flush ordering in the main loop<a class="headerlink" href="#73-flush-ordering-in-the-main-loop" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>WorldTick::Tick(scene, dt)    ← systems may enqueue into WorldCommands
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>world_commands.Flush(scene)   ← apply spawns/destroys/component mutations
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>actor_manager.Tick(dt)        ← Actors see the post-flush entity state
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>scene.SnapshotTransforms()    ← must be AFTER Tick and Flush
+</code></pre></div>
+<p><code>Flush</code> processes commands in submission order. A <code>SpawnEntity</code> followed by
+<code>AddComponent&lt;T&gt;</code> on that entity's ID (received via <code>on_spawned</code> callback) is valid.
+A <code>DestroyEntity</code> followed by <code>AddComponent</code> on the same ID in the same flush is a
+programmer error and asserts in debug.</p>
+<h3 id="74-what-is-not-in-worldcommands">7.4 What is NOT in <code>WorldCommands</code><a class="headerlink" href="#74-what-is-not-in-worldcommands" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Scene load/unload — handled by <code>engine-lifecycle.md</code></li>
+<li>Actor creation — <code>Actor::Create(scene)</code> is safe to call from <code>Actor::OnTick</code> since
+  that runs after <code>WorldTick::Tick</code> completes</li>
+<li>Editor undo/redo — EditorSession applies semantic, synchronous transactions only at its
+  exclusive editor mutation point. It never treats this deferred runtime queue as history.</li>
+</ul>
+<h3 id="75-thread-safety-per-system-staging-buffers">7.5 Thread safety — per-system staging buffers<a class="headerlink" href="#75-thread-safety-per-system-staging-buffers" title="Permanent link">&para;</a></h3>
+<p><code>WorldCommands</code> itself is <strong>not thread-safe</strong>. The original design passed the same
+<code>WorldCommands&amp;</code> to every system in a parallel wave, which caused a data race if two
+systems in the same wave both called <code>SpawnEntity()</code> or <code>AddComponent()</code>.</p>
+<p><strong>Implemented fix (Option A — staging buffers):</strong> <code>WorldTick</code> pre-allocates one staging
+<code>WorldCommands</code> per registered system at <code>Commit()</code> time. In a multi-system wave each
+worker receives its own staging buffer rather than the shared one. After the wave barrier,
+the main thread merges all staging buffers into the authoritative <code>WorldCommands</code> in
+submission order via <code>WorldCommands::Merge()</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>Wave with N systems (parallel):
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>  worker 0 → staging[0].SpawnEntity(...)   ← private, no contention
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>  worker 1 → staging[1].AddComponent(...)  ← private, no contention
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a>  ...
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>  barrier
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>  main thread: commands.Merge(staging[0])
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a>               commands.Merge(staging[1])
+<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a>               ...
+<a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a>  → commands.Flush(scene)
+</code></pre></div>
+<p><code>SpawnCallbackIndex</code> values are offset-corrected during merge so callbacks remain
+correctly associated with their spawned entities regardless of merge order.</p>
+<p>Single-system waves are unaffected — the system runs inline with the caller's
+<code>WorldCommands</code> directly, no staging involved.</p>
+<p>To declare that a system uses WorldCommands, set <code>SystemDeps::UsesCommands = true</code>
+when registering. This is documentation only — the staging buffer is always assigned
+in parallel waves regardless of the flag.</p>
+<hr />
+<h2 id="8-memory-layout">8. Memory Layout<a class="headerlink" href="#8-memory-layout" title="Permanent link">&para;</a></h2>
+<p>All ECS memory is carved from a single <code>ECSScene</code> sub-arena (128 MB, budgeted in
+<code>MemoryBudgetConfig</code>). Nothing is heap-allocated individually.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>MemoryManager::MainArena  (3 GB)
+<a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>│
+<a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>└── ECSScene sub-arena  (128 MB)
+<a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>    │
+<a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>    ├── EntityRegistry::m_slots          [65536 × 12 B = ~750 KB]
+<a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>    │     EntitySlot { Generation(4), ArchetypeMask(8) }
+<a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a>    │     [0][1][2]...[65535]
+<a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a>    │      ↑   ↑
+<a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a>    │      │   └── Tier 2 pure ECS entity (dense data, no object)
+<a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a>    │      └────── Tier 1 Actor entity (EntityID stored in Actor object)
+<a id="__codelineno-26-11" name="__codelineno-26-11" href="#__codelineno-26-11"></a>    │
+<a id="__codelineno-26-12" name="__codelineno-26-12" href="#__codelineno-26-12"></a>    ├── EntityRegistry::m_free_list      [up to 65536 × 4 B = ~256 KB]
+<a id="__codelineno-26-13" name="__codelineno-26-13" href="#__codelineno-26-13"></a>    │     recycled slot indices
+<a id="__codelineno-26-14" name="__codelineno-26-14" href="#__codelineno-26-14"></a>    │
+<a id="__codelineno-26-15" name="__codelineno-26-15" href="#__codelineno-26-15"></a>    ├── ActorManager::m_handles          [HandleManager&lt;Actor*&gt;]
+<a id="__codelineno-26-16" name="__codelineno-26-16" href="#__codelineno-26-16"></a>    │     Slot array: 1024 × sizeof(Actor) ≈ 1024 × 24 B = ~25 KB
+<a id="__codelineno-26-17" name="__codelineno-26-17" href="#__codelineno-26-17"></a>    │     Generation array: 1024 × 8 B = ~8 KB
+<a id="__codelineno-26-18" name="__codelineno-26-18" href="#__codelineno-26-18"></a>    │     Free-list next: 1024 × 4 B = ~4 KB
+<a id="__codelineno-26-19" name="__codelineno-26-19" href="#__codelineno-26-19"></a>    │
+<a id="__codelineno-26-20" name="__codelineno-26-20" href="#__codelineno-26-20"></a>    │     Slot 0: Actor { m_entity_id={0,1}, m_scene=* }  ← PlayerActor
+<a id="__codelineno-26-21" name="__codelineno-26-21" href="#__codelineno-26-21"></a>    │     Slot 1: Actor { m_entity_id={1,1}, m_scene=* }  ← CameraActor
+<a id="__codelineno-26-22" name="__codelineno-26-22" href="#__codelineno-26-22"></a>    │     Slot 2: Actor { m_entity_id={2,1}, m_scene=* }  ← DirectionalLight
+<a id="__codelineno-26-23" name="__codelineno-26-23" href="#__codelineno-26-23"></a>    │     ...
+<a id="__codelineno-26-24" name="__codelineno-26-24" href="#__codelineno-26-24"></a>    │     Slot 1023: (free)
+<a id="__codelineno-26-25" name="__codelineno-26-25" href="#__codelineno-26-25"></a>    │
+<a id="__codelineno-26-26" name="__codelineno-26-26" href="#__codelineno-26-26"></a>    ├── ComponentStorage&lt;TransformComponent&gt;
+<a id="__codelineno-26-27" name="__codelineno-26-27" href="#__codelineno-26-27"></a>    │     m_dense     [packed array of TransformComponent, no holes]
+<a id="__codelineno-26-28" name="__codelineno-26-28" href="#__codelineno-26-28"></a>    │     │  [T0][T1][T2][T3]...[Tn]
+<a id="__codelineno-26-29" name="__codelineno-26-29" href="#__codelineno-26-29"></a>    │     m_dense_ids [EntityID at each dense index]
+<a id="__codelineno-26-30" name="__codelineno-26-30" href="#__codelineno-26-30"></a>    │     │  [e0][e1][e2][e3]...[en]
+<a id="__codelineno-26-31" name="__codelineno-26-31" href="#__codelineno-26-31"></a>    │     m_sparse    [entity Index → dense index, UINT32_MAX = absent]
+<a id="__codelineno-26-32" name="__codelineno-26-32" href="#__codelineno-26-32"></a>    │        [0→0][1→1][2→2][3→UINT32_MAX][4→3]...
+<a id="__codelineno-26-33" name="__codelineno-26-33" href="#__codelineno-26-33"></a>    │
+<a id="__codelineno-26-34" name="__codelineno-26-34" href="#__codelineno-26-34"></a>    │     NOTE: Tier 1 Actor entities and Tier 2 pure entities occupy the
+<a id="__codelineno-26-35" name="__codelineno-26-35" href="#__codelineno-26-35"></a>    │     same dense slots — no separation, uniform iteration.
+<a id="__codelineno-26-36" name="__codelineno-26-36" href="#__codelineno-26-36"></a>    │
+<a id="__codelineno-26-37" name="__codelineno-26-37" href="#__codelineno-26-37"></a>    ├── ComponentStorage&lt;RigidBodyComponent&gt;
+<a id="__codelineno-26-38" name="__codelineno-26-38" href="#__codelineno-26-38"></a>    │     (same layout)
+<a id="__codelineno-26-39" name="__codelineno-26-39" href="#__codelineno-26-39"></a>    │
+<a id="__codelineno-26-40" name="__codelineno-26-40" href="#__codelineno-26-40"></a>    ├── ComponentStorage&lt;MeshComponent&gt;
+<a id="__codelineno-26-41" name="__codelineno-26-41" href="#__codelineno-26-41"></a>    │     (same layout)
+<a id="__codelineno-26-42" name="__codelineno-26-42" href="#__codelineno-26-42"></a>    │
+<a id="__codelineno-26-43" name="__codelineno-26-43" href="#__codelineno-26-43"></a>    ├── ... (one storage per registered component type, up to 64 in v1)
+<a id="__codelineno-26-44" name="__codelineno-26-44" href="#__codelineno-26-44"></a>    │
+<a id="__codelineno-26-45" name="__codelineno-26-45" href="#__codelineno-26-45"></a>    ├── WorldCommands::m_commands        [per-frame deferred mutation buffer]
+<a id="__codelineno-26-46" name="__codelineno-26-46" href="#__codelineno-26-46"></a>    │     cleared each frame after Flush()
+<a id="__codelineno-26-47" name="__codelineno-26-47" href="#__codelineno-26-47"></a>    │
+<a id="__codelineno-26-48" name="__codelineno-26-48" href="#__codelineno-26-48"></a>    └── Query scratch / system temporaries
+</code></pre></div>
+<h3 id="how-a-handle-resolves-to-component-data">How a Handle<Actor*> resolves to component data<a class="headerlink" href="#how-a-handle-resolves-to-component-data" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>Handle&lt;Actor*&gt; player = { Index=0, Generation=1 }
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>    │
+<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>    ▼
+<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>ActorManager::m_handles[0]
+<a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>    Actor { m_entity_id = {Index=0, Generation=1}, m_scene = &amp;scene }
+<a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>    │
+<a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a>    ▼
+<a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a>scene.GetComponent&lt;TransformComponent&gt;({Index=0, Generation=1})
+<a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a>    │
+<a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a>    ▼
+<a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a>ComponentStorage&lt;TransformComponent&gt;
+<a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a>    m_sparse[0] = 7            (dense index)
+<a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a>    m_dense_ids[7] == {0,1}    (generation check passes)
+<a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a>    return &amp;m_dense[7]         (direct pointer into dense array)
+</code></pre></div>
+<h3 id="what-lives-where-at-runtime-example-200-actors-5000-tier-2-entities">What lives where at runtime (example: 200 Actors + 5000 Tier 2 entities)<a class="headerlink" href="#what-lives-where-at-runtime-example-200-actors-5000-tier-2-entities" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>EntityRegistry::m_slots
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>  [0..199]   Tier 1 — Actor-backed entities
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>  [200..5199] Tier 2 — pure ECS entities
+<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>  [5200..65535] free
+<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a>
+<a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a>ActorManager::m_handles
+<a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a>  [0..199]   live Actor objects
+<a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a>  [200..1023] free
+<a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a>
+<a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a>ComponentStorage&lt;TransformComponent&gt;::m_dense
+<a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a>  [0..5199]  all 5200 entities that have a TransformComponent (packed, no gaps)
+<a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a>  Tier 1 and Tier 2 are interleaved — ForEach iterates them uniformly
+</code></pre></div>
+<hr />
+<h2 id="9-file-layout">9. File Layout<a class="headerlink" href="#9-file-layout" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>ZEngine/
+<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>  ECS/
+<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>    EntityID.h
+<a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>    ComponentTypeID.h
+<a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>    ArchetypeMask.h
+<a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a>    ComponentStorage.h          (template, header-only)
+<a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a>    IComponentStorage.h
+<a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a>    EntityRegistry.h
+<a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a>    EntityRegistry.cpp
+<a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a>    Scene.h
+<a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a>    Scene.cpp
+<a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a>    Query.h                     (template, header-only)
+<a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a>    WorldTick.h
+<a id="__codelineno-29-14" name="__codelineno-29-14" href="#__codelineno-29-14"></a>    WorldTick.cpp
+<a id="__codelineno-29-15" name="__codelineno-29-15" href="#__codelineno-29-15"></a>    Actor.h
+<a id="__codelineno-29-16" name="__codelineno-29-16" href="#__codelineno-29-16"></a>    Actor.cpp
+<a id="__codelineno-29-17" name="__codelineno-29-17" href="#__codelineno-29-17"></a>    ActorManager.h
+<a id="__codelineno-29-18" name="__codelineno-29-18" href="#__codelineno-29-18"></a>    ActorManager.cpp
+<a id="__codelineno-29-19" name="__codelineno-29-19" href="#__codelineno-29-19"></a>
+<a id="__codelineno-29-20" name="__codelineno-29-20" href="#__codelineno-29-20"></a>  ECS/Components/
+<a id="__codelineno-29-21" name="__codelineno-29-21" href="#__codelineno-29-21"></a>    TransformComponent.h        (plain data — Vec3f position/rotation/scale)
+<a id="__codelineno-29-22" name="__codelineno-29-22" href="#__codelineno-29-22"></a>    MeshComponent.h
+<a id="__codelineno-29-23" name="__codelineno-29-23" href="#__codelineno-29-23"></a>    RigidBodyComponent.h
+<a id="__codelineno-29-24" name="__codelineno-29-24" href="#__codelineno-29-24"></a>    CameraComponent.h
+<a id="__codelineno-29-25" name="__codelineno-29-25" href="#__codelineno-29-25"></a>    LightComponent.h
+<a id="__codelineno-29-26" name="__codelineno-29-26" href="#__codelineno-29-26"></a>
+<a id="__codelineno-29-27" name="__codelineno-29-27" href="#__codelineno-29-27"></a>tests/
+<a id="__codelineno-29-28" name="__codelineno-29-28" href="#__codelineno-29-28"></a>  ECS/
+<a id="__codelineno-29-29" name="__codelineno-29-29" href="#__codelineno-29-29"></a>    ECSTest.cpp
+<a id="__codelineno-29-30" name="__codelineno-29-30" href="#__codelineno-29-30"></a>    ActorTest.cpp
+</code></pre></div>
+<hr />
+<h2 id="10-what-is-not-in-this-document">10. What Is Not in This Document<a class="headerlink" href="#10-what-is-not-in-this-document" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Document</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DAG-based parallel system scheduler</td>
+<td><code>system-scheduler.md</code></td>
+</tr>
+<tr>
+<td>Animation system (SkeletonComponent, AnimatorComponent, skinning)</td>
+<td><code>animation-system.md</code></td>
+</tr>
+<tr>
+<td>VFS stack</td>
+<td><code>vfs-design.md</code> + tickets 1–6</td>
+</tr>
+<tr>
+<td>Import pipeline, asset loading</td>
+<td><code>import-pipeline.md</code></td>
+</tr>
+<tr>
+<td>Scene serialization</td>
+<td><code>scene-serialization.md</code></td>
+</tr>
+<tr>
+<td>Fixed-timestep loop, <code>SnapshotTransforms</code>, interpolation alpha</td>
+<td><code>game-loop.md</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Note for <code>Scene</code> implementors</strong>: <code>game-loop.md</code> requires two methods on <code>ECS::Scene</code>
+that are not detailed in this document:
+- <code>Scene::SnapshotTransforms()</code> — copies each entity's <code>CurrentPosition</code> into
+  <code>PreviousPosition</code> at the end of each fixed step. Required for interpolation.
+- <code>Scene::FillRenderableTransforms(float alpha, Array&lt;RenderableTransform&gt;&amp; out)</code> —
+  linearly interpolates between <code>PreviousPosition</code> and <code>CurrentPosition</code> using <code>alpha</code>
+  and fills the frame packet for the renderer.</p>
+<p>Both methods operate only on entities that have a <code>TransformComponent</code>. Add them to
+the <code>Scene</code> deliverable — do not wait for <code>game-loop.md</code> to be assigned.</p>
+</blockquote>
+<hr />
+<h2 id="11-deliverables-checklist">11. Deliverables Checklist<a class="headerlink" href="#11-deliverables-checklist" title="Permanent link">&para;</a></h2>
+<ul>
+<li>[x] <code>ZEngine/ECS/EntityID.h</code></li>
+<li>[x] <code>ZEngine/ECS/ComponentTypeID.h</code> — atomic counter</li>
+<li>[x] <code>ZEngine/ECS/ArchetypeMask.h</code> — runtime bounds check in <code>MaskBit</code></li>
+<li>[x] <code>ZEngine/ECS/ComponentStorage.h</code> — generation check in <code>Get</code>, <code>Has</code>, <code>Remove</code></li>
+<li>[x] <code>ZEngine/ECS/IComponentStorage.h</code></li>
+<li>[x] <code>ZEngine/ECS/EntityRegistry.h</code> + <code>.cpp</code> — <code>MAX_ENTITIES = 65536</code>; arena-allocated slot array</li>
+<li>[x] <code>ZEngine/ECS/Scene.h</code> + <code>.cpp</code> — includes <code>GetMask(EntityID)</code>, <code>SnapshotTransforms()</code>, <code>FillRenderableTransforms(alpha, out)</code></li>
+<li>[x] <code>ZEngine/ECS/WorldCommands.h</code> + <code>.cpp</code> — deferred mutations, <code>Flush(Scene&amp;)</code>, <code>Clear()</code></li>
+<li>[x] <code>ZEngine/ECS/Query.h</code></li>
+<li>[x] <code>ZEngine/ECS/WorldTick.h</code> + <code>.cpp</code> — DAG scheduler, wave dispatch, conflict detection</li>
+<li>[x] <code>ZEngine/ECS/Actor.h</code> + <code>.cpp</code> — no <code>Ref&lt;Actor&gt;</code>, no <code>RefCounted</code>; lifetime owned by <code>ActorManager</code></li>
+<li>[x] <code>ZEngine/ECS/ActorManager.h</code> + <code>.cpp</code> — <code>HandleManager&lt;Actor*&gt;</code> with <code>MAX_ACTORS = 1024</code>; <code>Create&lt;T&gt;()</code>, <code>Destroy(handle)</code>, <code>Access(handle)</code>, <code>Tick(dt)</code>, <code>Shutdown()</code></li>
+<li>[x] <code>ZEngine/ECS/Components/TransformComponent.h</code> — plain data, separate from old type</li>
+<li>[x] <code>tests/ECS/ECSTest.cpp</code> — entity/component/query/generational handle tests</li>
+<li>[x] <code>tests/ECS/ActorTest.cpp</code> — covered in ECSTest.cpp — Actor create/destroy, component access via Actor, ECS system sees Actor entity</li>
+<li>[x] <code>tests/ECS/WorldCommandsTest.cpp</code> — covered in ECSTest.cpp — deferred spawn, deferred destroy, duplicate destroy guard, flush ordering</li>
+<li>[x] <code>ZEngine/ECS/Components/MeshComponent.h</code> — stable mesh UUID plus runtime RenderInstanceId</li>
+<li>[x] <code>ZEngine/ECS/Components/NameComponent.h</code> — 128-byte display name</li>
+<li>[x] ECS → RenderScene transform/light synchronization — hierarchy runs before transform/light sync</li>
+<li>[x] Tetragrama hierarchy panel — current UI exists; its actor-only selection state is a
+  temporary limitation superseded by editor-entity-selection.md</li>
+<li>[ ] Durable scene authoring integration — UUID-based scene load, runtime render binding
+  reconstruction, and all-ECS editor selection remain tracked by their dedicated plans</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Zodiac Engine contributors
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/JeanPhilippeKernel/RendererEngine" target="_blank" rel="noopener" title="RendererEngine on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://discord.gg/jC3GPVKKsW" target="_blank" rel="noopener" title="Zodiac Engine on Discord" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

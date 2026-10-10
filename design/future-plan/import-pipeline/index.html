@@ -1,0 +1,2723 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Cross-platform Vulkan engine, editor, and project tooling">
+      
+      
+      
+        <link rel="canonical" href="https://jeanphilippekernel.github.io/zodiac-engine-docs/design/future-plan/import-pipeline/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/logo-white.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Import Pipeline — Asset Import Coordination - Zodiac Engine</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#import-pipeline-asset-import-coordination" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Zodiac Engine" class="md-header__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="../../../assets/logo-white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Zodiac Engine
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Import Pipeline — Asset Import Coordination
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="light-blue"  aria-label="Use light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Use light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="light-blue"  aria-label="Use dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Use dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../getting-started/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Get ZEngine
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../editor/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Editor
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../development/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Develop
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../reference/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../project/releases/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Project
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../contributing/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Contribute
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Zodiac Engine" class="md-nav__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="../../../assets/logo-white.png" alt="logo">
+
+    </a>
+    Zodiac Engine
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../getting-started/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Get ZEngine
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Get ZEngine
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/install-with-zodiac-engine-hub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install with Zodiac Engine Hub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/first-project/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create your first project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/update-and-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Update and migration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/supported-platforms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Supported platforms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../editor/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Editor
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Editor
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../editor/assets-and-importing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assets and importing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../editor/scenes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scenes and authoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../development/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Develop
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Develop
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/build-from-source/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build from source
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/run-and-debug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run and debug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/project-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../reference/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rendering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/asset-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/memory-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/zui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ZUI system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/containers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Containers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Releases and changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/rfcs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proposals and RFCs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/archive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Historical records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../contributing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribute
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contribute
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/commit-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commit conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/release-process/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release process
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#implemented-foundation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implemented foundation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#remaining-design-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remaining design work
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-historical-api-and-extension-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Historical API and extension design
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-importjob-and-importpriority" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. ImportJob and ImportPriority
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-importqueue-thread-safe-priority-queue-with-deduplication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. ImportQueue — Thread-Safe Priority Queue with Deduplication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-importcoordinator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. ImportCoordinator
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-progress-reporting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Progress Reporting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-assimpimporter-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. AssimpImporter Migration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-dependency-ordering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Dependency Ordering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-integration-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Integration Points
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Integration Points">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#proposed-vfsscanner-discovery-enqueuebatch-bridge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed VFSScanner discovery → EnqueueBatch bridge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#filewatcher-modifiedstale-event-enqueueimmediate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FileWatcher Modified/Stale event → Enqueue(Immediate)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coordinator-lifetime" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coordinator lifetime
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-hot-reload-in-place-registry-update" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Hot-Reload: In-Place Registry Update
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Hot-Reload: In-Place Registry Update">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#assetregistryupdaterecord" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AssetRegistry::UpdateRecord
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coordinator-hot-reload-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Coordinator hot-reload flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-historical-proposed-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Historical proposed tests
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="11. Historical proposed tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-1-enqueue-trypop-returns-the-same-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 1 — Enqueue + TryPop returns the same job
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-2-duplicate-enqueue-deduplicates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 2 — Duplicate enqueue deduplicates
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-3-immediate-priority-pops-before-normal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 3 — Immediate priority pops before Normal
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-4-route-by-extension-selects-correct-importer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 4 — Route by extension selects correct importer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-5-successful-import-updates-assetregistry-to-loaded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 5 — Successful import updates AssetRegistry to loaded
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-6-failed-import-sets-assetstatefailed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 6 — Failed import sets AssetState::Failed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-7-enqueuebatch-enqueues-multiple-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 7 — EnqueueBatch enqueues multiple paths
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-8-dependenciessatisfied-blocks-mesh-until-texture-is-loaded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 8 — DependenciesSatisfied blocks mesh until texture is loaded
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-historical-checklist-and-remaining-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Historical checklist and remaining work
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/JeanPhilippeKernel/RendererEngine/edit/develop/docs/design/future-plan/import-pipeline.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="import-pipeline-asset-import-coordination">Import Pipeline — Asset Import Coordination<a class="headerlink" href="#import-pipeline-asset-import-coordination" title="Permanent link">&para;</a></h1>
+<p><strong>Priority:</strong> P3
+<strong>Status:</strong> Core coordinator, dependency gate, registry transitions, and file-watcher reimport
+are implemented; initial scanner-to-import enqueue and production observability remain design
+<strong>Tracked by:</strong> <a href="https://github.com/JeanPhilippeKernel/RendererEngine/issues/735">#735</a> (test
+scaffolding), <a href="https://github.com/JeanPhilippeKernel/RendererEngine/issues/750">#750</a> (unified
+image importer), and <a href="https://github.com/JeanPhilippeKernel/RendererEngine/issues/602">#602</a>
+(manual reimport UX). The latter's old component names are not current ZUI panel names.
+<strong>Depends on:</strong> <code>vfs-ticket6-asset-registry.md</code>, <code>actor-ecs-architecture.md</code>
+<strong>Blocks:</strong> <code>animation-system.md</code> (AssimpImporter end-to-end), <code>render-resource-manager.md</code></p>
+<blockquote>
+<p><strong>Current implementation correction.</strong> <code>ImportCoordinator</code> is initialized and its five
+importers (glTF, FBX, Assimp, environment map, and texture) are registered by <code>Engine</code>. It
+dispatches bounded jobs through the thread pool, consults the live <code>AssetRegistry</code> dependency
+graph, and transitions records through <code>AssetState::{Importing,Loaded,Failed}</code>. The VFS watcher
+marks modified assets stale and enqueues them at <code>ImportPriority::Immediate</code>; shader <code>.spv</code>
+changes additionally request a render-thread shader reload. <code>VFSScanner</code> registers discovered
+assets with the registry, but it does <strong>not</strong> currently feed its initial scan into
+<code>ImportCoordinator::EnqueueBatch</code>.</p>
+<p>The API sketches and tests below began as a design proposal. The shipped registry vocabulary is
+<code>AssetState</code>, <code>SetState</code>, record <code>State</code>, and <code>Loaded</code>; the source is authoritative where a
+sketch differs. <code>VFSScanner::SetOnScanComplete</code> reports <code>ScanStats</code>, not a list of paths, and
+there is no <code>OnBatchComplete</code> API.</p>
+</blockquote>
+<h3 id="implemented-foundation">Implemented foundation<a class="headerlink" href="#implemented-foundation" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>IAssetImporter</code> interface — <code>CanImport(ext)</code> + <code>Import(ctx, path, meta)</code> — live in <code>ZEngine/Importers/IAssetImporter.h</code></li>
+<li><code>AssimpImporter::ImportFile()</code> — editor path; cooks .fbx/.obj to <code>.zemesh</code> + <code>.zematerial</code> on disk, reports progress via <code>ImportCompleteCallback</code> / <code>ImportProgressCallback</code> / <code>ImportErrorCallback</code> / <code>ImportLogCallback</code> type aliases</li>
+<li><code>GltfImporter::ImportFile()</code> — same editor path for .glb/.gltf via fastgltf; extracts embedded textures to <code>Assets/Textures/</code></li>
+<li><code>.zematerial</code> serialized as JSON (nlohmann/json); <code>.zetextures</code> eliminated — texture VFS paths inline in <code>.zematerial</code></li>
+<li><code>MetaFileData::SourcePath</code> written after every successful import for future reimport</li>
+<li>Lazy cook on save — <code>EditorSceneSerializer</code> detects in-memory meshes with no artifact and cooks before writing <code>.zescene</code></li>
+<li>Named callback aliases: <code>ImportCompleteCallback</code>, <code>ImportProgressCallback</code>, <code>ImportErrorCallback</code>, <code>ImportLogCallback</code> in <code>AssetTypes.h</code></li>
+<li><code>ImportCoordinator</code> + <code>ImportQueue</code> — priority-driven queue with deduplication; <code>Tick()</code>, <code>Enqueue()</code>, <code>EnqueueBatch()</code>, <code>GetProgress()</code></li>
+<li><code>ImportJob</code> + <code>ImportPriority</code> — job struct with <code>DiagnosticMessage[256]</code>, <code>RequeueCount</code>, priority enum</li>
+<li><code>EnvironmentMapImporter</code> — implements <code>IAssetImporter</code> for .hdr/.exr environment map files</li>
+</ul>
+<h3 id="remaining-design-work">Remaining design work<a class="headerlink" href="#remaining-design-work" title="Permanent link">&para;</a></h3>
+<ul>
+<li>VFSScanner → <code>EnqueueBatch</code> wiring for initial imports</li>
+<li>durable batch accounting, diagnostics retrieval, and completion notification</li>
+</ul>
+<p>Note: <code>ImportCoordinator</code>, <code>ImportQueue</code>, <code>ImportJob</code>, and <code>ImportPriority</code> are implemented in
+<code>ZEngine/ZEngine/Importers/</code>. The registry dependency graph and file-watcher reimport path are
+also live; the scanner-to-coordinator bridge is not.</p>
+<p><strong>Goal</strong>: Implement a priority-driven, thread-safe asset import pipeline inside
+<code>ZEngine::Importers</code> that routes any source file to the correct importer, tracks progress
+for editor UI, enforces dependency ordering (textures before materials before meshes), and
+integrates cleanly with the existing VFS layer — all without exceptions and without
+<code>new</code>/<code>delete</code> in the hot path.</p>
+<hr />
+<h2 id="1-historical-api-and-extension-design">1. Historical API and extension design<a class="headerlink" href="#1-historical-api-and-extension-design" title="Permanent link">&para;</a></h2>
+<p>Every concrete importer (Assimp, STB-image, a custom shader compiler, etc.) implements
+this interface. The interface is intentionally minimal: two pure-virtual methods and no
+state.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// ZEngine/Importers/IAssetImporter.h</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;VFS/IVFSContext.h&gt;</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;VFS/VFSPath.h&gt;</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;VFS/VFSResult.h&gt;</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;VFS/Meta/MetaFileData.h&gt;</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Importers</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">IAssetImporter</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">        </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">IAssetImporter</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">        </span><span class="c1">// Returns true if this importer handles files with the given extension.</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">        </span><span class="c1">// Extension is passed without the leading dot (e.g. "png", "fbx", "glsl").</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">        </span><span class="k">virtual</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">CanImport</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">extension</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">        </span><span class="c1">// Performs the full import. Reads source data through ctx, applies meta</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">        </span><span class="c1">// overrides (uuid, import settings), and writes the cooked asset back into ctx.</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">        </span><span class="c1">// Returns VFSResult&lt;void&gt;; on failure the error string is populated.</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">        </span><span class="k">virtual</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSResult</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Import</span><span class="p">(</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">            </span><span class="n">VFS</span><span class="o">::</span><span class="n">IVFSContext</span><span class="o">&amp;</span><span class="w">        </span><span class="n">ctx</span><span class="p">,</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="o">&amp;</span><span class="w">      </span><span class="n">path</span><span class="p">,</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">MetaFileData</span><span class="o">&amp;</span><span class="w"> </span><span class="n">meta</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace ZEngine::Importers</span>
+</code></pre></div>
+<p><strong>Design notes</strong>:</p>
+<ul>
+<li><code>CanImport</code> is called once per importer during routing (see Section 4 <code>Route()</code>). It
+  must be stateless and cheap — a string comparison, nothing more.</li>
+<li><code>Import</code> receives a fully resolved <code>MetaFileData</code> reference. The importer must never
+  generate a UUID internally; it must read <code>meta.AssetUUID</code>. This is the primary change from
+  the legacy Assimp path (see Section 6).</li>
+<li><code>VFS::VFSResult&lt;void&gt;</code> carries either success or an error string without throwing. The
+  coordinator checks the result and records failures in the registry (Section 7).</li>
+<li>No state lives on the importer. A single <code>AssimpImporter</code> instance handles every <code>.fbx</code>
+  and <code>.obj</code> asset concurrently via the thread pool. All per-import scratch state is on
+  the stack or in pool-allocated buffers obtained from <code>IVFSContext</code>.</li>
+<li>The interface deliberately avoids dependency injection of <code>AssetRegistry</code>. The
+  coordinator updates the registry after <code>Import</code> returns; the importer only cooks data.</li>
+</ul>
+<hr />
+<h2 id="2-importjob-and-importpriority">2. <code>ImportJob</code> and <code>ImportPriority</code><a class="headerlink" href="#2-importjob-and-importpriority" title="Permanent link">&para;</a></h2>
+<p><code>ImportJob</code> is the unit of work that flows through the queue. It is a plain aggregate with
+no virtual methods and no heap-allocated callback: <code>ImportCallback</code> is context plus function
+pointer.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// ZEngine/Importers/ImportJob.h</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;VFS/VFSPath.h&gt;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;VFS/Meta/MetaFileData.h&gt;</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;functional&gt;</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstdint&gt;</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Importers</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ImportPriority</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">        </span><span class="n">Background</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">   </span><span class="c1">// deferred processing; runs when the frame budget allows</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">        </span><span class="n">Normal</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">   </span><span class="c1">// standard editor import triggered by VFSScanner</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">        </span><span class="n">Immediate</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w">    </span><span class="c1">// user-initiated or dependency-resolved retry; runs next Tick</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">ImportCallback</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">        </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">Context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">Fn</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">success</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">ImportJob</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">        </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="w">      </span><span class="n">Path</span><span class="p">;</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">        </span><span class="n">VFS</span><span class="o">::</span><span class="n">MetaFileData</span><span class="w"> </span><span class="n">Meta</span><span class="p">;</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">        </span><span class="n">ImportPriority</span><span class="w">    </span><span class="n">Priority</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">ImportPriority</span><span class="o">::</span><span class="n">Normal</span><span class="p">;</span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">        </span><span class="n">ImportCallback</span><span class="w">    </span><span class="n">Callback</span><span class="p">;</span>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w">          </span><span class="n">RequeueCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">   </span><span class="c1">// incremented on dependency stall; cap at 3</span>
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">        </span><span class="kt">char</span><span class="w">              </span><span class="n">DiagnosticMessage</span><span class="p">[</span><span class="mi">256</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span><span class="w">  </span><span class="c1">// populated on failure</span>
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace ZEngine::Importers</span>
+</code></pre></div>
+<p><strong>Design notes</strong>:</p>
+<ul>
+<li><code>ImportPriority</code> is a <code>uint8_t</code> enum so it fits in the heap comparator without padding
+  waste. The three levels cover all observed editor workflows: background thumbnail
+  generation (<code>Background</code>), normal project-open scan (<code>Normal</code>), and user double-click
+  or manual re-import (<code>Immediate</code>).</li>
+<li><code>RequeueCount</code> is the circular dependency guard. Every time a job is re-inserted
+  because <code>DependenciesSatisfied</code> returns false, <code>RequeueCount</code> is incremented before
+  re-enqueue. At <code>RequeueCount == 3</code> the coordinator stops requeueing and marks the asset
+  <code>Failed</code> (see Section 8).</li>
+<li><code>DiagnosticMessage[256]</code> is a fixed-size char array. No <code>std::string</code>, no allocation.
+  The importer or coordinator writes the null-terminated message via <code>snprintf</code>. The
+  editor reads it when displaying failure details.</li>
+<li><code>ImportCallback</code> is a C-style struct <code>{ void* Context; void (*Fn)(void*, bool); }</code> — zero allocation, consistent with <code>ImportCompleteCallback</code> and other engine callback conventions. Callbacks are optional; the coordinator checks <code>if (job.Callback.Fn)</code> before invoking. For batch imports from <code>VFSScanner</code>, callbacks are typically null and progress is tracked via atomics (Section 5).</li>
+<li><code>VFS::MetaFileData</code> is stored by value because jobs live in the queue between frames and
+  the on-disk meta file may be rewritten while the job waits. The copy is made at enqueue
+  time.</li>
+</ul>
+<hr />
+<h2 id="3-importqueue-thread-safe-priority-queue-with-deduplication">3. <code>ImportQueue</code> — Thread-Safe Priority Queue with Deduplication<a class="headerlink" href="#3-importqueue-thread-safe-priority-queue-with-deduplication" title="Permanent link">&para;</a></h2>
+<p>The queue is a max-heap ordered by <code>ImportPriority</code>. A secondary hash map provides O(1)
+deduplication by <code>VFSPath</code> hash so that rapidly-arriving filesystem events (e.g. a file
+saved multiple times in quick succession) do not enqueue duplicate jobs.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// ZEngine/Importers/ImportQueue.h</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Importers/ImportJob.h&gt;</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Core/Containers/Array.h&gt;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Core/Containers/UnorderedHashMap.h&gt;</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutex&gt;</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstdint&gt;</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Importers</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">ImportQueue</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">        </span><span class="c1">// Inserts job into the heap. If a job for the same path already exists and the</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">        </span><span class="c1">// new job has higher priority, the existing entry is upgraded in-place.</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">        </span><span class="c1">// If priority is equal or lower, the call is a no-op.</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">        </span><span class="kt">void</span><span class="w">     </span><span class="n">Enqueue</span><span class="p">(</span><span class="n">ImportJob</span><span class="w"> </span><span class="n">job</span><span class="p">);</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">        </span><span class="c1">// Removes and returns the highest-priority job. Returns false if queue is empty.</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">        </span><span class="kt">bool</span><span class="w">     </span><span class="nf">TryPop</span><span class="p">(</span><span class="n">ImportJob</span><span class="o">&amp;</span><span class="w"> </span><span class="n">out_job</span><span class="p">);</span>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">        </span><span class="kt">bool</span><span class="w">     </span><span class="nf">IsEmpty</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w"> </span><span class="nf">Size</span><span class="p">()</span><span class="w">    </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="w">        </span><span class="c1">// Returns true if a job for path is currently waiting in the queue.</span>
+<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="w">        </span><span class="kt">bool</span><span class="w">     </span><span class="nf">Contains</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>
+<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="w">    </span><span class="k">private</span><span class="o">:</span>
+<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="w">        </span><span class="k">mutable</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="w">                                     </span><span class="n">m_mtx</span><span class="p">;</span>
+<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="n">ImportJob</span><span class="o">&gt;</span><span class="w">                     </span><span class="n">m_heap</span><span class="p">;</span><span class="w">  </span><span class="c1">// max-heap by Priority</span>
+<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">UnorderedHashMap</span><span class="o">&lt;</span><span class="kt">uint64_t</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_index</span><span class="p">;</span><span class="w"> </span><span class="c1">// path hash → heap pos</span>
+<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>
+<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace ZEngine::Importers</span>
+</code></pre></div>
+<p><strong>Implementation notes</strong>:</p>
+<p><strong><code>Enqueue(job)</code></strong>:
+1. Acquire <code>m_mtx</code>.
+2. Compute <code>hash = job.Path.Hash()</code>.
+3. If <code>m_index.Contains(hash)</code>:
+   - Look up <code>pos = m_index[hash]</code>.
+   - If <code>job.Priority &gt; m_heap[pos].Priority</code>, overwrite <code>m_heap[pos].Priority = job.Priority</code>
+     and sift-up from <code>pos</code>. Update <code>m_index</code> entries displaced by the sift. Return.
+   - Otherwise return (lower-or-equal priority, no-op).
+4. Otherwise: append <code>job</code> to <code>m_heap</code>, record <code>m_index[hash] = m_heap.Size() - 1</code>,
+   sift-up from the last position, updating <code>m_index</code> for every element swapped.</p>
+<p><strong><code>TryPop(out_job)</code></strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>TryPop(out_job):
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>  lock(m_mtx)
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>  if m_heap is empty: return false
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>  out_job = m_heap[0]
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>  m_index.Erase(out_job.Path.Hash())  // ← remove the popped entry from the index map
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>  if m_heap.Size() &gt; 1:
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    ImportJob back = m_heap.Back()
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    m_heap.Pop()                          // remove back element
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    m_heap[0] = back
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    m_index[back.Path.Hash()] = 0        // ← set new position to 0
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    // Sift-down: swap with smallest-priority child, updating m_index at each swap
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>    pos = 0
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    while true:
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>      smallest = pos
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>      left  = 2 * pos + 1
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>      right = 2 * pos + 2
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>      if left  &lt; m_heap.Size() &amp;&amp; m_heap[left].Priority  &gt; m_heap[smallest].Priority: smallest = left
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>      if right &lt; m_heap.Size() &amp;&amp; m_heap[right].Priority &gt; m_heap[smallest].Priority: smallest = right
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>      if smallest == pos: break
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>      swap(m_heap[pos], m_heap[smallest])
+<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>      m_index[m_heap[pos].Path.Hash()]      = pos       // ← update moved element
+<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>      m_index[m_heap[smallest].Path.Hash()] = smallest  // ← update moved element
+<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>      pos = smallest
+<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>  else:
+<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>    m_heap.Pop()
+<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>
+<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>  return true
+</code></pre></div>
+<p><strong><code>Contains(path)</code></strong>:
+1. Acquire <code>m_mtx</code> (shared lock acceptable in future; <code>std::shared_mutex</code> upgrade path
+   is non-breaking because <code>Contains</code> is read-only).
+2. Return <code>m_index.Contains(path.Hash())</code>.</p>
+<p><strong>Heap invariant maintenance</strong>: every sift-up or sift-down swap must also update
+<code>m_index</code> for the displaced element. This keeps the <code>m_index[hash] → heap position</code>
+mapping correct at all times. The cost is O(log N) updates to <code>m_index</code> per
+<code>Enqueue</code>/<code>TryPop</code> — acceptable for queue sizes in the hundreds.</p>
+<p><strong>Hash collision policy</strong>: <code>VFSPath::Hash()</code> returns a <code>uint64_t</code> FNV-1a hash. Two
+distinct paths sharing the same hash would be treated as duplicates. Given 64-bit FNV-1a
+and typical project sizes (&lt; 100 000 assets), the probability is negligible. A future
+<code>VFSPath</code> equality check at lookup can guard against the theoretical collision at the cost
+of one extra string compare.</p>
+<hr />
+<h2 id="4-importcoordinator">4. <code>ImportCoordinator</code><a class="headerlink" href="#4-importcoordinator" title="Permanent link">&para;</a></h2>
+<p><code>ImportCoordinator</code> is the central dispatch object. It owns the queue, all registered
+importers, and the in-flight progress counters. <code>Tick()</code> is called once per editor frame
+to drain up to N jobs (configurable; default 4) to the engine thread pool.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// ZEngine/Importers/ImportCoordinator.h</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Importers/ImportQueue.h&gt;</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Importers/IAssetImporter.h&gt;</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Core/Containers/Array.h&gt;</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;atomic&gt;</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Importers</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">ImportProgress</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">Total</span><span class="p">;</span>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">Completed</span><span class="p">;</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">Failed</span><span class="p">;</span>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">ImportCoordinator</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">    </span><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">        </span><span class="c1">// Registers a concrete importer. Ownership is not transferred; caller must ensure</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">        </span><span class="c1">// lifetime exceeds the coordinator. Importers are checked in registration order.</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="n">RegisterImporter</span><span class="p">(</span><span class="n">IAssetImporter</span><span class="o">*</span><span class="w"> </span><span class="n">importer</span><span class="p">);</span>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="w">        </span><span class="c1">// Enqueues a single asset for import. Reads meta from disk via MetaFileIO.</span>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w">        </span><span class="c1">// No-op if a job for the same path is already queued at equal or higher priority.</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">        </span><span class="c1">// Returns the asset UUID resolved at enqueue time.</span>
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="w">        </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="w"> </span><span class="nf">Enqueue</span><span class="p">(</span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="w">    </span><span class="n">path</span><span class="p">,</span>
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="w">                            </span><span class="n">ImportPriority</span><span class="w">  </span><span class="n">priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImportPriority</span><span class="o">::</span><span class="n">Normal</span><span class="p">,</span>
+<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="w">                            </span><span class="n">ImportCallback</span><span class="w">  </span><span class="n">cb</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="p">{});</span>
+<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>
+<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="w">        </span><span class="c1">// Enqueues multiple paths at Normal priority. Suitable for VFSScanner batch.</span>
+<a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">EnqueueBatch</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">paths</span><span class="p">);</span>
+<a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>
+<a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a><span class="w">        </span><span class="c1">// Called once per frame. Pops up to m_jobs_per_tick jobs whose dependencies are</span>
+<a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a><span class="w">        </span><span class="c1">// satisfied and dispatches each to the ThreadPool. Jobs whose dependencies are</span>
+<a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a><span class="w">        </span><span class="c1">// not yet satisfied are re-inserted with RequeueCount incremented.</span>
+<a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">Tick</span><span class="p">();</span>
+<a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a>
+<a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a><span class="w">        </span><span class="c1">// Returns a snapshot of current import counters. Thread-safe (atomic reads).</span>
+<a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a><span class="w">        </span><span class="n">ImportProgress</span><span class="w"> </span><span class="nf">GetProgress</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a>
+<a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a><span class="w">    </span><span class="k">private</span><span class="o">:</span>
+<a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="n">IAssetImporter</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">m_importers</span><span class="p">;</span>
+<a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a><span class="w">        </span><span class="n">ImportQueue</span><span class="w">                              </span><span class="n">m_queue</span><span class="p">;</span>
+<a id="__codelineno-4-43" name="__codelineno-4-43" href="#__codelineno-4-43"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w">                    </span><span class="n">m_completed</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<a id="__codelineno-4-44" name="__codelineno-4-44" href="#__codelineno-4-44"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w">                    </span><span class="n">m_failed</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<a id="__codelineno-4-45" name="__codelineno-4-45" href="#__codelineno-4-45"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w">                    </span><span class="n">m_total</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<a id="__codelineno-4-46" name="__codelineno-4-46" href="#__codelineno-4-46"></a><span class="w">        </span><span class="kt">uint32_t</span><span class="w">                                 </span><span class="n">m_jobs_per_tick</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+<a id="__codelineno-4-47" name="__codelineno-4-47" href="#__codelineno-4-47"></a>
+<a id="__codelineno-4-48" name="__codelineno-4-48" href="#__codelineno-4-48"></a><span class="w">        </span><span class="c1">// Returns the first importer that CanImport(ext), or nullptr.</span>
+<a id="__codelineno-4-49" name="__codelineno-4-49" href="#__codelineno-4-49"></a><span class="w">        </span><span class="n">IAssetImporter</span><span class="o">*</span><span class="w"> </span><span class="nf">Route</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">ext</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-4-50" name="__codelineno-4-50" href="#__codelineno-4-50"></a>
+<a id="__codelineno-4-51" name="__codelineno-4-51" href="#__codelineno-4-51"></a><span class="w">        </span><span class="c1">// Checks DependencyGraph to verify all upstream assets are AssetState::Loaded.</span>
+<a id="__codelineno-4-52" name="__codelineno-4-52" href="#__codelineno-4-52"></a><span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="nf">DependenciesSatisfied</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-4-53" name="__codelineno-4-53" href="#__codelineno-4-53"></a>
+<a id="__codelineno-4-54" name="__codelineno-4-54" href="#__codelineno-4-54"></a><span class="w">        </span><span class="c1">// Extracts the extension from path (without dot) into out_ext[16].</span>
+<a id="__codelineno-4-55" name="__codelineno-4-55" href="#__codelineno-4-55"></a><span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">ExtractExtension</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">out_ext</span><span class="p">[</span><span class="mi">16</span><span class="p">]);</span>
+<a id="__codelineno-4-56" name="__codelineno-4-56" href="#__codelineno-4-56"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-4-57" name="__codelineno-4-57" href="#__codelineno-4-57"></a>
+<a id="__codelineno-4-58" name="__codelineno-4-58" href="#__codelineno-4-58"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace ZEngine::Importers</span>
+</code></pre></div>
+<p><strong>Current <code>Enqueue(path, priority, cb)</code> implementation</strong>:
+1. Compute the source hash and call
+   <code>MetaFileIO::GetOrCreate(*m_vfs_ctx, path, "ImportCoordinator", hash)</code>.
+   It reads an existing sidecar or creates one with a stable <code>AssetUUID</code>.
+2. Copy the returned <code>MetaFileData</code> into <code>ImportJob</code>, enqueue it, and increment
+   the outstanding <code>m_total</code> counter.
+3. Return <code>job.Meta.AssetUUID</code>, or a nil UUID if VFS/meta creation fails.</p>
+<p><strong><code>Tick()</code> implementation</strong>:
+1. For <code>i</code> in <code>[0, m_jobs_per_tick)</code>:
+   a. <code>ImportJob job; if (!m_queue.TryPop(job)) break;</code>
+   b. <code>if (!DependenciesSatisfied(job.Path))</code>:
+      - If <code>job.RequeueCount &gt;= 3</code>: write <code>"Circular dependency or missing upstream asset"</code>
+        into <code>job.DiagnosticMessage</code>, call <code>AssetRegistry::SetState(job.Meta.AssetUUID, AssetState::Failed)</code>,
+        increment <code>m_failed</code>, decrement <code>m_total</code>, invoke <code>job.Callback</code> with <code>false</code>. Continue.
+      - Otherwise: <code>job.RequeueCount++; m_queue.Enqueue(std::move(job));</code> Continue.
+   c. Route: <code>ExtractExtension(job.Path, ext); IAssetImporter* imp = Route(ext);</code>
+   d. If <code>imp == nullptr</code>: write <code>"No importer for extension"</code> into <code>job.DiagnosticMessage</code>,
+      mark <code>Failed</code>, increment <code>m_failed</code>, decrement <code>m_total</code>, invoke callback. Continue.
+   e. Claim one of the fixed <code>ImportTask</code> slots and dispatch
+      <code>ThreadPoolHelper::Submit(&amp;task, &amp;ImportCoordinator::RunImportTask)</code>. The task:
+      - Call <code>VFS::VFSResult&lt;void&gt; result = imp-&gt;Import(ctx, job.Path, job.Meta);</code>
+      - If success: <code>AssetRegistry::SetState(job.Meta.AssetUUID, AssetState::Loaded); m_completed.fetch_add(1);</code>
+      - If failure: copy error into <code>job.DiagnosticMessage</code> via <code>snprintf</code>,
+        <code>AssetRegistry::SetState(job.Meta.AssetUUID, AssetState::Failed); m_failed.fetch_add(1);</code>
+      - <code>m_total.fetch_sub(1, std::memory_order_relaxed);</code>
+      - invokes the optional context/function callback with the success value.</p>
+<p><strong><code>Route(ext)</code> implementation</strong>:
+- Linear scan over <code>m_importers</code>. Return the first <code>imp</code> where <code>imp-&gt;CanImport(ext) == true</code>.
+- Linear scan is correct and fast for the expected importer count (&lt; 20). No hash map
+  needed; the scan runs O(20) per dispatched job, not per frame.</p>
+<hr />
+<h2 id="5-progress-reporting">5. Progress Reporting<a class="headerlink" href="#5-progress-reporting" title="Permanent link">&para;</a></h2>
+<p>The editor progress bar queries <code>ImportCoordinator::GetProgress()</code> each frame.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">ImportProgress</span><span class="w"> </span><span class="nf">ImportCoordinator::GetProgress</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ImportProgress</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">        </span><span class="p">.</span><span class="n">Total</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">m_total</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_relaxed</span><span class="p">),</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">        </span><span class="p">.</span><span class="n">Completed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_completed</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_relaxed</span><span class="p">),</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">        </span><span class="p">.</span><span class="n">Failed</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">m_failed</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_relaxed</span><span class="p">),</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Design notes</strong>:</p>
+<ul>
+<li>All three counters are <code>std::atomic&lt;uint32_t&gt;</code>. <code>GetProgress()</code> reads them with
+  <code>memory_order_relaxed</code> — a consistent snapshot is not required; the editor bar updates
+  every frame and momentary inaccuracy is invisible to the user.</li>
+<li>In the current implementation <code>Total</code> means outstanding queued or in-flight jobs: it is
+  incremented by <code>Enqueue</code> and decremented when a job reaches a terminal outcome. <code>Completed</code>
+  and <code>Failed</code> are cumulative counters and do not reset with <code>Total</code>; UI must not compute a
+  batch percentage as <code>Completed / Total</code>.</li>
+<li>No mutex is held during <code>GetProgress()</code>. The three relaxed atomic reads are not a coherent
+  snapshot. There is no batch identifier or completion callback yet; production batch progress
+  needs that explicit API.</li>
+</ul>
+<hr />
+<h2 id="6-assimpimporter-migration">6. <code>AssimpImporter</code> Migration<a class="headerlink" href="#6-assimpimporter-migration" title="Permanent link">&para;</a></h2>
+<p><strong>Before</strong> — UUID generated ad-hoc inside the importer, ignoring meta:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">// Legacy AssimpImporter.cpp (before)</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">VFS</span><span class="o">::</span><span class="n">VFSResult</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">AssimpImporter</span><span class="o">::</span><span class="n">Import</span><span class="p">(</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="n">VFS</span><span class="o">::</span><span class="n">IVFSContext</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ctx</span><span class="p">,</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">,</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">MetaFileData</span><span class="o">&amp;</span><span class="w"> </span><span class="cm">/*meta*/</span><span class="p">)</span><span class="w">   </span><span class="c1">// meta ignored</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="p">{</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">    </span><span class="n">UUID</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">UUID</span><span class="o">::</span><span class="n">Generate</span><span class="p">();</span><span class="w">           </span><span class="c1">// ← ad-hoc, changes every import</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">    </span><span class="n">AssetRegistry</span><span class="o">::</span><span class="n">Register</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="p">);</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">    </span><span class="c1">// ... load mesh data ...</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSResult</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;::</span><span class="n">Ok</span><span class="p">();</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>After</strong> — UUID read from the <code>meta</code> parameter that <code>ImportCoordinator</code> populated from
+the <code>.meta</code> file via <code>MetaFileIO</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// Updated AssimpImporter.cpp (after)</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">VFS</span><span class="o">::</span><span class="n">VFSResult</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">AssimpImporter</span><span class="o">::</span><span class="n">Import</span><span class="p">(</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="n">VFS</span><span class="o">::</span><span class="n">IVFSContext</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ctx</span><span class="p">,</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">,</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">MetaFileData</span><span class="o">&amp;</span><span class="w"> </span><span class="n">meta</span><span class="p">)</span><span class="w">       </span><span class="c1">// meta is now authoritative</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="p">{</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">    </span><span class="n">AssetMesh</span><span class="w"> </span><span class="n">mesh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ExtractMesh</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="p">);</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="w">    </span><span class="n">mesh</span><span class="p">.</span><span class="n">MeshUUID</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">meta</span><span class="p">.</span><span class="n">AssetUUID</span><span class="p">;</span><span class="w">      </span><span class="c1">// ← stable identity from .meta file</span>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">    </span><span class="n">AssetManager</span><span class="o">::</span><span class="n">IngestMesh</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">mesh</span><span class="p">),</span><span class="w"> </span><span class="n">hierarchy</span><span class="p">);</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">    </span><span class="c1">// ... load mesh data ...</span>
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSResult</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;::</span><span class="n">Ok</span><span class="p">();</span>
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Key change</strong>: remove the <code>UUID::Generate()</code> call and replace it with <code>meta.AssetUUID</code>. The
+<code>.meta</code> file is created by <code>MetaFileIO::GetOrCreate</code> on first import and reused on
+every subsequent import, so the UUID is stable across reimport, project reload, and
+version control.</p>
+<p><strong>Impact on other importers</strong>: every importer that previously called <code>UUID::Generate()</code>
+internally receives the same fix. A project-wide search for <code>UUID::Generate()</code> inside
+<code>Importers/</code> should yield zero results after the migration.</p>
+<hr />
+<h2 id="7-error-handling">7. Error Handling<a class="headerlink" href="#7-error-handling" title="Permanent link">&para;</a></h2>
+<p><strong>Failed asset state</strong>:</p>
+<p>When <code>IAssetImporter::Import</code> returns a failure <code>VFSResult</code>, the coordinator:
+1. Copies the error string into <code>job.DiagnosticMessage</code> via
+   <code>snprintf(job.DiagnosticMessage, 256, "%s", result.Error())</code>.
+2. Calls <code>AssetRegistry::SetState(job.Meta.AssetUUID, AssetState::Failed)</code>.
+3. Increments <code>m_failed</code>.
+4. Decrements <code>m_total</code>.
+5. Invokes <code>job.Callback(job.Path, false)</code> if present.</p>
+<p>The asset remains in the registry with <code>AssetState::Failed</code>. The current coordinator logs a
+fixed diagnostic but does not persist <code>ImportJob::DiagnosticMessage</code> in <code>AssetRegistry</code>; an
+editor diagnostics query remains design work.</p>
+<p><strong>No automatic retry</strong>:</p>
+<p>Failed jobs are not automatically re-enqueued. The only retry mechanism is a manual
+<code>Enqueue(path, ImportPriority::Immediate)</code> call, which the editor triggers when the user
+clicks "Reimport" in the asset inspector or when <code>FileWatcher</code> emits a <code>Modified</code> event
+for a previously-failed asset (see Section 9).</p>
+<p>Rationale: automatic retry loops hide real errors (missing texture, corrupted file, wrong
+importer) and waste CPU time. A manual retry after the user has fixed the source file is
+the correct workflow.</p>
+<p><strong><code>DiagnosticMessage</code> field</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">struct</span><span class="w"> </span><span class="nc">ImportJob</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">    </span><span class="c1">// ...</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="kt">char</span><span class="w"> </span><span class="n">DiagnosticMessage</span><span class="p">[</span><span class="mi">256</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="p">};</span>
+</code></pre></div>
+<p>Fixed-size, zero-initialized. Never heap-allocated. The coordinator and importers write
+into it via <code>snprintf</code>. The editor reads it as a C-string. 256 bytes is sufficient for
+file paths (≤ 200 characters in practice) plus a short error reason.</p>
+<p><strong><code>AssetState::Failed</code> persistence target</strong>:</p>
+<p><code>AssetRegistry</code> persists <code>Failed</code> status to the project cache on save. On next project
+open, the editor shows the asset as failed without re-attempting import, prompting the
+user to fix the source and reimport.</p>
+<hr />
+<h2 id="8-dependency-ordering">8. Dependency Ordering<a class="headerlink" href="#8-dependency-ordering" title="Permanent link">&para;</a></h2>
+<p><strong>Type import order</strong>: textures must be <code>AssetState::Loaded</code> before materials that
+reference them; materials must be <code>Loaded</code> before meshes that reference them. The enforced
+order is:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>Textures  →  Materials  →  Meshes  →  (Scenes / Prefabs)
+</code></pre></div>
+<p><strong><code>DependenciesSatisfied(path)</code> implementation</strong>:</p>
+<ol>
+<li>Look up the asset's dependency list in <code>DependencyGraph::GetDependencies(path)</code>.
+   <code>DependencyGraph</code> is populated during source file parsing (a lightweight pre-pass
+   performed by each importer before the full cook).</li>
+<li>For each dependency <code>dep_path</code>:
+   a. Resolve <code>dep_uuid = MetaFileIO::Read(dep_path).UUID</code>.
+   b. Query <code>AssetRegistry::FindByUUID(dep_uuid)-&gt;State</code> after checking the returned pointer.
+   c. If state is not <code>AssetState::Loaded</code>, return false.</li>
+<li>Return true if all dependencies are <code>Loaded</code> (or if the dependency list is empty).</li>
+</ol>
+<p><strong>Requeueing on unsatisfied dependencies</strong>:</p>
+<p>Inside <code>Tick()</code>, when <code>DependenciesSatisfied</code> returns false:
+- If <code>job.RequeueCount &lt; 3</code>: increment <code>RequeueCount</code>, re-enqueue the job (priority
+  preserved), and continue to the next pop. The dependent asset will be processed in a
+  later tick after its dependencies finish.
+- If <code>job.RequeueCount &gt;= 3</code>: the job has been stalled three times. This indicates a
+  circular dependency or a permanently-missing upstream asset. Write
+  <code>"Dependency cycle or unresolvable upstream: &lt;dep_path&gt;"</code> into <code>DiagnosticMessage</code>,
+  mark the asset <code>Failed</code>, and do not re-enqueue.</p>
+<p><strong><code>RequeueCount</code> cap rationale</strong>: three stalls are enough to absorb transient ordering
+races (e.g. a texture and mesh enqueued simultaneously, mesh pops first) while reliably
+catching true cycles. Raising the cap to 10 would mask cycles for too long; lowering it
+to 1 would cause false failures on normal concurrent imports.</p>
+<p><strong><code>DependencyGraph</code> population</strong>: each importer performs a cheap pre-scan (no full
+decode) during <code>CanImport</code> or at the start of <code>Import</code> to record referenced paths. For
+Assimp meshes this means reading <code>aiScene::mMaterials[*]-&gt;GetTexture()</code> paths and
+registering them in the graph before returning from the material-parse phase.</p>
+<hr />
+<h2 id="9-integration-points">9. Integration Points<a class="headerlink" href="#9-integration-points" title="Permanent link">&para;</a></h2>
+<h3 id="proposed-vfsscanner-discovery-enqueuebatch-bridge">Proposed VFSScanner discovery → <code>EnqueueBatch</code> bridge<a class="headerlink" href="#proposed-vfsscanner-discovery-enqueuebatch-bridge" title="Permanent link">&para;</a></h3>
+<p>This bridge is not implemented. The current <code>VFSScanner::SetOnScanComplete</code> callback only
+reports aggregate <code>ScanStats</code>, while discovered files are registered one at a time. A production
+bridge must collect only importable discovered paths in scanner-owned data, hand that immutable
+batch to the main thread, then call <code>EnqueueBatch</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">// Proposed main-thread handoff after the scanner owns a completed immutable path batch.</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">coordinator</span><span class="p">.</span><span class="n">EnqueueBatch</span><span class="p">(</span><span class="n">discovered_paths</span><span class="p">);</span>
+</code></pre></div>
+<p><code>EnqueueBatch</code> iterates the array and calls <code>Enqueue(path, ImportPriority::Normal)</code> for
+each path. Paths already in the queue (from a prior partial scan) are silently deduplicated
+by <code>ImportQueue::Enqueue</code>.</p>
+<h3 id="filewatcher-modifiedstale-event-enqueueimmediate"><code>FileWatcher</code> <code>Modified</code>/<code>Stale</code> event → <code>Enqueue(Immediate)</code><a class="headerlink" href="#filewatcher-modifiedstale-event-enqueueimmediate" title="Permanent link">&para;</a></h3>
+<p>When <code>FileWatcher</code> detects that a watched asset has been modified on disk:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1">// In FileWatcher event dispatch</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">watcher</span><span class="p">.</span><span class="n">OnModified</span><span class="p">([</span><span class="o">&amp;</span><span class="n">coordinator</span><span class="p">](</span><span class="k">const</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">    </span><span class="n">coordinator</span><span class="p">.</span><span class="n">Enqueue</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">ImportPriority</span><span class="o">::</span><span class="n">Immediate</span><span class="p">);</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="p">});</span>
+</code></pre></div>
+<p><code>Immediate</code> priority ensures the reimport surfaces to the top of the heap on the next
+<code>Tick()</code>, giving the user near-real-time feedback when saving a texture in an external
+editor while the engine editor is open.</p>
+<p>A <code>Stale</code> event (meta file exists but cooked cache is older than the source) uses
+<code>ImportPriority::Normal</code> rather than <code>Immediate</code>, since staleness is detected at project
+open time and is not an interactive user action.</p>
+<h3 id="coordinator-lifetime">Coordinator lifetime<a class="headerlink" href="#coordinator-lifetime" title="Permanent link">&para;</a></h3>
+<p><code>ImportCoordinator</code> is owned by the editor application layer (e.g. <code>EditorApp</code>) and
+lives for the full application lifetime. It outlives the thread pool to ensure all
+in-flight lambdas can safely access the atomic counters via captured <code>this</code>.</p>
+<hr />
+<h2 id="10-hot-reload-in-place-registry-update">10. Hot-Reload: In-Place Registry Update<a class="headerlink" href="#10-hot-reload-in-place-registry-update" title="Permanent link">&para;</a></h2>
+<p>When <code>FileWatcher</code> fires a <code>Modified</code> or <code>Stale</code> event for an asset that is <strong>already in
+the registry</strong> (i.e., it has been imported before), the coordinator must update the
+existing registry record rather than inserting a new one. Creating a new <code>AssetHandle</code>
+for an already-loaded asset would leave the old GPU resource orphaned and break all
+scene references pointing at the previous handle.</p>
+<h3 id="assetregistryupdaterecord"><code>AssetRegistry::UpdateRecord</code><a class="headerlink" href="#assetregistryupdaterecord" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1">// ZEngine/VFS/AssetRegistry.h — addition</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1">// Replaces the AssetRecord for an existing UUID in-place.</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="c1">// - Updates ArtifactPath, ImporterName, LastSourceSha256 from new_meta.</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1">// Historical migration note: current coordinator sets AssetState::Importing and then</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="c1">// AssetState::{Loaded,Failed}; this importer does not choose the terminal state.</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="c1">// - The existing AssetHandle is preserved — all scene references remain valid.</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="c1">// - Asserts if uuid is not already registered (use Register for new assets).</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="kt">void</span><span class="w"> </span><span class="nf">AssetRegistry::UpdateRecord</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="w"> </span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">MetaFileData</span><span class="o">&amp;</span><span class="w"> </span><span class="n">new_meta</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="coordinator-hot-reload-flow">Coordinator hot-reload flow<a class="headerlink" href="#coordinator-hot-reload-flow" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>FileWatcher::Modified → ImportCoordinator::Enqueue(path, Immediate)
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>  ImportCoordinator::Dispatch(job):
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    1. MetaFileIO::GetOrCreate → ImportStatus::Stale
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    2. uuid = meta.AssetUUID                          ← same UUID as before
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    3. AssetRegistry::UpdateRecord(uuid, meta)        ← status → Loading, handle preserved
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    4. importer-&gt;Import(ctx, path, meta)              ← reimport to new artifact
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>    5a. Success → AssetRegistry::SetState(uuid, AssetState::Loaded)
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>        RenderResourceManager::ScheduleSwap(           ← swap GPU resource, handle unchanged
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>            registry.GetHandle(uuid), new_asset_handle)
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>    5b. Failure → AssetRegistry::SetState(uuid, AssetState::Failed)
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>                  (old GPU resource remains bound — no visual corruption)
+</code></pre></div>
+<p>The key invariant: the <code>AssetHandle</code> never changes across a hot-reload. Only the
+underlying GPU resource is swapped by <code>RenderResourceManager::ScheduleSwap</code>. This
+means scene YAML references, component <code>MeshComponent::Handle</code> fields, and material
+bindings all remain valid without any fixup.</p>
+<hr />
+<h2 id="11-historical-proposed-tests">11. Historical proposed tests<a class="headerlink" href="#11-historical-proposed-tests" title="Permanent link">&para;</a></h2>
+<p>File: <code>ZEngine/tests/Importers/ImportPipelineTest.cpp</code></p>
+<h3 id="test-1-enqueue-trypop-returns-the-same-job">Test 1 — Enqueue + TryPop returns the same job<a class="headerlink" href="#test-1-enqueue-trypop-returns-the-same-job" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">ImportQueue</span><span class="p">,</span><span class="w"> </span><span class="n">EnqueueTryPopReturnsSameJob</span><span class="p">)</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="p">{</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="n">ImportQueue</span><span class="w"> </span><span class="n">queue</span><span class="p">;</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="n">ImportJob</span><span class="w"> </span><span class="n">job</span><span class="p">;</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span><span class="n">job</span><span class="p">.</span><span class="n">Path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="p">(</span><span class="s">"assets/textures/wood.png"</span><span class="p">);</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">    </span><span class="n">job</span><span class="p">.</span><span class="n">Priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImportPriority</span><span class="o">::</span><span class="n">Normal</span><span class="p">;</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">    </span><span class="n">queue</span><span class="p">.</span><span class="n">Enqueue</span><span class="p">(</span><span class="n">job</span><span class="p">);</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">    </span><span class="n">EXPECT_FALSE</span><span class="p">(</span><span class="n">queue</span><span class="p">.</span><span class="n">IsEmpty</span><span class="p">());</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">queue</span><span class="p">.</span><span class="n">Size</span><span class="p">(),</span><span class="w"> </span><span class="mi">1u</span><span class="p">);</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="w">    </span><span class="n">ImportJob</span><span class="w"> </span><span class="n">out</span><span class="p">;</span>
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">popped</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">queue</span><span class="p">.</span><span class="n">TryPop</span><span class="p">(</span><span class="n">out</span><span class="p">);</span>
+<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">popped</span><span class="p">);</span>
+<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">out</span><span class="p">.</span><span class="n">Path</span><span class="p">,</span><span class="w"> </span><span class="n">job</span><span class="p">.</span><span class="n">Path</span><span class="p">);</span>
+<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">queue</span><span class="p">.</span><span class="n">IsEmpty</span><span class="p">());</span>
+<a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="test-2-duplicate-enqueue-deduplicates">Test 2 — Duplicate enqueue deduplicates<a class="headerlink" href="#test-2-duplicate-enqueue-deduplicates" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">ImportQueue</span><span class="p">,</span><span class="w"> </span><span class="n">DuplicateEnqueueKeepsSizeOne</span><span class="p">)</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="p">{</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="n">ImportQueue</span><span class="w"> </span><span class="n">queue</span><span class="p">;</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="n">ImportJob</span><span class="w"> </span><span class="n">job</span><span class="p">;</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">    </span><span class="n">job</span><span class="p">.</span><span class="n">Path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="p">(</span><span class="s">"assets/textures/wood.png"</span><span class="p">);</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">    </span><span class="n">job</span><span class="p">.</span><span class="n">Priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImportPriority</span><span class="o">::</span><span class="n">Normal</span><span class="p">;</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">    </span><span class="n">queue</span><span class="p">.</span><span class="n">Enqueue</span><span class="p">(</span><span class="n">job</span><span class="p">);</span>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">queue</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="n">job</span><span class="p">.</span><span class="n">Path</span><span class="p">));</span>
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="w">    </span><span class="n">queue</span><span class="p">.</span><span class="n">Enqueue</span><span class="p">(</span><span class="n">job</span><span class="p">);</span><span class="w">  </span><span class="c1">// same path, same priority → no-op</span>
+<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">queue</span><span class="p">.</span><span class="n">Size</span><span class="p">(),</span><span class="w"> </span><span class="mi">1u</span><span class="p">);</span>
+<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">queue</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="n">job</span><span class="p">.</span><span class="n">Path</span><span class="p">));</span>
+<a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="test-3-immediate-priority-pops-before-normal">Test 3 — Immediate priority pops before Normal<a class="headerlink" href="#test-3-immediate-priority-pops-before-normal" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">ImportQueue</span><span class="p">,</span><span class="w"> </span><span class="n">ImmediatePopsBeforeNormal</span><span class="p">)</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="p">{</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="n">ImportQueue</span><span class="w"> </span><span class="n">queue</span><span class="p">;</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">    </span><span class="n">ImportJob</span><span class="w"> </span><span class="n">normal_job</span><span class="p">;</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">    </span><span class="n">normal_job</span><span class="p">.</span><span class="n">Path</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="p">(</span><span class="s">"assets/meshes/chair.fbx"</span><span class="p">);</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="w">    </span><span class="n">normal_job</span><span class="p">.</span><span class="n">Priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImportPriority</span><span class="o">::</span><span class="n">Normal</span><span class="p">;</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="w">    </span><span class="n">ImportJob</span><span class="w"> </span><span class="n">immediate_job</span><span class="p">;</span>
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="w">    </span><span class="n">immediate_job</span><span class="p">.</span><span class="n">Path</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="p">(</span><span class="s">"assets/textures/chair_diffuse.png"</span><span class="p">);</span>
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="w">    </span><span class="n">immediate_job</span><span class="p">.</span><span class="n">Priority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ImportPriority</span><span class="o">::</span><span class="n">Immediate</span><span class="p">;</span>
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>
+<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="w">    </span><span class="n">queue</span><span class="p">.</span><span class="n">Enqueue</span><span class="p">(</span><span class="n">normal_job</span><span class="p">);</span>
+<a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="w">    </span><span class="n">queue</span><span class="p">.</span><span class="n">Enqueue</span><span class="p">(</span><span class="n">immediate_job</span><span class="p">);</span>
+<a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">queue</span><span class="p">.</span><span class="n">Size</span><span class="p">(),</span><span class="w"> </span><span class="mi">2u</span><span class="p">);</span>
+<a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>
+<a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a><span class="w">    </span><span class="n">ImportJob</span><span class="w"> </span><span class="n">first</span><span class="p">;</span>
+<a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a><span class="w">    </span><span class="n">queue</span><span class="p">.</span><span class="n">TryPop</span><span class="p">(</span><span class="n">first</span><span class="p">);</span>
+<a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">first</span><span class="p">.</span><span class="n">Priority</span><span class="p">,</span><span class="w"> </span><span class="n">ImportPriority</span><span class="o">::</span><span class="n">Immediate</span><span class="p">);</span>
+<a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">first</span><span class="p">.</span><span class="n">Path</span><span class="p">,</span><span class="w"> </span><span class="n">immediate_job</span><span class="p">.</span><span class="n">Path</span><span class="p">);</span>
+<a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="test-4-route-by-extension-selects-correct-importer">Test 4 — Route by extension selects correct importer<a class="headerlink" href="#test-4-route-by-extension-selects-correct-importer" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">ImportCoordinator</span><span class="p">,</span><span class="w"> </span><span class="n">RouteByExtensionSelectsCorrectImporter</span><span class="p">)</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="p">{</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">    </span><span class="n">MockPngImporter</span><span class="w">  </span><span class="n">png_imp</span><span class="p">;</span><span class="w">   </span><span class="c1">// CanImport("png") == true</span>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="n">MockFbxImporter</span><span class="w">  </span><span class="n">fbx_imp</span><span class="p">;</span><span class="w">   </span><span class="c1">// CanImport("fbx") == true</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">    </span><span class="n">ImportCoordinator</span><span class="w"> </span><span class="n">coordinator</span><span class="p">;</span>
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">    </span><span class="n">coordinator</span><span class="p">.</span><span class="n">RegisterImporter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">png_imp</span><span class="p">);</span>
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">    </span><span class="n">coordinator</span><span class="p">.</span><span class="n">RegisterImporter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fbx_imp</span><span class="p">);</span>
+<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>
+<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">    </span><span class="c1">// Use the exposed Route() test-accessor (friend or protected in test build)</span>
+<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="w">    </span><span class="n">IAssetImporter</span><span class="o">*</span><span class="w"> </span><span class="n">selected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">coordinator</span><span class="p">.</span><span class="n">Route</span><span class="p">(</span><span class="s">"fbx"</span><span class="p">);</span>
+<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">selected</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">fbx_imp</span><span class="p">);</span>
+<a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a>
+<a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="w">    </span><span class="n">selected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">coordinator</span><span class="p">.</span><span class="n">Route</span><span class="p">(</span><span class="s">"png"</span><span class="p">);</span>
+<a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">selected</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">png_imp</span><span class="p">);</span>
+<a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a>
+<a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="w">    </span><span class="n">selected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">coordinator</span><span class="p">.</span><span class="n">Route</span><span class="p">(</span><span class="s">"wav"</span><span class="p">);</span><span class="w">  </span><span class="c1">// no importer registered</span>
+<a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">selected</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
+<a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="test-5-successful-import-updates-assetregistry-to-loaded">Test 5 — Successful import updates <code>AssetRegistry</code> to loaded<a class="headerlink" href="#test-5-successful-import-updates-assetregistry-to-loaded" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">ImportCoordinator</span><span class="p">,</span><span class="w"> </span><span class="n">SuccessfulImportSetsStatusReady</span><span class="p">)</span>
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="p">{</span>
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">    </span><span class="n">FakeVFSContext</span><span class="w"> </span><span class="n">ctx</span><span class="p">;</span>
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">    </span><span class="n">MockPngImporter</span><span class="w"> </span><span class="n">png_imp</span><span class="p">;</span><span class="w">  </span><span class="c1">// Import() always returns VFSResult&lt;void&gt;::Ok()</span>
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">    </span><span class="n">AssetRegistry</span><span class="w"> </span><span class="n">registry</span><span class="p">;</span>
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">    </span><span class="n">ImportCoordinator</span><span class="w"> </span><span class="n">coordinator</span><span class="p">;</span>
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="w">    </span><span class="n">coordinator</span><span class="p">.</span><span class="n">RegisterImporter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">png_imp</span><span class="p">);</span>
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="w">    </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="w"> </span><span class="n">path</span><span class="p">(</span><span class="s">"assets/textures/logo.png"</span><span class="p">);</span>
+<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">callback_fired</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">callback_success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a>
+<a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="w">    </span><span class="n">coordinator</span><span class="p">.</span><span class="n">Enqueue</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">ImportPriority</span><span class="o">::</span><span class="n">Normal</span><span class="p">,</span>
+<a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="w">        </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="k">const</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">success</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a><span class="w">            </span><span class="n">callback_fired</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a><span class="w">            </span><span class="n">callback_success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">success</span><span class="p">;</span>
+<a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a><span class="w">        </span><span class="p">});</span>
+<a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a>
+<a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a><span class="w">    </span><span class="n">coordinator</span><span class="p">.</span><span class="n">Tick</span><span class="p">();</span><span class="w">  </span><span class="c1">// dispatches job; block until thread pool drains in test</span>
+<a id="__codelineno-18-21" name="__codelineno-18-21" href="#__codelineno-18-21"></a>
+<a id="__codelineno-18-22" name="__codelineno-18-22" href="#__codelineno-18-22"></a><span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">callback_fired</span><span class="p">);</span>
+<a id="__codelineno-18-23" name="__codelineno-18-23" href="#__codelineno-18-23"></a><span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">callback_success</span><span class="p">);</span>
+<a id="__codelineno-18-24" name="__codelineno-18-24" href="#__codelineno-18-24"></a>
+<a id="__codelineno-18-25" name="__codelineno-18-25" href="#__codelineno-18-25"></a><span class="w">    </span><span class="n">UUID</span><span class="w"> </span><span class="n">uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MetaFileIO</span><span class="o">::</span><span class="n">Read</span><span class="p">(</span><span class="n">path</span><span class="p">).</span><span class="n">UUID</span><span class="p">;</span>
+<a id="__codelineno-18-26" name="__codelineno-18-26" href="#__codelineno-18-26"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">registry</span><span class="p">.</span><span class="n">FindByUUID</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">State</span><span class="p">,</span><span class="w"> </span><span class="n">AssetState</span><span class="o">::</span><span class="n">Loaded</span><span class="p">);</span>
+<a id="__codelineno-18-27" name="__codelineno-18-27" href="#__codelineno-18-27"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="test-6-failed-import-sets-assetstatefailed">Test 6 — Failed import sets <code>AssetState::Failed</code><a class="headerlink" href="#test-6-failed-import-sets-assetstatefailed" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">ImportCoordinator</span><span class="p">,</span><span class="w"> </span><span class="n">FailedImportSetsStatusFailed</span><span class="p">)</span>
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="p">{</span>
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span><span class="n">FakeVFSContext</span><span class="w"> </span><span class="n">ctx</span><span class="p">;</span>
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">    </span><span class="n">MockBrokenImporter</span><span class="w"> </span><span class="n">broken_imp</span><span class="p">;</span><span class="w">  </span><span class="c1">// Import() returns VFSResult&lt;void&gt;::Err("decode error")</span>
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="w">    </span><span class="n">AssetRegistry</span><span class="w"> </span><span class="n">registry</span><span class="p">;</span>
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="w">    </span><span class="n">ImportCoordinator</span><span class="w"> </span><span class="n">coordinator</span><span class="p">;</span>
+<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="w">    </span><span class="n">coordinator</span><span class="p">.</span><span class="n">RegisterImporter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">broken_imp</span><span class="p">);</span>
+<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>
+<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="w">    </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="w"> </span><span class="n">path</span><span class="p">(</span><span class="s">"assets/textures/corrupt.png"</span><span class="p">);</span>
+<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">callback_success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w">  </span><span class="c1">// expect it flips to false</span>
+<a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a><span class="w">    </span><span class="n">ImportJob</span><span class="w"> </span><span class="n">captured_job</span><span class="p">;</span>
+<a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a>
+<a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a><span class="w">    </span><span class="n">coordinator</span><span class="p">.</span><span class="n">Enqueue</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">ImportPriority</span><span class="o">::</span><span class="n">Normal</span><span class="p">,</span>
+<a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a><span class="w">        </span><span class="p">[</span><span class="o">&amp;</span><span class="p">](</span><span class="k">const</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="o">&amp;</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">success</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a><span class="w">            </span><span class="n">callback_success</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">success</span><span class="p">;</span>
+<a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a><span class="w">        </span><span class="p">});</span>
+<a id="__codelineno-19-18" name="__codelineno-19-18" href="#__codelineno-19-18"></a>
+<a id="__codelineno-19-19" name="__codelineno-19-19" href="#__codelineno-19-19"></a><span class="w">    </span><span class="n">coordinator</span><span class="p">.</span><span class="n">Tick</span><span class="p">();</span>
+<a id="__codelineno-19-20" name="__codelineno-19-20" href="#__codelineno-19-20"></a>
+<a id="__codelineno-19-21" name="__codelineno-19-21" href="#__codelineno-19-21"></a><span class="w">    </span><span class="n">EXPECT_FALSE</span><span class="p">(</span><span class="n">callback_success</span><span class="p">);</span>
+<a id="__codelineno-19-22" name="__codelineno-19-22" href="#__codelineno-19-22"></a>
+<a id="__codelineno-19-23" name="__codelineno-19-23" href="#__codelineno-19-23"></a><span class="w">    </span><span class="n">UUID</span><span class="w"> </span><span class="n">uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MetaFileIO</span><span class="o">::</span><span class="n">Read</span><span class="p">(</span><span class="n">path</span><span class="p">).</span><span class="n">UUID</span><span class="p">;</span>
+<a id="__codelineno-19-24" name="__codelineno-19-24" href="#__codelineno-19-24"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">registry</span><span class="p">.</span><span class="n">FindByUUID</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">State</span><span class="p">,</span><span class="w"> </span><span class="n">AssetState</span><span class="o">::</span><span class="n">Failed</span><span class="p">);</span>
+<a id="__codelineno-19-25" name="__codelineno-19-25" href="#__codelineno-19-25"></a>
+<a id="__codelineno-19-26" name="__codelineno-19-26" href="#__codelineno-19-26"></a><span class="w">    </span><span class="c1">// The current registry has no persisted diagnostic field; assert the failure log instead.</span>
+<a id="__codelineno-19-27" name="__codelineno-19-27" href="#__codelineno-19-27"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="test-7-enqueuebatch-enqueues-multiple-paths">Test 7 — <code>EnqueueBatch</code> enqueues multiple paths<a class="headerlink" href="#test-7-enqueuebatch-enqueues-multiple-paths" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">ImportCoordinator</span><span class="p">,</span><span class="w"> </span><span class="n">EnqueueBatchEnqueuesAllPaths</span><span class="p">)</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="p">{</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">    </span><span class="n">ImportCoordinator</span><span class="w"> </span><span class="n">coordinator</span><span class="p">;</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">    </span><span class="n">MockPngImporter</span><span class="w"> </span><span class="n">png_imp</span><span class="p">;</span>
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">    </span><span class="n">coordinator</span><span class="p">.</span><span class="n">RegisterImporter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">png_imp</span><span class="p">);</span>
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>
+<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="w">    </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="o">&gt;</span><span class="w"> </span><span class="n">paths</span><span class="p">;</span>
+<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="w">    </span><span class="n">paths</span><span class="p">.</span><span class="n">PushBack</span><span class="p">(</span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="p">(</span><span class="s">"assets/textures/a.png"</span><span class="p">));</span>
+<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a><span class="w">    </span><span class="n">paths</span><span class="p">.</span><span class="n">PushBack</span><span class="p">(</span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="p">(</span><span class="s">"assets/textures/b.png"</span><span class="p">));</span>
+<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a><span class="w">    </span><span class="n">paths</span><span class="p">.</span><span class="n">PushBack</span><span class="p">(</span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="p">(</span><span class="s">"assets/textures/c.png"</span><span class="p">));</span>
+<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a>
+<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a><span class="w">    </span><span class="n">coordinator</span><span class="p">.</span><span class="n">EnqueueBatch</span><span class="p">(</span><span class="n">paths</span><span class="p">);</span>
+<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a>
+<a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a><span class="w">    </span><span class="n">ImportProgress</span><span class="w"> </span><span class="n">prog</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">coordinator</span><span class="p">.</span><span class="n">GetProgress</span><span class="p">();</span>
+<a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">prog</span><span class="p">.</span><span class="n">Total</span><span class="p">,</span><span class="w"> </span><span class="mi">3u</span><span class="p">);</span>
+<a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">prog</span><span class="p">.</span><span class="n">Completed</span><span class="p">,</span><span class="w"> </span><span class="mi">0u</span><span class="p">);</span>
+<a id="__codelineno-20-17" name="__codelineno-20-17" href="#__codelineno-20-17"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">prog</span><span class="p">.</span><span class="n">Failed</span><span class="p">,</span><span class="w"> </span><span class="mi">0u</span><span class="p">);</span>
+<a id="__codelineno-20-18" name="__codelineno-20-18" href="#__codelineno-20-18"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="test-8-dependenciessatisfied-blocks-mesh-until-texture-is-loaded">Test 8 — <code>DependenciesSatisfied</code> blocks mesh until texture is loaded<a class="headerlink" href="#test-8-dependenciessatisfied-blocks-mesh-until-texture-is-loaded" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">ImportCoordinator</span><span class="p">,</span><span class="w"> </span><span class="n">DependenciesSatisfiedBlocksMeshUntilTextureReady</span><span class="p">)</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="p">{</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="w">    </span><span class="n">FakeVFSContext</span><span class="w"> </span><span class="n">ctx</span><span class="p">;</span>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">    </span><span class="n">AssetRegistry</span><span class="w">  </span><span class="n">registry</span><span class="p">;</span>
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="w">    </span><span class="n">MockPngImporter</span><span class="w">  </span><span class="n">png_imp</span><span class="p">;</span>
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">    </span><span class="n">MockFbxImporter</span><span class="w">  </span><span class="n">fbx_imp</span><span class="p">;</span>
+<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>
+<a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a><span class="w">    </span><span class="n">ImportCoordinator</span><span class="w"> </span><span class="n">coordinator</span><span class="p">;</span>
+<a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a><span class="w">    </span><span class="n">coordinator</span><span class="p">.</span><span class="n">RegisterImporter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">png_imp</span><span class="p">);</span>
+<a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a><span class="w">    </span><span class="n">coordinator</span><span class="p">.</span><span class="n">RegisterImporter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">fbx_imp</span><span class="p">);</span>
+<a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a>
+<a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a><span class="w">    </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="w"> </span><span class="n">tex_path</span><span class="p">(</span><span class="s">"assets/textures/chair_diffuse.png"</span><span class="p">);</span>
+<a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a><span class="w">    </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="w"> </span><span class="n">mesh_path</span><span class="p">(</span><span class="s">"assets/meshes/chair.fbx"</span><span class="p">);</span>
+<a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a>
+<a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a><span class="w">    </span><span class="c1">// Register in the DependencyGraph: mesh depends on texture</span>
+<a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a><span class="w">    </span><span class="n">DependencyGraph</span><span class="o">::</span><span class="n">Register</span><span class="p">(</span><span class="n">mesh_path</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="n">tex_path</span><span class="p">});</span>
+<a id="__codelineno-21-17" name="__codelineno-21-17" href="#__codelineno-21-17"></a>
+<a id="__codelineno-21-18" name="__codelineno-21-18" href="#__codelineno-21-18"></a><span class="w">    </span><span class="c1">// Enqueue texture at Normal, mesh at Immediate</span>
+<a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a><span class="w">    </span><span class="n">coordinator</span><span class="p">.</span><span class="n">Enqueue</span><span class="p">(</span><span class="n">tex_path</span><span class="p">,</span><span class="w">  </span><span class="n">ImportPriority</span><span class="o">::</span><span class="n">Normal</span><span class="p">);</span>
+<a id="__codelineno-21-20" name="__codelineno-21-20" href="#__codelineno-21-20"></a><span class="w">    </span><span class="n">coordinator</span><span class="p">.</span><span class="n">Enqueue</span><span class="p">(</span><span class="n">mesh_path</span><span class="p">,</span><span class="w"> </span><span class="n">ImportPriority</span><span class="o">::</span><span class="n">Immediate</span><span class="p">);</span>
+<a id="__codelineno-21-21" name="__codelineno-21-21" href="#__codelineno-21-21"></a>
+<a id="__codelineno-21-22" name="__codelineno-21-22" href="#__codelineno-21-22"></a><span class="w">    </span><span class="c1">// First Tick: mesh pops first (Immediate), but texture is not loaded → requeued</span>
+<a id="__codelineno-21-23" name="__codelineno-21-23" href="#__codelineno-21-23"></a><span class="w">    </span><span class="n">coordinator</span><span class="p">.</span><span class="n">Tick</span><span class="p">();</span>
+<a id="__codelineno-21-24" name="__codelineno-21-24" href="#__codelineno-21-24"></a><span class="w">    </span><span class="n">UUID</span><span class="w"> </span><span class="n">mesh_uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MetaFileIO</span><span class="o">::</span><span class="n">Read</span><span class="p">(</span><span class="n">mesh_path</span><span class="p">).</span><span class="n">UUID</span><span class="p">;</span>
+<a id="__codelineno-21-25" name="__codelineno-21-25" href="#__codelineno-21-25"></a><span class="w">    </span><span class="n">EXPECT_NE</span><span class="p">(</span><span class="n">registry</span><span class="p">.</span><span class="n">FindByUUID</span><span class="p">(</span><span class="n">mesh_uuid</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">State</span><span class="p">,</span><span class="w"> </span><span class="n">AssetState</span><span class="o">::</span><span class="n">Loaded</span><span class="p">);</span>
+<a id="__codelineno-21-26" name="__codelineno-21-26" href="#__codelineno-21-26"></a>
+<a id="__codelineno-21-27" name="__codelineno-21-27" href="#__codelineno-21-27"></a><span class="w">    </span><span class="c1">// Simulate texture finishing (as if thread pool completed its job).</span>
+<a id="__codelineno-21-28" name="__codelineno-21-28" href="#__codelineno-21-28"></a><span class="w">    </span><span class="n">UUID</span><span class="w"> </span><span class="n">tex_uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MetaFileIO</span><span class="o">::</span><span class="n">Read</span><span class="p">(</span><span class="n">tex_path</span><span class="p">).</span><span class="n">UUID</span><span class="p">;</span>
+<a id="__codelineno-21-29" name="__codelineno-21-29" href="#__codelineno-21-29"></a><span class="w">    </span><span class="n">registry</span><span class="p">.</span><span class="n">SetState</span><span class="p">(</span><span class="n">tex_uuid</span><span class="p">,</span><span class="w"> </span><span class="n">AssetState</span><span class="o">::</span><span class="n">Loaded</span><span class="p">);</span>
+<a id="__codelineno-21-30" name="__codelineno-21-30" href="#__codelineno-21-30"></a>
+<a id="__codelineno-21-31" name="__codelineno-21-31" href="#__codelineno-21-31"></a><span class="w">    </span><span class="c1">// Second Tick: texture is loaded → mesh proceeds and imports successfully.</span>
+<a id="__codelineno-21-32" name="__codelineno-21-32" href="#__codelineno-21-32"></a><span class="w">    </span><span class="n">coordinator</span><span class="p">.</span><span class="n">Tick</span><span class="p">();</span>
+<a id="__codelineno-21-33" name="__codelineno-21-33" href="#__codelineno-21-33"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">registry</span><span class="p">.</span><span class="n">FindByUUID</span><span class="p">(</span><span class="n">mesh_uuid</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">State</span><span class="p">,</span><span class="w"> </span><span class="n">AssetState</span><span class="o">::</span><span class="n">Loaded</span><span class="p">);</span>
+<a id="__codelineno-21-34" name="__codelineno-21-34" href="#__codelineno-21-34"></a><span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="12-historical-checklist-and-remaining-work">12. Historical checklist and remaining work<a class="headerlink" href="#12-historical-checklist-and-remaining-work" title="Permanent link">&para;</a></h2>
+<ul>
+<li>[ ] <code>ZEngine/Importers/IAssetImporter.h</code> — <code>CanImport(ext)</code> + <code>Import(ctx, path, meta)</code> interface; no UUID generation inside importers</li>
+<li>[x] <code>ZEngine/Importers/ImportJob.h</code> — <code>ImportPriority</code> enum, <code>ImportCallback</code> typedef, <code>ImportJob</code> struct with <code>DiagnosticMessage[256]</code> and <code>RequeueCount</code></li>
+<li>[x] <code>ZEngine/Importers/ImportQueue.h</code> + <code>.cpp</code> — max-heap by priority, <code>m_index</code> deduplication map, <code>Enqueue</code> upgrades priority on duplicate, <code>TryPop</code> maintains heap invariant, all operations under <code>m_mtx</code></li>
+<li>[x] <code>ZEngine/Importers/ImportCoordinator.h</code> + <code>.cpp</code> — <code>RegisterImporter</code>, <code>Enqueue</code>, <code>EnqueueBatch</code>, <code>Tick</code>, <code>GetProgress</code>, <code>Route</code>, <code>DependenciesSatisfied</code></li>
+<li>[x] <code>Tick()</code> pops up to <code>m_jobs_per_tick</code> jobs per call and dispatches each to <code>ThreadPool</code>; never blocks the main thread</li>
+<li>[ ] <code>DependenciesSatisfied</code> queries <code>DependencyGraph</code>; stalled jobs requeued with <code>RequeueCount++</code>; at <code>RequeueCount == 3</code> asset is marked <code>Failed</code> with diagnostic</li>
+<li>[ ] <code>AssimpImporter</code> (and all other importers) remove internal <code>UUID::Generate()</code> calls and read <code>meta.UUID</code> instead</li>
+<li>[x] Import failure calls <code>AssetRegistry::SetState(uuid, AssetState::Failed)</code>; persisted editor diagnostics are still missing</li>
+<li>[ ] No automatic retry; manual retry via <code>Enqueue(path, ImportPriority::Immediate)</code></li>
+<li>[ ] Scanner discovery batch wired to <code>ImportCoordinator::EnqueueBatch</code></li>
+<li>[x] <code>VFSFileWatcher::Modified</code> wires to <code>Enqueue(path, ImportPriority::Immediate)</code></li>
+<li>[ ] Define a deliberate reimport policy for a stale dependency cascade; there is no <code>OnStale</code> watcher callback</li>
+<li>[ ] <code>GetProgress()</code> returns <code>{Total, Completed, Failed}</code> via three <code>memory_order_relaxed</code> atomic reads; no mutex held</li>
+<li>[ ] <code>tests/Importers/ImportPipelineTest.cpp</code> — all 8 tests pass under AddressSanitizer and UBSanitizer</li>
+<li>[ ] Manual smoke test: open a project with 500 assets (mix of <code>.png</code>, <code>.fbx</code>, <code>.glsl</code>); verify terminal <code>AssetState</code>, logs, and no duplicate imports under sanitizers</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Zodiac Engine contributors
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/JeanPhilippeKernel/RendererEngine" target="_blank" rel="noopener" title="RendererEngine on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://discord.gg/jC3GPVKKsW" target="_blank" rel="noopener" title="Zodiac Engine on Discord" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

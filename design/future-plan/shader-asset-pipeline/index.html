@@ -1,0 +1,3048 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Cross-platform Vulkan engine, editor, and project tooling">
+      
+      
+      
+        <link rel="canonical" href="https://jeanphilippekernel.github.io/zodiac-engine-docs/design/future-plan/shader-asset-pipeline/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/logo-white.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Shader Asset Pipeline - Zodiac Engine</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#shader-asset-pipeline" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Zodiac Engine" class="md-header__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="../../../assets/logo-white.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Zodiac Engine
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Shader Asset Pipeline
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="light-blue"  aria-label="Use light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Use light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="light-blue"  aria-label="Use dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Use dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../getting-started/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Get ZEngine
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../editor/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Editor
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../development/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Develop
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../reference/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../project/releases/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Project
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../contributing/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Contribute
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Zodiac Engine" class="md-nav__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="../../../assets/logo-white.png" alt="logo">
+
+    </a>
+    Zodiac Engine
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../getting-started/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Get ZEngine
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Get ZEngine
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/install-with-zodiac-engine-hub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Install with Zodiac Engine Hub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/first-project/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Create your first project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/update-and-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Update and migration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/supported-platforms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Supported platforms
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../editor/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Editor
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Editor
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../editor/assets-and-importing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assets and importing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../editor/scenes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scenes and authoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../development/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Develop
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Develop
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/build-from-source/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build from source
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/run-and-debug/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run and debug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/project-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../reference/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rendering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/asset-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/memory-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/zui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ZUI system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/containers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Containers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Releases and changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/rfcs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Proposals and RFCs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../project/archive/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Historical records
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../contributing/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribute
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contribute
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/commit-conventions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commit conventions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contributing/release-process/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release process
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-proposed-source-asset-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Proposed source-asset model
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Proposed source-asset model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-source-extensions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported source extensions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pragma-stage-directive-syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        #pragma stage directive syntax
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shaderstage-enum" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ShaderStage enum
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-shaderasset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. ShaderAsset
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-shaderimporter-implements-iassetimporter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. ShaderImporter — Implements IAssetImporter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. ShaderImporter — Implements IAssetImporter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#class-declaration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Class declaration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#import-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Import flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compiler-selection-rationale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compiler selection rationale
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-capture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error capture
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-vfsincluderesolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. VFSIncludeResolver
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. VFSIncludeResolver">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resolution-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolution rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lifetime-of-shaderc_include_result" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lifetime of shaderc_include_result
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shaderc_include_type-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        shaderc_include_type handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-shadercache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. ShaderCache
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. ShaderCache">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#module-lifetime-and-deferred-destruction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Module lifetime and deferred destruction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-vkcreateshadermodule-in-the-hot-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        No vkCreateShaderModule in the hot path
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-hot-reload-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Hot-Reload Path
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Hot-Reload Path">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#event-chain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Event chain
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thread-safety-invariants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Thread safety invariants
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compile-failure-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compile failure policy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-pipelinedependencygraph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. PipelineDependencyGraph
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7. PipelineDependencyGraph">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#registerpipelineshaders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RegisterPipelineShaders
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#markshaderdirtyuuid" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MarkShaderDirty(uuid)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unregisterpipelinepipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UnregisterPipeline(pipeline)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dirty-accumulation-across-multiple-saves" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dirty accumulation across multiple saves
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-cook-artifact-storage-and-platform-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Cook — Artifact Storage and Platform Table
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Cook — Artifact Storage and Platform Table">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#spir-v-artifact-path-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SPIR-V artifact path convention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meta-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        .meta file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uuid-stability-guarantee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UUID stability guarantee
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#platform-artifact-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Platform artifact table
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-proposed-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Proposed tests
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. Proposed tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-1-compile-vert-source-produces-valid-spir-v-in-artifactpath" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 1 — Compile .vert source produces valid SPIR-V in ArtifactPath
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-2-syntax-error-sets-importstatusfailed-and-populates-errormessage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 2 — Syntax error sets ImportStatus::Failed and populates ErrorMessage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-3-include-resolution-through-vfsincluderesolver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 3 — #include resolution through VFSIncludeResolver
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-4-hot-reload-swap-in-flight-frame-still-sees-old-module-new-frame-sees-new-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 4 — Hot-reload swap: in-flight frame still sees old module; new frame sees new module
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-5-pipelinedependencygraph-markshaderdirty-marks-only-dependent-pipelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 5 — PipelineDependencyGraph: MarkShaderDirty marks only dependent pipelines
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-6-uuid-stability-reimporting-the-same-source-preserves-uuid-from-meta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 6 — UUID stability: reimporting the same source preserves UUID from .meta
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-proposed-deliverables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Proposed deliverables
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Proposed deliverables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#core-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#import" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Import
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cache
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hot-reload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hot reload
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dependency-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dependency graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cook-artifacts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cook / artifacts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/JeanPhilippeKernel/RendererEngine/edit/develop/docs/design/future-plan/shader-asset-pipeline.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="shader-asset-pipeline">Shader Asset Pipeline<a class="headerlink" href="#shader-asset-pipeline" title="Permanent link">&para;</a></h1>
+<p><strong>Priority:</strong> P3 — complete asset identity, include tracking, and cook integration
+<strong>Status:</strong> Build packaging and render-thread reload are implemented; asset-pipeline design
+remains open
+<strong>Depends on:</strong> <code>render-resource-manager.md</code>, VFS
+<strong>Blocks:</strong> content-addressed shader artifacts and dependable source-level hot reload</p>
+<blockquote>
+<p><strong>Current implementation correction.</strong> CMake's <code>Resources/CMakeLists.txt</code> invokes
+<code>glslang-standalone</code> for <code>.vert</code>, <code>.frag</code>, and <code>.comp</code> files, packages the generated SPIR-V
+under <code>/ZodiacEngine/Shaders/Cache</code>, and tracks the sky shader include dependencies that are
+currently known. <code>VulkanDevice::CompileShader()</code> loads those packaged stage files by shader
+name, <code>ShaderManager</code> owns the live modules, and VFS changes to a <code>.spv</code> file enqueue a
+render-thread <code>Shader::Reload()</code> request. Reload is path/name based and the PSO cache handles
+the corresponding pipeline invalidation.</p>
+<p>There is no <code>ShaderAsset</code>, <code>ShaderImporter</code>, UUID-keyed shader cache, generic VFS include
+resolver, source GLSL watcher/compiler, or <code>PipelineDependencyGraph</code> in the shipped engine.
+The API, artifact, and test sections below are the design for those missing pieces, not current
+interfaces. In particular, the current source APIs use the existing <code>cstring</code> alias where
+engine-owned strings are appropriate.</p>
+</blockquote>
+<p><strong>Goal</strong>: Implement a fully integrated shader asset pipeline inside <code>ZEngine::Rendering::Shaders</code>
+that compiles GLSL source files to SPIR-V artifacts at import time, resolves <code>#include</code>
+directives through the VFS, caches live <code>VkShaderModule</code> handles keyed by UUID, and
+hot-reloads shaders — and their dependent pipelines — without stalling a frame in flight.
+No exceptions. No <code>new</code>/<code>delete</code> in hot paths.</p>
+<hr />
+<h2 id="1-proposed-source-asset-model">1. Proposed source-asset model<a class="headerlink" href="#1-proposed-source-asset-model" title="Permanent link">&para;</a></h2>
+<h3 id="supported-source-extensions">Supported source extensions<a class="headerlink" href="#supported-source-extensions" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Extension</th>
+<th>Stage resolved by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.vert</code></td>
+<td>File extension — always <code>Vertex</code></td>
+</tr>
+<tr>
+<td><code>.frag</code></td>
+<td>File extension — always <code>Fragment</code></td>
+</tr>
+<tr>
+<td><code>.comp</code></td>
+<td>File extension — always <code>Compute</code></td>
+</tr>
+<tr>
+<td><code>.glsl</code></td>
+<td><code>#pragma stage</code> directive in the file</td>
+</tr>
+</tbody>
+</table>
+<p><code>.glsl</code> files are generic GLSL. Stage is resolved by scanning the first 64 lines of the
+source for a <code>#pragma stage</code> directive before compilation begins. If no directive is
+found, the importer records <code>ShaderStage::Unknown</code> and sets <code>ImportStatus::Failed</code>.</p>
+<h3 id="pragma-stage-directive-syntax"><code>#pragma stage</code> directive syntax<a class="headerlink" href="#pragma-stage-directive-syntax" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">#pragma stage vertex</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="cp">#pragma stage fragment</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="cp">#pragma stage compute</span>
+</code></pre></div>
+<p>The pragma value is case-insensitive. The directive may appear anywhere in the first
+64 lines; lines are scanned in order and the first matching directive wins.</p>
+<h3 id="shaderstage-enum"><code>ShaderStage</code> enum<a class="headerlink" href="#shaderstage-enum" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// ZEngine/Rendering/Shaders/ShaderStage.h</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstdint&gt;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Rendering</span><span class="o">::</span><span class="nn">Shaders</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ShaderStage</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">        </span><span class="n">Vertex</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">        </span><span class="n">Fragment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">        </span><span class="n">Compute</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">        </span><span class="n">Unknown</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">0xFF</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="c1">// Returns the ShaderStage implied by the file extension (lower-case extension</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span><span class="c1">// without the leading dot, e.g. "vert"). Returns Unknown for ".glsl" — caller</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="c1">// must inspect #pragma stage for those files.</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="n">ShaderStage</span><span class="w"> </span><span class="nf">StageFromExtension</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">ext</span><span class="p">);</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">    </span><span class="c1">// Parses the first 64 lines of `source` for a "#pragma stage &lt;value&gt;"</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">    </span><span class="c1">// directive. Returns Unknown if no directive is found.</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">    </span><span class="n">ShaderStage</span><span class="w"> </span><span class="nf">StageFromPragma</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">source</span><span class="p">);</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace ZEngine::Rendering::Shaders</span>
+</code></pre></div>
+<p><strong>Design notes</strong>:</p>
+<ul>
+<li><code>uint8_t</code> backing keeps <code>ShaderAsset</code> padding minimal; the field occupies one byte.</li>
+<li><code>Unknown = 0xFF</code> is a deliberate non-zero sentinel so that a zero-initialised struct
+  member is still detectable as uninitialised.</li>
+<li><code>StageFromExtension</code> is called by <code>ShaderImporter</code> before reading file contents to
+  fast-reject known-extension files without opening them when only the extension
+  changes.</li>
+<li><code>StageFromPragma</code> performs a line-by-line scan and stops at the first match. The 64-line
+  cap prevents pathologically large files from stalling the import thread before the
+  compiler even runs.</li>
+</ul>
+<hr />
+<h2 id="2-shaderasset">2. <code>ShaderAsset</code><a class="headerlink" href="#2-shaderasset" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1">// ZEngine/Rendering/Shaders/ShaderAsset.h</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;uuid.h&gt;</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Rendering/Shaders/ShaderStage.h&gt;</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Core/ZEngineDef.h&gt;</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Rendering</span><span class="o">::</span><span class="nn">Shaders</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">ShaderAsset</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">        </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="w"> </span><span class="n">AssetUUID</span><span class="w">                          </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">        </span><span class="n">ShaderStage</span><span class="w"> </span><span class="n">Stage</span><span class="w">                              </span><span class="o">=</span><span class="w"> </span><span class="n">ShaderStage</span><span class="o">::</span><span class="n">Unknown</span><span class="p">;</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">        </span><span class="kt">char</span><span class="w">        </span><span class="n">ArtifactPath</span><span class="p">[</span><span class="n">MAX_FILE_PATH_COUNT</span><span class="p">]</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span><span class="w">  </span><span class="c1">// .spv file path on VFS</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">        </span><span class="kt">char</span><span class="w">        </span><span class="n">EntryPoint</span><span class="p">[</span><span class="mi">64</span><span class="p">]</span><span class="w">                     </span><span class="o">=</span><span class="w"> </span><span class="s">"main"</span><span class="p">;</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">        </span><span class="kt">char</span><span class="w">        </span><span class="n">ErrorMessage</span><span class="p">[</span><span class="mi">1024</span><span class="p">]</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span><span class="p">{};</span><span class="w">  </span><span class="c1">// populated on compile failure</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace ZEngine::Rendering::Shaders</span>
+</code></pre></div>
+<p><strong>Design notes</strong>:</p>
+<ul>
+<li><code>ArtifactPath</code> is a VFS-relative path of the form
+  <code>project://_cache/shaders/&lt;uuid&gt;.spv</code> (see Section 8). Storing it as a fixed-width
+  <code>char</code> array avoids heap allocation and makes <code>ShaderAsset</code> trivially serialisable.</li>
+<li><code>EntryPoint</code> defaults to <code>"main"</code> — Vulkan GLSL always uses <code>main</code>; the field exists
+  to support future HLSL/MSL source where the entry point may differ.</li>
+<li><code>ErrorMessage</code> is populated only when <code>ImportStatus::Failed</code> is set in the registry.
+  On success it is left as a null-terminated empty string. The 1024-byte cap fits all
+  shaderc single-error messages in practice; if shaderc produces more than one diagnostic,
+  the importer concatenates them up to the buffer limit and appends <code>"..."</code>.</li>
+<li><code>ShaderAsset</code> is a plain aggregate — no virtual destructor, no hidden pointers. It is
+  safe to <code>memcpy</code> and to store in a flat file cache.</li>
+<li><code>MAX_FILE_PATH_COUNT</code> is defined in <code>ZEngineDef.h</code> (currently 512). The same constant
+  is used throughout the VFS layer.</li>
+</ul>
+<hr />
+<h2 id="3-shaderimporter-implements-iassetimporter">3. <code>ShaderImporter</code> — Implements <code>IAssetImporter</code><a class="headerlink" href="#3-shaderimporter-implements-iassetimporter" title="Permanent link">&para;</a></h2>
+<h3 id="class-declaration">Class declaration<a class="headerlink" href="#class-declaration" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// ZEngine/Rendering/Shaders/ShaderImporter.h</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Assets/IAssetImporter.h&gt;</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Rendering/Shaders/ShaderAsset.h&gt;</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;VFS/IVFSContext.h&gt;</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Rendering</span><span class="o">::</span><span class="nn">Shaders</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">ShaderImporter</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Assets</span><span class="o">::</span><span class="n">IAssetImporter</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">    </span><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">        </span><span class="k">explicit</span><span class="w"> </span><span class="n">ShaderImporter</span><span class="p">(</span><span class="n">VFS</span><span class="o">::</span><span class="n">IVFSContext</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ctx</span><span class="p">);</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">        </span><span class="c1">// IAssetImporter</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="nf">CanImport</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">        </span><span class="c1">// MUST NOT throw. ZEngine is compiled with -fno-exceptions.</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">        </span><span class="c1">// Any exception thrown here calls std::terminate immediately.</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">        </span><span class="c1">// All error paths must use VFSResult&lt;T&gt; or explicit error codes.</span>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">        </span><span class="n">Assets</span><span class="o">::</span><span class="n">ImportResult</span><span class="w"> </span><span class="nf">Import</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">,</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">                                    </span><span class="n">Assets</span><span class="o">::</span><span class="n">AssetRegistry</span><span class="o">&amp;</span><span class="w"> </span><span class="n">registry</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="p">;</span>
+<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>
+<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">    </span><span class="k">private</span><span class="o">:</span>
+<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">        </span><span class="n">VFS</span><span class="o">::</span><span class="n">IVFSContext</span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_ctx</span><span class="p">;</span>
+<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>
+<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">        </span><span class="c1">// Compiles GLSL source to SPIR-V. Returns true on success.</span>
+<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">        </span><span class="c1">// On failure, writes a null-terminated diagnostic into error_out.</span>
+<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="nf">CompileWithShaderc</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="o">&amp;</span><span class="w"> </span><span class="n">source_path</span><span class="p">,</span>
+<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="w">                                </span><span class="n">ShaderStage</span><span class="w"> </span><span class="n">stage</span><span class="p">,</span>
+<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="w">                                </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">spv_out</span><span class="p">,</span>
+<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="w">                                </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">error_out</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">error_cap</span><span class="p">);</span>
+<a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>
+<a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a><span class="w">        </span><span class="c1">// Subprocess fallback: invokes glslangValidator -V, reads the output .spv.</span>
+<a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a><span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="nf">CompileWithGlslang</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="o">&amp;</span><span class="w"> </span><span class="n">source_path</span><span class="p">,</span>
+<a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a><span class="w">                                </span><span class="n">ShaderStage</span><span class="w"> </span><span class="n">stage</span><span class="p">,</span>
+<a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a><span class="w">                                </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">spv_out</span><span class="p">,</span>
+<a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a><span class="w">                                </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">error_out</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">error_cap</span><span class="p">);</span>
+<a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a>
+<a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a><span class="w">        </span><span class="c1">// Writes spv_words to ArtifactPath and returns true on success.</span>
+<a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a><span class="w">        </span><span class="c1">// ShaderImporter::WriteArtifact uses the atomic write protocol:</span>
+<a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a><span class="w">        </span><span class="c1">//   1. Write SPIR-V bytes to &lt;uuid&gt;.spv.tmp</span>
+<a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a><span class="w">        </span><span class="c1">//   2. Flush and close</span>
+<a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a><span class="w">        </span><span class="c1">//   3. Rename &lt;uuid&gt;.spv.tmp → &lt;uuid&gt;.spv</span>
+<a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a><span class="w">        </span><span class="c1">// Ensures the SPIR-V file is never partially written. A partially-written SPIR-V</span>
+<a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a><span class="w">        </span><span class="c1">// would cause vkCreateShaderModule to fail with VK_ERROR_INVALID_SHADER_NV or</span>
+<a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a><span class="w">        </span><span class="c1">// similar, potentially crashing the engine at load time.</span>
+<a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a><span class="w">        </span><span class="kt">bool</span><span class="w"> </span><span class="nf">WriteArtifact</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="w"> </span><span class="n">uuid</span><span class="p">,</span>
+<a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a><span class="w">                           </span><span class="k">const</span><span class="w"> </span><span class="kt">uint32_t</span><span class="o">*</span><span class="w"> </span><span class="n">spv_words</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">word_count</span><span class="p">);</span>
+<a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-3-48" name="__codelineno-3-48" href="#__codelineno-3-48"></a>
+<a id="__codelineno-3-49" name="__codelineno-3-49" href="#__codelineno-3-49"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace ZEngine::Rendering::Shaders</span>
+</code></pre></div>
+<h3 id="import-flow">Import flow<a class="headerlink" href="#import-flow" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>ShaderImporter::Import(path, registry)
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  1. CanImport check (extension whitelist)
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  2. Read existing .meta via MetaFileIO::Read(path)
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>     → If .meta exists and source hash unchanged: return ImportStatus::UpToDate
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>  3. Determine ShaderStage (StageFromExtension or StageFromPragma)
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>     → If Unknown: set ImportStatus::Failed, write ErrorMessage, return
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>  4. Attempt CompileWithShaderc(...)
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>     → On shaderc unavailable (link-time absent or runtime init failure):
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>       fall through to CompileWithGlslang(...)
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>  5. On compile failure: populate ErrorMessage, set ImportStatus::Failed in registry, return
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>  6. WriteArtifact(uuid, spv, word_count)
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>     → path: project://_cache/shaders/&lt;uuid&gt;.spv
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>  7. Populate ShaderAsset fields (UUID, Stage, ArtifactPath, EntryPoint)
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>  8. registry.Register(uuid, asset)
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>  9. MetaFileIO::Write(path, uuid, source_hash)
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a> 10. Return ImportStatus::Success
+</code></pre></div>
+<h3 id="compiler-selection-rationale">Compiler selection rationale<a class="headerlink" href="#compiler-selection-rationale" title="Permanent link">&para;</a></h3>
+<p>shaderc is the primary compiler: it is in-process, produces structured diagnostics,
+and has no subprocess spawn cost. The glslangValidator fallback exists for build
+configurations where linking shaderc is not desired (e.g., shipping builds that exclude
+offline tools). The fallback is detected at compile time via <code>ZENGINE_HAS_SHADERC</code>
+preprocessor define; if the define is absent, <code>CompileWithShaderc</code> is a no-op that
+immediately returns <code>false</code>.</p>
+<h3 id="error-capture">Error capture<a class="headerlink" href="#error-capture" title="Permanent link">&para;</a></h3>
+<p>shaderc returns a <code>shaderc::SpvCompilationResult</code> whose <code>GetErrorMessage()</code> is a
+<code>std::string</code>. The importer copies up to <code>error_cap - 1</code> bytes into <code>error_out</code> and
+null-terminates. No allocation escapes the function.</p>
+<p>The glslangValidator fallback captures <code>stderr</code> from the subprocess via a pipe; the
+same truncation rule applies.</p>
+<hr />
+<h2 id="4-vfsincluderesolver">4. <code>VFSIncludeResolver</code><a class="headerlink" href="#4-vfsincluderesolver" title="Permanent link">&para;</a></h2>
+<p>shaderc resolves <code>#include</code> directives by calling back into a user-supplied
+<code>IncluderInterface</code>. <code>VFSIncludeResolver</code> implements that interface by delegating
+all path resolution to <code>IVFSContext</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// ZEngine/Rendering/Shaders/VFSIncludeResolver.h</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;shaderc/shaderc.hpp&gt;</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;VFS/IVFSContext.h&gt;</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;VFS/VFSPath.h&gt;</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Rendering</span><span class="o">::</span><span class="nn">Shaders</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">VFSIncludeResolver</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">shaderc</span><span class="o">::</span><span class="n">CompileOptions</span><span class="o">::</span><span class="n">IncluderInterface</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="w">    </span><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="w">        </span><span class="k">explicit</span><span class="w"> </span><span class="n">VFSIncludeResolver</span><span class="p">(</span><span class="n">VFS</span><span class="o">::</span><span class="n">IVFSContext</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ctx</span><span class="p">,</span>
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="w">                                    </span><span class="k">const</span><span class="w"> </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="o">&amp;</span><span class="w"> </span><span class="n">shader_dir</span><span class="p">);</span>
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="w">        </span><span class="n">shaderc_include_result</span><span class="o">*</span><span class="w"> </span><span class="nf">GetInclude</span><span class="p">(</span><span class="n">cstring</span><span class="w"> </span><span class="n">requested_source</span><span class="p">,</span>
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="w">                                           </span><span class="n">shaderc_include_type</span><span class="w"> </span><span class="n">type</span><span class="p">,</span>
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="w">                                           </span><span class="n">cstring</span><span class="w"> </span><span class="n">requesting_source</span><span class="p">,</span>
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="w">                                           </span><span class="kt">size_t</span><span class="w"> </span><span class="n">include_depth</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="p">;</span>
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>
+<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">ReleaseInclude</span><span class="p">(</span><span class="n">shaderc_include_result</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="p">;</span>
+<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>
+<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="w">    </span><span class="k">private</span><span class="o">:</span>
+<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="w">        </span><span class="n">VFS</span><span class="o">::</span><span class="n">IVFSContext</span><span class="o">&amp;</span><span class="w"> </span><span class="n">m_ctx</span><span class="p">;</span>
+<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="w">        </span><span class="n">VFS</span><span class="o">::</span><span class="n">VFSPath</span><span class="w">      </span><span class="n">m_shader_dir</span><span class="p">;</span>
+<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>
+<a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="w">        </span><span class="c1">// Flat arena for shaderc_include_result + content storage.</span>
+<a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a><span class="w">        </span><span class="c1">// Allocated from a per-compilation bump allocator; freed in ReleaseInclude.</span>
+<a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">IncludeEntry</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a><span class="w">            </span><span class="n">shaderc_include_result</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+<a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a><span class="w">            </span><span class="kt">char</span><span class="w">                   </span><span class="n">source_name</span><span class="p">[</span><span class="n">MAX_FILE_PATH_COUNT</span><span class="p">];</span>
+<a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a><span class="w">            </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">content</span><span class="p">;</span>
+<a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a><span class="w">        </span><span class="p">};</span>
+<a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a>
+<a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace ZEngine::Rendering::Shaders</span>
+</code></pre></div>
+<h3 id="resolution-rules">Resolution rules<a class="headerlink" href="#resolution-rules" title="Permanent link">&para;</a></h3>
+<ol>
+<li>
+<p><strong><code>include_depth</code> cap</strong>: if <code>include_depth &gt;= 16</code> return an error result with
+   message <code>"include depth limit (16) exceeded"</code>. This prevents infinite include
+   cycles without needing a visited-set.</p>
+</li>
+<li>
+<p><strong>Absolute VFS paths</strong> (<code>vfs://</code> prefix or leading <code>/</code>): pass directly to
+   <code>m_ctx.OpenFile(path)</code>.</p>
+</li>
+<li>
+<p><strong>Relative paths</strong>: resolve against <code>m_shader_dir</code>. Construct a candidate path
+   as <code>m_shader_dir / requested_source</code> and open via <code>m_ctx.OpenFile(candidate)</code>.</p>
+</li>
+<li>
+<p><strong>File not found</strong>: return an error result with message
+   <code>"could not resolve include: &lt;requested_source&gt;"</code>. shaderc treats any non-null
+   <code>error_message</code> as a compile error.</p>
+</li>
+</ol>
+<h3 id="lifetime-of-shaderc_include_result">Lifetime of <code>shaderc_include_result</code><a class="headerlink" href="#lifetime-of-shaderc_include_result" title="Permanent link">&para;</a></h3>
+<p>shaderc calls <code>ReleaseInclude</code> exactly once per <code>GetInclude</code> call (even on error).
+Each <code>IncludeEntry</code> is heap-allocated with <code>new</code> inside <code>GetInclude</code> and deleted
+inside <code>ReleaseInclude</code>. This allocation is off the hot render path (it occurs only
+during shader import / recompilation, not during frame execution), so the single
+<code>new</code>/<code>delete</code> pair is acceptable. No raw <code>new</code> escapes into game code.</p>
+<h3 id="shaderc_include_type-handling"><code>shaderc_include_type</code> handling<a class="headerlink" href="#shaderc_include_type-handling" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>shaderc_include_type_relative</code> (<code>#include "..."</code>) — resolve relative to
+  <code>requesting_source</code>'s directory, not necessarily <code>m_shader_dir</code>.
+  Extract the directory from <code>requesting_source</code> and prepend it.</li>
+<li><code>shaderc_include_type_standard</code> (<code>#include &lt;...&gt;</code>) — resolve relative to
+  <code>m_shader_dir</code> only. VFS has no system include search path.</li>
+</ul>
+<hr />
+<h2 id="5-shadercache">5. <code>ShaderCache</code><a class="headerlink" href="#5-shadercache" title="Permanent link">&para;</a></h2>
+<p><code>ShaderCache</code> maps asset UUIDs to live <code>VkShaderModule</code> handles. It is the single
+source of truth for which SPIR-V module is currently bound to a given shader UUID.
+All access is guarded by a <code>std::shared_mutex</code> so render-thread reads (via <code>Lookup</code>)
+do not block each other, while import-thread writes (via <code>Swap</code>/<code>Evict</code>) take an
+exclusive lock.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">// ZEngine/Rendering/Shaders/ShaderCache.h</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;uuid.h&gt;</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vulkan/vulkan.h&gt;</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Core/Containers/UnorderedHashMap.h&gt;</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;shared_mutex&gt;</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Rendering</span><span class="o">::</span><span class="nn">Shaders</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">ShaderCache</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">    </span><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">        </span><span class="c1">// Returns a VkShaderModule for the given UUID. If one does not exist,</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">        </span><span class="c1">// creates it from the provided SPIR-V words and stores it.</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">        </span><span class="c1">// spv and word_count must be valid if the UUID is not already cached.</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">        </span><span class="n">VkShaderModule</span><span class="w"> </span><span class="n">GetOrCreate</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="w"> </span><span class="n">uuid</span><span class="p">,</span>
+<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">                                   </span><span class="k">const</span><span class="w"> </span><span class="kt">uint32_t</span><span class="o">*</span><span class="w"> </span><span class="n">spv</span><span class="p">,</span>
+<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="w">                                   </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">word_count</span><span class="p">);</span>
+<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>
+<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="w">        </span><span class="c1">// Atomically replaces the VkShaderModule for uuid with new_module.</span>
+<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="w">        </span><span class="c1">// The old module is pushed onto RenderResourceManager's per-frame</span>
+<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="w">        </span><span class="c1">// deletion queue so it is not destroyed while a frame referencing it</span>
+<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="w">        </span><span class="c1">// is still in flight.</span>
+<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">Swap</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="w"> </span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">VkShaderModule</span><span class="w"> </span><span class="n">new_module</span><span class="p">);</span>
+<a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>
+<a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a><span class="w">        </span><span class="c1">// Removes the entry for uuid. The evicted VkShaderModule is pushed</span>
+<a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a><span class="w">        </span><span class="c1">// onto RenderResourceManager's deletion queue.</span>
+<a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">Evict</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="w"> </span><span class="n">uuid</span><span class="p">);</span>
+<a id="__codelineno-6-28" name="__codelineno-6-28" href="#__codelineno-6-28"></a>
+<a id="__codelineno-6-29" name="__codelineno-6-29" href="#__codelineno-6-29"></a><span class="w">        </span><span class="c1">// Non-blocking read. Returns VK_NULL_HANDLE if uuid is not cached.</span>
+<a id="__codelineno-6-30" name="__codelineno-6-30" href="#__codelineno-6-30"></a><span class="w">        </span><span class="n">VkShaderModule</span><span class="w"> </span><span class="nf">Lookup</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="w"> </span><span class="n">uuid</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<a id="__codelineno-6-31" name="__codelineno-6-31" href="#__codelineno-6-31"></a>
+<a id="__codelineno-6-32" name="__codelineno-6-32" href="#__codelineno-6-32"></a><span class="w">    </span><span class="k">private</span><span class="o">:</span>
+<a id="__codelineno-6-33" name="__codelineno-6-33" href="#__codelineno-6-33"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">UnorderedHashMap</span><span class="o">&lt;</span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">VkShaderModule</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_modules</span><span class="p">;</span>
+<a id="__codelineno-6-34" name="__codelineno-6-34" href="#__codelineno-6-34"></a><span class="w">        </span><span class="k">mutable</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_mutex</span><span class="w"> </span><span class="n">m_mtx</span><span class="p">;</span>
+<a id="__codelineno-6-35" name="__codelineno-6-35" href="#__codelineno-6-35"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-6-36" name="__codelineno-6-36" href="#__codelineno-6-36"></a>
+<a id="__codelineno-6-37" name="__codelineno-6-37" href="#__codelineno-6-37"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace ZEngine::Rendering::Shaders</span>
+</code></pre></div>
+<h3 id="module-lifetime-and-deferred-destruction">Module lifetime and deferred destruction<a class="headerlink" href="#module-lifetime-and-deferred-destruction" title="Permanent link">&para;</a></h3>
+<p>A <code>VkShaderModule</code> must remain alive for every frame that has recorded a command
+buffer referencing it. Destroying it immediately on <code>Swap</code> or <code>Evict</code> would be a
+use-after-free if a frame is still in flight.</p>
+<p>Protocol:
+1. <code>Swap</code> / <code>Evict</code> acquires an exclusive lock, removes the old handle from <code>m_modules</code>,
+   then calls <code>RenderResourceManager::EnqueueDeletion(old_module)</code>.
+2. <code>RenderResourceManager</code> defers destruction by <code>FRAMES_IN_FLIGHT</code> frames (typically 2
+   or 3). The old <code>VkShaderModule</code> is destroyed only after the GPU has finished all
+   commands that referenced it.
+3. <code>GetOrCreate</code> holds a shared lock for the lookup phase. If the UUID is absent it
+   releases the shared lock, then acquires an exclusive (unique) lock and re-checks the condition (double-checked locking pattern — required because C++ std::shared_mutex does not support lock upgrades), then calls
+   <code>vkCreateShaderModule</code> and inserts the new handle.</p>
+<h3 id="no-vkcreateshadermodule-in-the-hot-path">No <code>vkCreateShaderModule</code> in the hot path<a class="headerlink" href="#no-vkcreateshadermodule-in-the-hot-path" title="Permanent link">&para;</a></h3>
+<p>// THREAD SAFETY: vkCreateShaderModule must be called on the render thread.
+// ShaderCache::Swap does NOT call vkCreateShaderModule directly.
+// Instead it posts a SwapRequest to RenderResourceManager::m_pending_swaps,
+// which is consumed by RenderResourceManager::BeginFrame on the render thread.
+// This ensures all Vulkan device operations are single-threaded.</p>
+<p><code>GetOrCreate</code> is called once during pipeline creation or hot-reload, not once per draw
+call. <code>Lookup</code> (read-only, shared lock, single hash map probe) is the only path that
+runs on the render thread during normal frame execution.</p>
+<hr />
+<h2 id="6-hot-reload-path">6. Hot-Reload Path<a class="headerlink" href="#6-hot-reload-path" title="Permanent link">&para;</a></h2>
+<p>Hot-reload is event-driven. <code>FileWatcher</code> raises a file-modified event; downstream
+components react in a fixed chain. No polling. No frame stalls (compilation runs on a
+dedicated import thread).</p>
+<h3 id="event-chain">Event chain<a class="headerlink" href="#event-chain" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>FileWatcher::OnFileModified(vfs_path)
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  │
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>  ▼
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>AssetRegistry::OnAssetModified(vfs_path)
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>  · Looks up the asset UUID associated with vfs_path
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>  · Sets ImportStatus::Pending for that UUID
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>  · Dispatches ShaderImporter::Import(vfs_path, registry) on the import thread
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>  │
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>  ▼
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>ShaderImporter::Import(vfs_path, registry)                 [import thread]
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>  · Recompiles source → new SPIR-V
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>  · On failure: writes ErrorMessage, sets ImportStatus::Failed
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>                logs diagnostic, stops — old module remains live
+<a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>  · On success: writes new .spv to ArtifactPath
+<a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>  │
+<a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>  ▼
+<a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>ShaderCache::Swap(uuid, new_module)                        [import thread]
+<a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>  · Creates VkShaderModule from new SPIR-V
+<a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>  · Replaces old handle; pushes old handle onto deletion queue
+<a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>  │
+<a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>  ▼
+<a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>PipelineDependencyGraph::MarkShaderDirty(uuid)             [import thread]
+<a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a>  · Marks all pipelines that reference uuid as dirty
+<a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a>  │
+<a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a>  ▼
+<a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a>[Start of next frame — render thread]
+<a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a>PipelineDependencyGraph::CollectDirtyPipelines(out_dirty)
+<a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a>  · Returns all pipelines marked dirty since last ClearDirty
+<a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a>  │
+<a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a>  ▼
+<a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a>RenderResourceManager::RebuildPipelines(dirty_pipelines)
+<a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a>  · Fetches updated VkShaderModule via ShaderCache::Lookup
+<a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a>  · Destroys old VkPipeline (enqueued for deferred deletion)
+<a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a>  · Creates new VkPipeline
+<a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a>  · ClearDirty called after all pipelines are rebuilt
+</code></pre></div>
+<h3 id="thread-safety-invariants">Thread safety invariants<a class="headerlink" href="#thread-safety-invariants" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>ShaderCache::Swap</code> and <code>MarkShaderDirty</code> are called from the import thread.</li>
+<li><code>ShaderCache::Lookup</code> is called from the render thread.</li>
+<li><code>CollectDirtyPipelines</code> and <code>ClearDirty</code> are called from the render thread at the
+  start of a frame, before any draw calls. No import-thread writes overlap with
+  frame-start reads because the render loop checks for dirty pipelines before
+  recording commands.</li>
+<li><code>PipelineDependencyGraph</code> is guarded by a separate <code>std::mutex</code> for its dirty-set
+  writes; reads at frame-start acquire the same mutex.</li>
+</ul>
+<h3 id="compile-failure-policy">Compile failure policy<a class="headerlink" href="#compile-failure-policy" title="Permanent link">&para;</a></h3>
+<p>If recompilation fails, the old <code>VkShaderModule</code> and all dependent pipelines continue
+to operate unchanged. <code>ImportStatus::Failed</code> is recorded in the registry and
+<code>ErrorMessage</code> is populated so that editor tooling can display the diagnostic. No frame
+is dropped. The user fixes the source and saves again; <code>FileWatcher</code> triggers a new
+import cycle.</p>
+<hr />
+<h2 id="7-pipelinedependencygraph">7. <code>PipelineDependencyGraph</code><a class="headerlink" href="#7-pipelinedependencygraph" title="Permanent link">&para;</a></h2>
+<p><code>PipelineDependencyGraph</code> maintains the bidirectional mapping between pipeline handles
+and the shader UUIDs they depend on. It is the bridge between the shader hot-reload
+event and the pipeline rebuild work at the start of the next frame.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">// ZEngine/Rendering/Shaders/PipelineDependencyGraph.h</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="cp">#pragma once</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;uuid.h&gt;</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Core/Containers/Array.h&gt;</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Core/Containers/UnorderedHashMap.h&gt;</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Rendering/PipelineHandle.h&gt;</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mutex&gt;</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">ZEngine</span><span class="o">::</span><span class="nn">Rendering</span><span class="o">::</span><span class="nn">Shaders</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>
+<a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">PipelineDependencyGraph</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="w">    </span><span class="k">public</span><span class="o">:</span>
+<a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">        </span><span class="c1">// Records that `pipeline` depends on every UUID in `shader_uuids`.</span>
+<a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="w">        </span><span class="c1">// Called once at pipeline creation time.</span>
+<a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="n">RegisterPipelineShaders</span><span class="p">(</span><span class="n">PipelineHandle</span><span class="w"> </span><span class="n">pipeline</span><span class="p">,</span>
+<a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="w">                                     </span><span class="k">const</span><span class="w"> </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">shader_uuids</span><span class="p">);</span>
+<a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>
+<a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a><span class="w">        </span><span class="c1">// Marks all pipelines that reference `shader_uuid` as dirty.</span>
+<a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="w">        </span><span class="c1">// Thread-safe; may be called from the import thread.</span>
+<a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">MarkShaderDirty</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&amp;</span><span class="w"> </span><span class="n">shader_uuid</span><span class="p">);</span>
+<a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>
+<a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a><span class="w">        </span><span class="c1">// Appends all currently dirty PipelineHandles to out_dirty (no duplicates).</span>
+<a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a><span class="w">        </span><span class="c1">// Called from the render thread at frame start.</span>
+<a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">CollectDirtyPipelines</span><span class="p">(</span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="n">PipelineHandle</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">out_dirty</span><span class="p">);</span>
+<a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a>
+<a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a><span class="w">        </span><span class="c1">// Clears the dirty set. Called after all dirty pipelines have been rebuilt.</span>
+<a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">ClearDirty</span><span class="p">();</span>
+<a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a>
+<a id="__codelineno-8-29" name="__codelineno-8-29" href="#__codelineno-8-29"></a><span class="w">        </span><span class="c1">// Removes all forward and reverse edges for `pipeline`.</span>
+<a id="__codelineno-8-30" name="__codelineno-8-30" href="#__codelineno-8-30"></a><span class="w">        </span><span class="c1">// Called when a pipeline is destroyed.</span>
+<a id="__codelineno-8-31" name="__codelineno-8-31" href="#__codelineno-8-31"></a><span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">UnregisterPipeline</span><span class="p">(</span><span class="n">PipelineHandle</span><span class="w"> </span><span class="n">pipeline</span><span class="p">);</span>
+<a id="__codelineno-8-32" name="__codelineno-8-32" href="#__codelineno-8-32"></a>
+<a id="__codelineno-8-33" name="__codelineno-8-33" href="#__codelineno-8-33"></a><span class="w">    </span><span class="k">private</span><span class="o">:</span>
+<a id="__codelineno-8-34" name="__codelineno-8-34" href="#__codelineno-8-34"></a><span class="w">        </span><span class="c1">// forward map: pipeline → shader UUIDs it uses</span>
+<a id="__codelineno-8-35" name="__codelineno-8-35" href="#__codelineno-8-35"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">UnorderedHashMap</span><span class="o">&lt;</span>
+<a id="__codelineno-8-36" name="__codelineno-8-36" href="#__codelineno-8-36"></a><span class="w">            </span><span class="n">PipelineHandle</span><span class="p">,</span>
+<a id="__codelineno-8-37" name="__codelineno-8-37" href="#__codelineno-8-37"></a><span class="w">            </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">m_pipeline_to_shaders</span><span class="p">;</span>
+<a id="__codelineno-8-38" name="__codelineno-8-38" href="#__codelineno-8-38"></a>
+<a id="__codelineno-8-39" name="__codelineno-8-39" href="#__codelineno-8-39"></a><span class="w">        </span><span class="c1">// reverse map: shader UUID → pipelines that use it</span>
+<a id="__codelineno-8-40" name="__codelineno-8-40" href="#__codelineno-8-40"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">UnorderedHashMap</span><span class="o">&lt;</span>
+<a id="__codelineno-8-41" name="__codelineno-8-41" href="#__codelineno-8-41"></a><span class="w">            </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="p">,</span>
+<a id="__codelineno-8-42" name="__codelineno-8-42" href="#__codelineno-8-42"></a><span class="w">            </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="n">PipelineHandle</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">m_shader_to_pipelines</span><span class="p">;</span>
+<a id="__codelineno-8-43" name="__codelineno-8-43" href="#__codelineno-8-43"></a>
+<a id="__codelineno-8-44" name="__codelineno-8-44" href="#__codelineno-8-44"></a><span class="w">        </span><span class="c1">// set of pipelines pending rebuild</span>
+<a id="__codelineno-8-45" name="__codelineno-8-45" href="#__codelineno-8-45"></a><span class="w">        </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="n">PipelineHandle</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_dirty</span><span class="p">;</span>
+<a id="__codelineno-8-46" name="__codelineno-8-46" href="#__codelineno-8-46"></a>
+<a id="__codelineno-8-47" name="__codelineno-8-47" href="#__codelineno-8-47"></a><span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="w"> </span><span class="n">m_mtx</span><span class="p">;</span>
+<a id="__codelineno-8-48" name="__codelineno-8-48" href="#__codelineno-8-48"></a><span class="w">    </span><span class="p">};</span>
+<a id="__codelineno-8-49" name="__codelineno-8-49" href="#__codelineno-8-49"></a>
+<a id="__codelineno-8-50" name="__codelineno-8-50" href="#__codelineno-8-50"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace ZEngine::Rendering::Shaders</span>
+</code></pre></div>
+<h3 id="registerpipelineshaders"><code>RegisterPipelineShaders</code><a class="headerlink" href="#registerpipelineshaders" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Acquire <code>m_mtx</code>.</li>
+<li>Insert <code>(pipeline, shader_uuids)</code> into <code>m_pipeline_to_shaders</code>.</li>
+<li>For each UUID in <code>shader_uuids</code>, append <code>pipeline</code> to <code>m_shader_to_pipelines[uuid]</code>.</li>
+</ol>
+<h3 id="markshaderdirtyuuid"><code>MarkShaderDirty(uuid)</code><a class="headerlink" href="#markshaderdirtyuuid" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Acquire <code>m_mtx</code>.</li>
+<li>Look up <code>m_shader_to_pipelines[uuid]</code>. If absent, return.</li>
+<li>For each <code>PipelineHandle</code> in the result: if it is not already in <code>m_dirty</code>, append it.
+   (Linear scan of <code>m_dirty</code> is acceptable; dirty pipelines are rare and the set is small.)</li>
+</ol>
+<h3 id="unregisterpipelinepipeline"><code>UnregisterPipeline(pipeline)</code><a class="headerlink" href="#unregisterpipelinepipeline" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Acquire <code>m_mtx</code>.</li>
+<li>Look up <code>m_pipeline_to_shaders[pipeline]</code>; for each UUID in its list, remove
+   <code>pipeline</code> from <code>m_shader_to_pipelines[uuid]</code>.</li>
+<li>Erase <code>m_pipeline_to_shaders[pipeline]</code>.</li>
+<li>Remove <code>pipeline</code> from <code>m_dirty</code> if present.</li>
+</ol>
+<h3 id="dirty-accumulation-across-multiple-saves">Dirty accumulation across multiple saves<a class="headerlink" href="#dirty-accumulation-across-multiple-saves" title="Permanent link">&para;</a></h3>
+<p>If the user saves the same shader file twice before the next frame, <code>MarkShaderDirty</code>
+is called twice. The duplicate guard in step 3 prevents the same pipeline from
+appearing twice in <code>m_dirty</code>, so <code>RebuildPipelines</code> processes each pipeline exactly
+once per frame.</p>
+<hr />
+<h2 id="8-cook-artifact-storage-and-platform-table">8. Cook — Artifact Storage and Platform Table<a class="headerlink" href="#8-cook-artifact-storage-and-platform-table" title="Permanent link">&para;</a></h2>
+<h3 id="spir-v-artifact-path-convention">SPIR-V artifact path convention<a class="headerlink" href="#spir-v-artifact-path-convention" title="Permanent link">&para;</a></h3>
+<p>All compiled SPIR-V artifacts are stored under the project's <code>_cache</code> virtual directory:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>project://_cache/shaders/&lt;uuid-string&gt;.spv
+</code></pre></div>
+<p>The UUID string is the canonical hyphenated lowercase form produced by
+<code>uuids::to_string(asset.AssetUUID)</code>, e.g.
+<code>project://_cache/shaders/550e8400-e29b-41d4-a716-446655440000.spv</code>.</p>
+<p>The <code>_cache</code> directory is:
+- Excluded from version control (<code>.gitignore</code> entry managed by project scaffolding).
+- Safe to delete in full; reimporting all shaders regenerates it.
+- Flat (no subdirectories) to keep path construction O(1) and VFS enumeration fast.</p>
+<h3 id="meta-file"><code>.meta</code> file<a class="headerlink" href="#meta-file" title="Permanent link">&para;</a></h3>
+<p>Each source file <code>shaders/pbr.vert</code> on the VFS has a companion
+<code>shaders/pbr.vert.meta</code> written by <code>MetaFileIO::Write</code>. The <code>.meta</code> stores:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>uuid</code></td>
+<td><code>uuids::uuid</code></td>
+<td>Stable identity across reimports</td>
+</tr>
+<tr>
+<td><code>source_hash</code></td>
+<td><code>uint64_t</code></td>
+<td>xxHash64 of source bytes at last import</td>
+</tr>
+<tr>
+<td><code>stage</code></td>
+<td><code>ShaderStage</code></td>
+<td>Cached stage to skip pragma scan on re-open</td>
+</tr>
+<tr>
+<td><code>artifact_path</code></td>
+<td><code>char[MAX_FILE_PATH_COUNT]</code></td>
+<td>VFS path of the .spv</td>
+</tr>
+</tbody>
+</table>
+<p>On reimport, <code>ShaderImporter</code> reads the <code>.meta</code>, recomputes <code>source_hash</code>, and skips
+compilation if the hash is unchanged (<code>ImportStatus::UpToDate</code>). This makes incremental
+builds O(1) per unchanged shader.</p>
+<h3 id="uuid-stability-guarantee">UUID stability guarantee<a class="headerlink" href="#uuid-stability-guarantee" title="Permanent link">&para;</a></h3>
+<p>The UUID written into <code>.meta</code> on first import is never changed by subsequent reimports
+of the same source file. <code>ShaderCache</code> and <code>PipelineDependencyGraph</code> both use this UUID
+as their key, so a clean rebuild (delete <code>_cache/</code>) followed by reimport produces the
+same UUID from the <code>.meta</code> and all downstream references remain valid.</p>
+<h3 id="platform-artifact-table">Platform artifact table<a class="headerlink" href="#platform-artifact-table" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Platform</th>
+<th>Format</th>
+<th>Status</th>
+<th>Toolchain</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vulkan</td>
+<td>SPIR-V (<code>.spv</code>)</td>
+<td>Implemented</td>
+<td>shaderc / glslangValidator</td>
+</tr>
+<tr>
+<td>Metal</td>
+<td>MSL (<code>.metal</code>)</td>
+<td>Future</td>
+<td>SPIRV-Cross (<code>spirv_msl.hpp</code>)</td>
+</tr>
+<tr>
+<td>DirectX 12</td>
+<td>DXIL (<code>.dxil</code>)</td>
+<td>Future</td>
+<td>SPIRV-Cross + DXC</td>
+</tr>
+</tbody>
+</table>
+<p>The Metal and DXIL paths are reserved in <code>ShaderAsset::ArtifactPath</code> design: the field
+is platform-agnostic. A future <code>MetalShaderImporter</code> and <code>DXILShaderImporter</code> will
+follow the same <code>IAssetImporter</code> contract; <code>ShaderCache</code> will become a thin abstract
+interface with platform-specific subclasses.</p>
+<hr />
+<h2 id="9-proposed-tests">9. Proposed tests<a class="headerlink" href="#9-proposed-tests" title="Permanent link">&para;</a></h2>
+<p>File: <code>ZEngine/tests/Rendering/Shaders/ShaderPipelineTest.cpp</code></p>
+<h3 id="test-1-compile-vert-source-produces-valid-spir-v-in-artifactpath">Test 1 — Compile <code>.vert</code> source produces valid SPIR-V in <code>ArtifactPath</code><a class="headerlink" href="#test-1-compile-vert-source-produces-valid-spir-v-in-artifactpath" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">ShaderImporter</span><span class="p">,</span><span class="w"> </span><span class="n">CompileVertSourceProducesArtifact</span><span class="p">)</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="p">{</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="c1">// Arrange: mount an in-memory VFS with a minimal vertex shader</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span><span class="n">InMemoryVFSContext</span><span class="w"> </span><span class="n">ctx</span><span class="p">;</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">    </span><span class="n">ctx</span><span class="p">.</span><span class="n">WriteFile</span><span class="p">(</span><span class="s">"shaders/test.vert"</span><span class="p">,</span><span class="w"> </span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="s">        #version 450</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="s">        void main() { gl_Position = vec4(0.0); }</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="s">    </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">    </span><span class="n">AssetRegistry</span><span class="w"> </span><span class="n">registry</span><span class="p">;</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">    </span><span class="n">ShaderImporter</span><span class="w"> </span><span class="nf">importer</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="w">    </span><span class="c1">// Act</span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">importer</span><span class="p">.</span><span class="n">Import</span><span class="p">(</span><span class="n">VFSPath</span><span class="p">(</span><span class="s">"shaders/test.vert"</span><span class="p">),</span><span class="w"> </span><span class="n">registry</span><span class="p">);</span>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="w">    </span><span class="c1">// Assert</span>
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="w">    </span><span class="n">ASSERT_EQ</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="n">ImportStatus</span><span class="o">::</span><span class="n">Success</span><span class="p">);</span>
+<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>
+<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">ShaderAsset</span><span class="o">*</span><span class="w"> </span><span class="n">asset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">registry</span><span class="p">.</span><span class="n">GetAsset</span><span class="o">&lt;</span><span class="n">ShaderAsset</span><span class="o">&gt;</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">UUID</span><span class="p">);</span>
+<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="w">    </span><span class="n">ASSERT_NE</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
+<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">asset</span><span class="o">-&gt;</span><span class="n">Stage</span><span class="p">,</span><span class="w"> </span><span class="n">ShaderStage</span><span class="o">::</span><span class="n">Vertex</span><span class="p">);</span>
+<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>
+<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="w">    </span><span class="c1">// ArtifactPath must be non-empty and the file must exist on the VFS</span>
+<a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="w">    </span><span class="n">EXPECT_STRNE</span><span class="p">(</span><span class="n">asset</span><span class="o">-&gt;</span><span class="n">ArtifactPath</span><span class="p">,</span><span class="w"> </span><span class="s">""</span><span class="p">);</span>
+<a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a><span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">ctx</span><span class="p">.</span><span class="n">FileExists</span><span class="p">(</span><span class="n">VFSPath</span><span class="p">(</span><span class="n">asset</span><span class="o">-&gt;</span><span class="n">ArtifactPath</span><span class="p">)));</span>
+<a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a>
+<a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a><span class="w">    </span><span class="c1">// The .spv file must start with the SPIR-V magic number 0x07230203</span>
+<a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">spv_bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctx</span><span class="p">.</span><span class="n">ReadFile</span><span class="p">(</span><span class="n">VFSPath</span><span class="p">(</span><span class="n">asset</span><span class="o">-&gt;</span><span class="n">ArtifactPath</span><span class="p">));</span>
+<a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a><span class="w">    </span><span class="n">ASSERT_GE</span><span class="p">(</span><span class="n">spv_bytes</span><span class="p">.</span><span class="n">Size</span><span class="p">(),</span><span class="w"> </span><span class="mi">4u</span><span class="p">);</span>
+<a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a><span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">magic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">memcpy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">magic</span><span class="p">,</span><span class="w"> </span><span class="n">spv_bytes</span><span class="p">.</span><span class="n">Data</span><span class="p">(),</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">magic</span><span class="p">));</span>
+<a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">magic</span><span class="p">,</span><span class="w"> </span><span class="mh">0x07230203u</span><span class="p">);</span>
+<a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="test-2-syntax-error-sets-importstatusfailed-and-populates-errormessage">Test 2 — Syntax error sets <code>ImportStatus::Failed</code> and populates <code>ErrorMessage</code><a class="headerlink" href="#test-2-syntax-error-sets-importstatusfailed-and-populates-errormessage" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">ShaderImporter</span><span class="p">,</span><span class="w"> </span><span class="n">SyntaxErrorSetsFailedAndErrorMessage</span><span class="p">)</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="p">{</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">    </span><span class="n">InMemoryVFSContext</span><span class="w"> </span><span class="n">ctx</span><span class="p">;</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span><span class="n">ctx</span><span class="p">.</span><span class="n">WriteFile</span><span class="p">(</span><span class="s">"shaders/broken.frag"</span><span class="p">,</span><span class="w"> </span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="s">        #version 450</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="s">        void main() { THIS IS NOT GLSL }</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="s">    </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">    </span><span class="n">AssetRegistry</span><span class="w"> </span><span class="n">registry</span><span class="p">;</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="w">    </span><span class="n">ShaderImporter</span><span class="w"> </span><span class="nf">importer</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">importer</span><span class="p">.</span><span class="n">Import</span><span class="p">(</span><span class="n">VFSPath</span><span class="p">(</span><span class="s">"shaders/broken.frag"</span><span class="p">),</span><span class="w"> </span><span class="n">registry</span><span class="p">);</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="n">ImportStatus</span><span class="o">::</span><span class="n">Failed</span><span class="p">);</span>
+<a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>
+<a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">ShaderAsset</span><span class="o">*</span><span class="w"> </span><span class="n">asset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">registry</span><span class="p">.</span><span class="n">GetAsset</span><span class="o">&lt;</span><span class="n">ShaderAsset</span><span class="o">&gt;</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">UUID</span><span class="p">);</span>
+<a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a><span class="w">    </span><span class="n">ASSERT_NE</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
+<a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a><span class="w">    </span><span class="c1">// ErrorMessage must be non-empty</span>
+<a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a><span class="w">    </span><span class="n">EXPECT_STRNE</span><span class="p">(</span><span class="n">asset</span><span class="o">-&gt;</span><span class="n">ErrorMessage</span><span class="p">,</span><span class="w"> </span><span class="s">""</span><span class="p">);</span>
+<a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a><span class="w">    </span><span class="c1">// ArtifactPath must NOT have been written (no stale .spv on failure)</span>
+<a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a><span class="w">    </span><span class="n">EXPECT_FALSE</span><span class="p">(</span><span class="n">ctx</span><span class="p">.</span><span class="n">FileExists</span><span class="p">(</span><span class="n">VFSPath</span><span class="p">(</span><span class="n">asset</span><span class="o">-&gt;</span><span class="n">ArtifactPath</span><span class="p">)));</span>
+<a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="test-3-include-resolution-through-vfsincluderesolver">Test 3 — <code>#include</code> resolution through <code>VFSIncludeResolver</code><a class="headerlink" href="#test-3-include-resolution-through-vfsincluderesolver" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">VFSIncludeResolver</span><span class="p">,</span><span class="w"> </span><span class="n">IncludeResolvesFileOnVFS</span><span class="p">)</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="p">{</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">    </span><span class="n">InMemoryVFSContext</span><span class="w"> </span><span class="n">ctx</span><span class="p">;</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="n">ctx</span><span class="p">.</span><span class="n">WriteFile</span><span class="p">(</span><span class="s">"shaders/common.glsl"</span><span class="p">,</span><span class="w"> </span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="s">        vec3 ToLinear(vec3 c) { return pow(c, vec3(2.2)); }</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="s">    </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">    </span><span class="n">ctx</span><span class="p">.</span><span class="n">WriteFile</span><span class="p">(</span><span class="s">"shaders/pbr.frag"</span><span class="p">,</span><span class="w"> </span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="s">        #version 450</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="s">        #include "common.glsl"</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="s">        layout(location = 0) out vec4 outColor;</span>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="s">        void main() { outColor = vec4(ToLinear(vec3(1.0)), 1.0); }</span>
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="s">    </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>
+<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="w">    </span><span class="n">AssetRegistry</span><span class="w"> </span><span class="n">registry</span><span class="p">;</span>
+<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="w">    </span><span class="n">ShaderImporter</span><span class="w"> </span><span class="nf">importer</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>
+<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">importer</span><span class="p">.</span><span class="n">Import</span><span class="p">(</span><span class="n">VFSPath</span><span class="p">(</span><span class="s">"shaders/pbr.frag"</span><span class="p">),</span><span class="w"> </span><span class="n">registry</span><span class="p">);</span>
+<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a>
+<a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a><span class="w">    </span><span class="c1">// If VFSIncludeResolver fails to resolve common.glsl, compilation fails.</span>
+<a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a><span class="w">    </span><span class="n">ASSERT_EQ</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="n">ImportStatus</span><span class="o">::</span><span class="n">Success</span><span class="p">);</span>
+<a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a>
+<a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">ShaderAsset</span><span class="o">*</span><span class="w"> </span><span class="n">asset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">registry</span><span class="p">.</span><span class="n">GetAsset</span><span class="o">&lt;</span><span class="n">ShaderAsset</span><span class="o">&gt;</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">UUID</span><span class="p">);</span>
+<a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a><span class="w">    </span><span class="n">ASSERT_NE</span><span class="p">(</span><span class="n">asset</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
+<a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">asset</span><span class="o">-&gt;</span><span class="n">Stage</span><span class="p">,</span><span class="w"> </span><span class="n">ShaderStage</span><span class="o">::</span><span class="n">Fragment</span><span class="p">);</span>
+<a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a><span class="w">    </span><span class="n">EXPECT_STREQ</span><span class="p">(</span><span class="n">asset</span><span class="o">-&gt;</span><span class="n">ErrorMessage</span><span class="p">,</span><span class="w"> </span><span class="s">""</span><span class="p">);</span>
+<a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="test-4-hot-reload-swap-in-flight-frame-still-sees-old-module-new-frame-sees-new-module">Test 4 — Hot-reload swap: in-flight frame still sees old module; new frame sees new module<a class="headerlink" href="#test-4-hot-reload-swap-in-flight-frame-still-sees-old-module-new-frame-sees-new-module" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">ShaderCache</span><span class="p">,</span><span class="w"> </span><span class="n">SwapPreservesOldModuleDuringFrameInFlight</span><span class="p">)</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="p">{</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="n">MockRenderResourceManager</span><span class="w"> </span><span class="n">rrm</span><span class="p">;</span><span class="w">  </span><span class="c1">// records deferred deletions</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">    </span><span class="n">ShaderCache</span><span class="w"> </span><span class="n">cache</span><span class="p">;</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="w"> </span><span class="n">uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid_system_generator</span><span class="p">{}();</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">spv_v1</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mh">0x07230203</span><span class="p">,</span><span class="w"> </span><span class="cm">/* ... minimal valid spv ... */</span><span class="w"> </span><span class="p">};</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">spv_v2</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mh">0x07230203</span><span class="p">,</span><span class="w"> </span><span class="cm">/* ... different spv ... */</span><span class="w"> </span><span class="p">};</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="w">    </span><span class="n">VkShaderModule</span><span class="w"> </span><span class="n">mod_v1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cache</span><span class="p">.</span><span class="n">GetOrCreate</span><span class="p">(</span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">spv_v1</span><span class="p">,</span><span class="w"> </span><span class="n">ARRAY_COUNT</span><span class="p">(</span><span class="n">spv_v1</span><span class="p">));</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">    </span><span class="n">ASSERT_NE</span><span class="p">(</span><span class="n">mod_v1</span><span class="p">,</span><span class="w"> </span><span class="n">VK_NULL_HANDLE</span><span class="p">);</span>
+<a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>
+<a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="w">    </span><span class="c1">// Frame N begins — records mod_v1 into command buffer (simulated by storing it)</span>
+<a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a><span class="w">    </span><span class="n">VkShaderModule</span><span class="w"> </span><span class="n">in_flight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cache</span><span class="p">.</span><span class="n">Lookup</span><span class="p">(</span><span class="n">uuid</span><span class="p">);</span>
+<a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">in_flight</span><span class="p">,</span><span class="w"> </span><span class="n">mod_v1</span><span class="p">);</span>
+<a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>
+<a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="w">    </span><span class="c1">// Import thread swaps in v2</span>
+<a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a><span class="w">    </span><span class="n">VkShaderModule</span><span class="w"> </span><span class="n">mod_v2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MakeTestShaderModule</span><span class="p">(</span><span class="n">spv_v2</span><span class="p">,</span><span class="w"> </span><span class="n">ARRAY_COUNT</span><span class="p">(</span><span class="n">spv_v2</span><span class="p">));</span>
+<a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a><span class="w">    </span><span class="n">cache</span><span class="p">.</span><span class="n">Swap</span><span class="p">(</span><span class="n">uuid</span><span class="p">,</span><span class="w"> </span><span class="n">mod_v2</span><span class="p">);</span>
+<a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a>
+<a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a><span class="w">    </span><span class="c1">// mod_v1 must have been enqueued for deferred deletion, not destroyed yet</span>
+<a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a><span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">rrm</span><span class="p">.</span><span class="n">IsPendingDeletion</span><span class="p">(</span><span class="n">mod_v1</span><span class="p">));</span>
+<a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a>
+<a id="__codelineno-13-24" name="__codelineno-13-24" href="#__codelineno-13-24"></a><span class="w">    </span><span class="c1">// New Lookup returns mod_v2</span>
+<a id="__codelineno-13-25" name="__codelineno-13-25" href="#__codelineno-13-25"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">cache</span><span class="p">.</span><span class="n">Lookup</span><span class="p">(</span><span class="n">uuid</span><span class="p">),</span><span class="w"> </span><span class="n">mod_v2</span><span class="p">);</span>
+<a id="__codelineno-13-26" name="__codelineno-13-26" href="#__codelineno-13-26"></a>
+<a id="__codelineno-13-27" name="__codelineno-13-27" href="#__codelineno-13-27"></a><span class="w">    </span><span class="c1">// in_flight (mod_v1) is still a valid handle until rrm flushes it</span>
+<a id="__codelineno-13-28" name="__codelineno-13-28" href="#__codelineno-13-28"></a><span class="w">    </span><span class="n">EXPECT_FALSE</span><span class="p">(</span><span class="n">rrm</span><span class="p">.</span><span class="n">IsDestroyed</span><span class="p">(</span><span class="n">mod_v1</span><span class="p">));</span>
+<a id="__codelineno-13-29" name="__codelineno-13-29" href="#__codelineno-13-29"></a><span class="w">    </span><span class="n">rrm</span><span class="p">.</span><span class="n">FlushDeletionQueue</span><span class="p">(</span><span class="cm">/*frames_elapsed=*/</span><span class="n">FRAMES_IN_FLIGHT</span><span class="p">);</span>
+<a id="__codelineno-13-30" name="__codelineno-13-30" href="#__codelineno-13-30"></a><span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">rrm</span><span class="p">.</span><span class="n">IsDestroyed</span><span class="p">(</span><span class="n">mod_v1</span><span class="p">));</span>
+<a id="__codelineno-13-31" name="__codelineno-13-31" href="#__codelineno-13-31"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="test-5-pipelinedependencygraph-markshaderdirty-marks-only-dependent-pipelines">Test 5 — <code>PipelineDependencyGraph</code>: <code>MarkShaderDirty</code> marks only dependent pipelines<a class="headerlink" href="#test-5-pipelinedependencygraph-markshaderdirty-marks-only-dependent-pipelines" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">PipelineDependencyGraph</span><span class="p">,</span><span class="w"> </span><span class="n">MarkDirtyOnlyAffectsDependentPipelines</span><span class="p">)</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="p">{</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="n">PipelineDependencyGraph</span><span class="w"> </span><span class="n">graph</span><span class="p">;</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span><span class="n">PipelineHandle</span><span class="w"> </span><span class="n">pipe_a</span><span class="p">{</span><span class="mi">1</span><span class="p">};</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">    </span><span class="n">PipelineHandle</span><span class="w"> </span><span class="n">pipe_b</span><span class="p">{</span><span class="mi">2</span><span class="p">};</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">    </span><span class="n">PipelineHandle</span><span class="w"> </span><span class="n">pipe_c</span><span class="p">{</span><span class="mi">3</span><span class="p">};</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">    </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="w"> </span><span class="n">shader_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid_system_generator</span><span class="p">{}();</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="w">    </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="w"> </span><span class="n">shader_y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid_system_generator</span><span class="p">{}();</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="w">    </span><span class="c1">// pipe_a uses shader_x and shader_y</span>
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="w">    </span><span class="n">graph</span><span class="p">.</span><span class="n">RegisterPipelineShaders</span><span class="p">(</span><span class="n">pipe_a</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="n">shader_x</span><span class="p">,</span><span class="w"> </span><span class="n">shader_y</span><span class="p">});</span>
+<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="w">    </span><span class="c1">// pipe_b uses shader_y only</span>
+<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="w">    </span><span class="n">graph</span><span class="p">.</span><span class="n">RegisterPipelineShaders</span><span class="p">(</span><span class="n">pipe_b</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="n">shader_y</span><span class="p">});</span>
+<a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="w">    </span><span class="c1">// pipe_c uses neither</span>
+<a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a><span class="w">    </span><span class="n">graph</span><span class="p">.</span><span class="n">RegisterPipelineShaders</span><span class="p">(</span><span class="n">pipe_c</span><span class="p">,</span><span class="w"> </span><span class="p">{});</span>
+<a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a>
+<a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a><span class="w">    </span><span class="c1">// Mark shader_x dirty</span>
+<a id="__codelineno-14-20" name="__codelineno-14-20" href="#__codelineno-14-20"></a><span class="w">    </span><span class="n">graph</span><span class="p">.</span><span class="n">MarkShaderDirty</span><span class="p">(</span><span class="n">shader_x</span><span class="p">);</span>
+<a id="__codelineno-14-21" name="__codelineno-14-21" href="#__codelineno-14-21"></a>
+<a id="__codelineno-14-22" name="__codelineno-14-22" href="#__codelineno-14-22"></a><span class="w">    </span><span class="n">Core</span><span class="o">::</span><span class="n">Containers</span><span class="o">::</span><span class="n">Array</span><span class="o">&lt;</span><span class="n">PipelineHandle</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dirty</span><span class="p">;</span>
+<a id="__codelineno-14-23" name="__codelineno-14-23" href="#__codelineno-14-23"></a><span class="w">    </span><span class="n">graph</span><span class="p">.</span><span class="n">CollectDirtyPipelines</span><span class="p">(</span><span class="n">dirty</span><span class="p">);</span>
+<a id="__codelineno-14-24" name="__codelineno-14-24" href="#__codelineno-14-24"></a>
+<a id="__codelineno-14-25" name="__codelineno-14-25" href="#__codelineno-14-25"></a><span class="w">    </span><span class="c1">// Only pipe_a depends on shader_x</span>
+<a id="__codelineno-14-26" name="__codelineno-14-26" href="#__codelineno-14-26"></a><span class="w">    </span><span class="n">ASSERT_EQ</span><span class="p">(</span><span class="n">dirty</span><span class="p">.</span><span class="n">Size</span><span class="p">(),</span><span class="w"> </span><span class="mi">1u</span><span class="p">);</span>
+<a id="__codelineno-14-27" name="__codelineno-14-27" href="#__codelineno-14-27"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">dirty</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">pipe_a</span><span class="p">);</span>
+<a id="__codelineno-14-28" name="__codelineno-14-28" href="#__codelineno-14-28"></a>
+<a id="__codelineno-14-29" name="__codelineno-14-29" href="#__codelineno-14-29"></a><span class="w">    </span><span class="n">graph</span><span class="p">.</span><span class="n">ClearDirty</span><span class="p">();</span>
+<a id="__codelineno-14-30" name="__codelineno-14-30" href="#__codelineno-14-30"></a>
+<a id="__codelineno-14-31" name="__codelineno-14-31" href="#__codelineno-14-31"></a><span class="w">    </span><span class="c1">// Now mark shader_y dirty — pipe_a and pipe_b should be dirty</span>
+<a id="__codelineno-14-32" name="__codelineno-14-32" href="#__codelineno-14-32"></a><span class="w">    </span><span class="n">graph</span><span class="p">.</span><span class="n">MarkShaderDirty</span><span class="p">(</span><span class="n">shader_y</span><span class="p">);</span>
+<a id="__codelineno-14-33" name="__codelineno-14-33" href="#__codelineno-14-33"></a><span class="w">    </span><span class="n">dirty</span><span class="p">.</span><span class="n">Clear</span><span class="p">();</span>
+<a id="__codelineno-14-34" name="__codelineno-14-34" href="#__codelineno-14-34"></a><span class="w">    </span><span class="n">graph</span><span class="p">.</span><span class="n">CollectDirtyPipelines</span><span class="p">(</span><span class="n">dirty</span><span class="p">);</span>
+<a id="__codelineno-14-35" name="__codelineno-14-35" href="#__codelineno-14-35"></a>
+<a id="__codelineno-14-36" name="__codelineno-14-36" href="#__codelineno-14-36"></a><span class="w">    </span><span class="n">ASSERT_EQ</span><span class="p">(</span><span class="n">dirty</span><span class="p">.</span><span class="n">Size</span><span class="p">(),</span><span class="w"> </span><span class="mi">2u</span><span class="p">);</span>
+<a id="__codelineno-14-37" name="__codelineno-14-37" href="#__codelineno-14-37"></a><span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">ContainsHandle</span><span class="p">(</span><span class="n">dirty</span><span class="p">,</span><span class="w"> </span><span class="n">pipe_a</span><span class="p">));</span>
+<a id="__codelineno-14-38" name="__codelineno-14-38" href="#__codelineno-14-38"></a><span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">ContainsHandle</span><span class="p">(</span><span class="n">dirty</span><span class="p">,</span><span class="w"> </span><span class="n">pipe_b</span><span class="p">));</span>
+<a id="__codelineno-14-39" name="__codelineno-14-39" href="#__codelineno-14-39"></a><span class="w">    </span><span class="n">EXPECT_FALSE</span><span class="p">(</span><span class="n">ContainsHandle</span><span class="p">(</span><span class="n">dirty</span><span class="p">,</span><span class="w"> </span><span class="n">pipe_c</span><span class="p">));</span>
+<a id="__codelineno-14-40" name="__codelineno-14-40" href="#__codelineno-14-40"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="test-6-uuid-stability-reimporting-the-same-source-preserves-uuid-from-meta">Test 6 — UUID stability: reimporting the same source preserves UUID from <code>.meta</code><a class="headerlink" href="#test-6-uuid-stability-reimporting-the-same-source-preserves-uuid-from-meta" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">TEST</span><span class="p">(</span><span class="n">ShaderImporter</span><span class="p">,</span><span class="w"> </span><span class="n">ReimportPreservesUUIDFromMeta</span><span class="p">)</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="p">{</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="n">InMemoryVFSContext</span><span class="w"> </span><span class="n">ctx</span><span class="p">;</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="n">ctx</span><span class="p">.</span><span class="n">WriteFile</span><span class="p">(</span><span class="s">"shaders/stable.vert"</span><span class="p">,</span><span class="w"> </span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="s">        #version 450</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="s">        void main() { gl_Position = vec4(0.0); }</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="s">    </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">    </span><span class="n">AssetRegistry</span><span class="w"> </span><span class="n">registry</span><span class="p">;</span>
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">    </span><span class="n">ShaderImporter</span><span class="w"> </span><span class="nf">importer</span><span class="p">(</span><span class="n">ctx</span><span class="p">);</span>
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>
+<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="w">    </span><span class="c1">// First import — UUID is assigned and written to .meta</span>
+<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">result1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">importer</span><span class="p">.</span><span class="n">Import</span><span class="p">(</span><span class="n">VFSPath</span><span class="p">(</span><span class="s">"shaders/stable.vert"</span><span class="p">),</span><span class="w"> </span><span class="n">registry</span><span class="p">);</span>
+<a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="w">    </span><span class="n">ASSERT_EQ</span><span class="p">(</span><span class="n">result1</span><span class="p">,</span><span class="w"> </span><span class="n">ImportStatus</span><span class="o">::</span><span class="n">Success</span><span class="p">);</span>
+<a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="w">    </span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="w"> </span><span class="n">uuid_first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result1</span><span class="p">.</span><span class="n">UUID</span><span class="p">;</span>
+<a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="w">    </span><span class="n">EXPECT_FALSE</span><span class="p">(</span><span class="n">uuid_first</span><span class="p">.</span><span class="n">is_nil</span><span class="p">());</span>
+<a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a>
+<a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a><span class="w">    </span><span class="c1">// Modify the source (force a hash change so the importer does not skip)</span>
+<a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a><span class="w">    </span><span class="n">ctx</span><span class="p">.</span><span class="n">WriteFile</span><span class="p">(</span><span class="s">"shaders/stable.vert"</span><span class="p">,</span><span class="w"> </span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span>
+<a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a><span class="s">        #version 450</span>
+<a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a><span class="s">        void main() { gl_Position = vec4(1.0); }  // changed constant</span>
+<a id="__codelineno-15-22" name="__codelineno-15-22" href="#__codelineno-15-22"></a><span class="s">    </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
+<a id="__codelineno-15-23" name="__codelineno-15-23" href="#__codelineno-15-23"></a>
+<a id="__codelineno-15-24" name="__codelineno-15-24" href="#__codelineno-15-24"></a><span class="w">    </span><span class="n">AssetRegistry</span><span class="w"> </span><span class="n">registry2</span><span class="p">;</span>
+<a id="__codelineno-15-25" name="__codelineno-15-25" href="#__codelineno-15-25"></a><span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">result2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">importer</span><span class="p">.</span><span class="n">Import</span><span class="p">(</span><span class="n">VFSPath</span><span class="p">(</span><span class="s">"shaders/stable.vert"</span><span class="p">),</span><span class="w"> </span><span class="n">registry2</span><span class="p">);</span>
+<a id="__codelineno-15-26" name="__codelineno-15-26" href="#__codelineno-15-26"></a><span class="w">    </span><span class="n">ASSERT_EQ</span><span class="p">(</span><span class="n">result2</span><span class="p">,</span><span class="w"> </span><span class="n">ImportStatus</span><span class="o">::</span><span class="n">Success</span><span class="p">);</span>
+<a id="__codelineno-15-27" name="__codelineno-15-27" href="#__codelineno-15-27"></a>
+<a id="__codelineno-15-28" name="__codelineno-15-28" href="#__codelineno-15-28"></a><span class="w">    </span><span class="c1">// UUID must be the same — read from .meta, not regenerated</span>
+<a id="__codelineno-15-29" name="__codelineno-15-29" href="#__codelineno-15-29"></a><span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">result2</span><span class="p">.</span><span class="n">UUID</span><span class="p">,</span><span class="w"> </span><span class="n">uuid_first</span><span class="p">);</span>
+<a id="__codelineno-15-30" name="__codelineno-15-30" href="#__codelineno-15-30"></a><span class="p">}</span>
+</code></pre></div>
+<hr />
+<h2 id="10-proposed-deliverables">10. Proposed deliverables<a class="headerlink" href="#10-proposed-deliverables" title="Permanent link">&para;</a></h2>
+<h3 id="core-types">Core types<a class="headerlink" href="#core-types" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[ ] <code>ZEngine/Rendering/Shaders/ShaderStage.h</code> — <code>ShaderStage</code> enum, <code>StageFromExtension</code>, <code>StageFromPragma</code></li>
+<li>[ ] <code>ZEngine/Rendering/Shaders/ShaderAsset.h</code> — plain aggregate, fixed-width fields, no heap</li>
+</ul>
+<h3 id="import">Import<a class="headerlink" href="#import" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[ ] <code>ZEngine/Rendering/Shaders/ShaderImporter.h</code> + <code>.cpp</code> — implements <code>IAssetImporter</code>; shaderc primary, glslangValidator fallback; <code>ZENGINE_HAS_SHADERC</code> compile-time guard</li>
+<li>[ ] <code>ZEngine/Rendering/Shaders/VFSIncludeResolver.h</code> + <code>.cpp</code> — implements <code>shaderc::CompileOptions::IncluderInterface</code>; relative and absolute VFS paths; depth cap 16; proper <code>ReleaseInclude</code> cleanup</li>
+</ul>
+<h3 id="cache">Cache<a class="headerlink" href="#cache" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[ ] <code>ZEngine/Rendering/Shaders/ShaderCache.h</code> + <code>.cpp</code> — <code>GetOrCreate</code>, <code>Swap</code>, <code>Evict</code>, <code>Lookup</code>; <code>std::shared_mutex</code> for read/write separation; old modules pushed to <code>RenderResourceManager</code> deletion queue</li>
+</ul>
+<h3 id="hot-reload">Hot reload<a class="headerlink" href="#hot-reload" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[ ] <code>FileWatcher</code> → <code>AssetRegistry::OnAssetModified</code> → <code>ShaderImporter::Import</code> chain wired in engine startup</li>
+<li>[ ] <code>ShaderImporter::Import</code> runs on the dedicated import thread, not the render thread</li>
+<li>[ ] Compile failure leaves the current live module unchanged; <code>ImportStatus::Failed</code> + <code>ErrorMessage</code> recorded</li>
+</ul>
+<h3 id="dependency-graph">Dependency graph<a class="headerlink" href="#dependency-graph" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[ ] <code>ZEngine/Rendering/Shaders/PipelineDependencyGraph.h</code> + <code>.cpp</code> — forward + reverse adjacency lists; <code>MarkShaderDirty</code> thread-safe; <code>CollectDirtyPipelines</code> + <code>ClearDirty</code> called at frame start</li>
+<li>[ ] <code>RegisterPipelineShaders</code> called at pipeline creation; <code>UnregisterPipeline</code> called at pipeline destruction</li>
+</ul>
+<h3 id="cook-artifacts">Cook / artifacts<a class="headerlink" href="#cook-artifacts" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[ ] <code>.spv</code> artifacts written to <code>project://_cache/shaders/&lt;uuid&gt;.spv</code></li>
+<li>[ ] <code>.meta</code> files written by <code>MetaFileIO::Write</code> on every successful import (UUID + source hash + stage)</li>
+<li>[ ] Incremental build: <code>source_hash</code> comparison skips recompilation when source is unchanged (<code>ImportStatus::UpToDate</code>)</li>
+<li>[ ] UUID read from existing <code>.meta</code> on reimport — never regenerated for an existing source file</li>
+<li>[ ] <code>_cache/</code> excluded from version control</li>
+</ul>
+<h3 id="tests">Tests<a class="headerlink" href="#tests" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[ ] <code>ZEngine/tests/Rendering/Shaders/ShaderPipelineTest.cpp</code> — all 6 tests pass under AddressSanitizer and UBSanitizer</li>
+<li>[ ] Manual smoke test: load a scene with 10 PBR pipelines, edit one <code>.frag</code> shader on disk, verify all dependent pipelines rebuild within the next frame with no validation layer errors and no GPU crash</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Zodiac Engine contributors
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/JeanPhilippeKernel/RendererEngine" target="_blank" rel="noopener" title="RendererEngine on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://discord.gg/jC3GPVKKsW" target="_blank" rel="noopener" title="Zodiac Engine on Discord" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.footer", "navigation.tracking", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
