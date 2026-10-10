@@ -1,0 +1,1295 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Open-source cross-platform 3D rendering engine written in C++20 with Vulkan">
+      
+      
+      
+        <link rel="canonical" href="https://jeanphilippekernel.github.io/zodiac-engine-docs/zui-system/">
+      
+      
+        <link rel="prev" href="../asset-manager/">
+      
+      
+        <link rel="next" href="../containers/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="https://raw.githubusercontent.com/JeanPhilippeKernel/RendererEngine/main/ZEngine/docs/logo/WhiteAssetZE.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>ZUI System - Zodiac Engine</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#zui-system" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Zodiac Engine" class="md-header__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="https://raw.githubusercontent.com/JeanPhilippeKernel/RendererEngine/main/ZEngine/docs/logo/WhiteAssetZE.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Zodiac Engine
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ZUI System
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="light-blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="light-blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Zodiac Engine" class="md-nav__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="https://raw.githubusercontent.com/JeanPhilippeKernel/RendererEngine/main/ZEngine/docs/logo/WhiteAssetZE.png" alt="logo">
+
+    </a>
+    Zodiac Engine
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../engine-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../memory-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rendering-domain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rendering Domain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../asset-manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ZUI System
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ZUI System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#philosophy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Philosophy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Layers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#per-frame-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-Frame Lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#box-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Box Model
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Box Model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#size-kinds-zuisizekind" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Size kinds (ZUISizeKind)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#box-flags-zuiboxflags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Box flags (ZUIBoxFlags)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#layout-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layout System
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interaction-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interaction System
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Interaction System">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pointer-capture-for-viewport-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pointer capture for viewport tools
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#input-feed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Input Feed
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#font-atlas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Font Atlas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docking-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Docking System
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#render-graph-pass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Render-graph pass
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inspiration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inspiration
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../containers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Containers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#philosophy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Philosophy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Layers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#per-frame-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-Frame Lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#box-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Box Model
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Box Model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#size-kinds-zuisizekind" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Size kinds (ZUISizeKind)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#box-flags-zuiboxflags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Box flags (ZUIBoxFlags)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#layout-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layout System
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interaction-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interaction System
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Interaction System">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pointer-capture-for-viewport-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pointer capture for viewport tools
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#input-feed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Input Feed
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#font-atlas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Font Atlas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docking-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Docking System
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#render-graph-pass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Render-graph pass
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inspiration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inspiration
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="zui-system">ZUI System</h1>
+<p>The ZUI system is the engine's native retained-mode UI layer for editor panels and in-game HUD work. Every widget is the same struct (<code>ZUIBox</code>), no class hierarchy, no virtual dispatch.</p>
+<p>See also: <a href="../engine-architecture/">Engine Architecture</a> · <a href="../rendering-domain/">Rendering Domain</a></p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#philosophy">Philosophy</a></li>
+<li><a href="#architecture-layers">Architecture Layers</a></li>
+<li><a href="#per-frame-lifecycle">Per-Frame Lifecycle</a></li>
+<li><a href="#box-model">Box Model</a></li>
+<li><a href="#layout-system">Layout System</a></li>
+<li><a href="#interaction-system">Interaction System</a></li>
+<li><a href="#input-feed">Input Feed</a></li>
+<li><a href="#font-atlas">Font Atlas</a></li>
+<li><a href="#docking-system">Docking System</a></li>
+<li><a href="#renderer">Renderer</a></li>
+<li><a href="#inspiration">Inspiration</a></li>
+</ul>
+<hr />
+<h2 id="philosophy">Philosophy</h2>
+<ol>
+<li><strong>One struct for everything.</strong> <code>ZUIBox</code> is the only widget type. Flags, sizes, colors, text, and draw hints all live on the same struct. No subclassing.</li>
+<li><strong>Retained, not immediate.</strong> The box tree is rebuilt every frame, but persistent state (open/closed, scroll position, hot/active animation) is stored in a fixed-capacity hash table keyed by the box's FNV-1a hash. No allocation per-frame for persistent state.</li>
+<li><strong>Layout is separate from interaction.</strong> Build → Layout → Interact — three discrete phases per frame. Widget functions run during Build; the layout solver and hit-test run inside <code>ZUIEndFrame</code>.</li>
+<li><strong>No heap in the hot path.</strong> All per-frame allocations use <code>ZUIContext::FrameArena</code> (reset each frame). Persistent state and font data use <code>ZUIContext::PersistentArena</code>. Neither ever calls <code>malloc</code>.</li>
+<li><strong>Engine-agnostic input.</strong> The ZUI layer uses a feed model: <code>ZUIFeedMousePos</code>, <code>ZUIFeedKey</code>, etc. <code>ZUILayer</code> translates engine events to feed calls. No global input state.</li>
+</ol>
+<hr />
+<h2 id="architecture-layers">Architecture Layers</h2>
+<pre><code>┌────────────────────────────────────────────────────────────┐
+│                    Editor panels (Tetragrama)               │
+│  ZUIPanelManagerComponent  ZUIDockspaceComponent           │
+│  HierarchyPanel  InspectorPanel  ProjectViewPanel  ...     │
+├────────────────────────────────────────────────────────────┤
+│                     ZUI Widget Library                      │
+│        ZUIWidgets.h — Button, Label, Table, TreeView …     │
+├────────────────────────────────────────────────────────────┤
+│                       ZUI Core                              │
+│  ZUIContext   ZUIBox   ZUILayout   ZUIInteraction           │
+│  ZUIFont      ZUIDrawList   ZUIInput   ZUIDockspace         │
+├────────────────────────────────────────────────────────────┤
+│                  ZUIPass (render-graph Vulkan pass)          │
+│       PreparePayload → ZUIDrawList → GPU vertex buffer      │
+│       ZUIPass in AppRenderPipeline render graph            │
+└────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr />
+<h2 id="per-frame-lifecycle">Per-Frame Lifecycle</h2>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant MT  as Main Thread
+    participant ZL  as ZUILayer
+    participant CTX as ZUIContext
+    participant RT  as Render Thread
+
+    MT -&gt;&gt; CTX  : ZUIBeginFrame(ctx, dt)
+    Note over CTX: Reset FrameArena, clear Root/Current,&lt;br/&gt;reset ViewportHovered
+    MT -&gt;&gt; ZL   : ZUILayer::Render() — build phase
+    Note over ZL: ZUIBeginColumn / widget calls / ZUIEndColumn
+    MT -&gt;&gt; CTX  : ZUIEndFrame(ctx)
+    Note over CTX: ZUILayoutSolve → ZUIInteractionPass
+    MT -&gt;&gt; RT   : FillOverlayPayload → PreparePayload
+    Note over RT: DFS box tree walk, emit ZUIDrawList cmds
+    RT -&gt;&gt; RT   : RenderGraph::Execute → ZUIPass::RecordDraw → GPU draw
+</code></pre>
+<p>Key invariant: <strong>widget functions run during Build</strong>; <code>ScreenMin/ScreenMax</code> are only valid after <code>ZUILayoutSolve</code>; <code>HotKey/ActiveKey</code> are only valid after <code>ZUIInteractionPass</code>.</p>
+<hr />
+<h2 id="box-model">Box Model</h2>
+<p><strong>File:</strong> <code>ZEngine/ZEngine/UI/ZUIBox.h</code></p>
+<p><code>ZUIBox</code> fields:</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Fields</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Identity</td>
+<td><code>Key</code> (uint64), <code>Label</code> (ZUIStr)</td>
+<td>FNV-1a hash; label is FrameArena slice</td>
+</tr>
+<tr>
+<td>Tree</td>
+<td><code>Parent</code>, <code>FirstChild</code>, <code>LastChild</code>, <code>NextSib</code>, <code>PrevSib</code></td>
+<td>Arena pointers, valid one frame only</td>
+</tr>
+<tr>
+<td>Build-time</td>
+<td><code>Flags</code>, <code>Size[2]</code>, <code>LayoutAxis</code>, <code>TextAlign</code>, <code>FontSize</code></td>
+<td>Set by widget functions</td>
+</tr>
+<tr>
+<td>Colors</td>
+<td><code>Colors[4][4]</code>, <code>TextColor[4]</code>, <code>BorderColor[4]</code></td>
+<td>Per-corner RGBA</td>
+</tr>
+<tr>
+<td>Radii</td>
+<td><code>CornerRadii[4]</code>, <code>EdgeSoftness</code></td>
+<td>SDF-based AA rounding</td>
+</tr>
+<tr>
+<td>Layout output</td>
+<td><code>ComputedSize[2]</code>, <code>ScreenMin[2]</code>, <code>ScreenMax[2]</code></td>
+<td>Written by <code>ZUILayoutSolve</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="size-kinds-zuisizekind">Size kinds (<code>ZUISizeKind</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Pixels</code></td>
+<td>Fixed logical-pixel size</td>
+</tr>
+<tr>
+<td><code>Text</code></td>
+<td>Size to rendered text extent</td>
+</tr>
+<tr>
+<td><code>ChildrenSum</code></td>
+<td>Intrinsic fit — sum (main axis) or max (cross axis) of children</td>
+</tr>
+<tr>
+<td><code>ParentPercent</code></td>
+<td>Fraction of parent's computed size</td>
+</tr>
+<tr>
+<td><code>Fill</code></td>
+<td>Expand to fill remaining space after fixed siblings</td>
+</tr>
+</tbody>
+</table>
+<h3 id="box-flags-zuiboxflags">Box flags (<code>ZUIBoxFlags</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ZUI_DrawBackground</code></td>
+<td>Filled rect with per-corner <code>Colors</code></td>
+</tr>
+<tr>
+<td><code>ZUI_DrawBorder</code></td>
+<td>Stroked border with <code>BorderColor</code></td>
+</tr>
+<tr>
+<td><code>ZUI_DrawText</code></td>
+<td>Text from <code>Label</code></td>
+</tr>
+<tr>
+<td><code>ZUI_Clickable</code></td>
+<td>Participates in hit-test; generates <code>ZUISignal</code></td>
+</tr>
+<tr>
+<td><code>ZUI_Scrollable</code></td>
+<td>Scroll wheel routing</td>
+</tr>
+<tr>
+<td><code>ZUI_ClipChildren</code></td>
+<td>Scissor children to box bounds</td>
+</tr>
+<tr>
+<td><code>ZUI_FloatX / FloatY</code></td>
+<td>Positioned by <code>FloatPos</code> not parent layout</td>
+</tr>
+<tr>
+<td><code>ZUI_DrawActorIcon</code></td>
+<td>Actor-type icon (gizmo / hierarchy)</td>
+</tr>
+<tr>
+<td><code>ZUI_DrawLine</code></td>
+<td>AA overlay line (used by gizmo overlays)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="layout-system">Layout System</h2>
+<p><strong>File:</strong> <code>ZEngine/ZEngine/UI/ZUILayout.h/.cpp</code></p>
+<p>Two-pass constraint solver called inside <code>ZUIEndFrame</code>:</p>
+<p><strong>Pass 1 — Post-order intrinsic sizes</strong>
+Walk children before parents. For <code>ChildrenSum</code> boxes, accumulate children's computed sizes. For <code>Pixels</code> / <code>Text</code> boxes, set size directly.</p>
+<p><strong>Pass 2 — Pre-order extrinsic sizes and positions</strong>
+Walk parents before children. Distribute <code>Fill</code> space among siblings. Set <code>ScreenMin</code> / <code>ScreenMax</code> using the parent's computed position.</p>
+<p><code>Strictness</code> on <code>ZUISize</code> controls how much a <code>Fill</code> box yields under overflow: 1.0 = rigid, 0.0 = fully flexible.</p>
+<hr />
+<h2 id="interaction-system">Interaction System</h2>
+<p><strong>File:</strong> <code>ZEngine/ZEngine/UI/ZUIInteraction.h/.cpp</code></p>
+<p><code>ZUIInteractionPass</code> runs after layout. It does a DFS hit-test over the box tree using <code>ctx-&gt;MousePos</code> and updates <code>ctx-&gt;HotKey</code> (the box under the cursor) and <code>ctx-&gt;ActiveKey</code> (the box being pressed).</p>
+<p><code>ZUISignalFromBox(ctx, box)</code> is called during the <strong>Build phase</strong> (before interaction runs). It reads the <strong>previous frame's</strong> <code>HotKey/ActiveKey</code> to return hover/press/click signals. This one-frame lag is imperceptible.</p>
+<pre><code class="language-cpp">struct ZUISignal {
+    uint32_t Flags;         // ZUI_SignalHovered | ZUI_SignalHeld | ZUI_SignalClicked ...
+    float    DragDelta[2];  // mouse delta px this frame when ZUI_SignalHeld
+    float    ScrollDelta;
+};
+</code></pre>
+<p>Popup / modal input-blocking: when a modal is active, only boxes inside the modal receive hover. When a popup stack is open, only popup-interior boxes receive hover.</p>
+<h3 id="pointer-capture-for-viewport-tools">Pointer capture for viewport tools</h3>
+<p>Hot and Active keys are sufficient for ordinary widgets but are not a complete
+viewport-tool capture contract: a 3D gizmo drag must survive the cursor leaving
+its originating box or handle. ZUI needs an explicit capture token owned by a
+box/tool and released only by pointer release, cancellation, focus loss, modal
+replacement, or viewport destruction.</p>
+<p>The capture API must report cancellation distinctly from release and route
+physical/logical framebuffer coordinates to the owner. EditorSession cancels an
+active transaction on capture cancellation. Capture state is transient,
+main-thread-only, and never part of ZUI layout serialization or a scene file.</p>
+<hr />
+<h2 id="input-feed">Input Feed</h2>
+<p><strong>File:</strong> <code>ZEngine/ZEngine/UI/ZUIInput.h</code></p>
+<pre><code class="language-cpp">void ZUIFeedBeginFrame(ZUIContext* ctx);
+void ZUIFeedMousePos   (ZUIContext* ctx, float x, float y);
+void ZUIFeedMouseButton(ZUIContext* ctx, int button, bool pressed);
+void ZUIFeedScroll     (ZUIContext* ctx, float delta);
+void ZUIFeedText       (ZUIContext* ctx, uint32_t codepoint);
+void ZUIFeedKey        (ZUIContext* ctx, ZUIKey key, bool pressed, bool ctrl, bool shift, bool alt);
+</code></pre>
+<p><code>ZUILayer</code> translates GLFW events to these calls. Scroll is handled via a chained GLFW scroll callback registered after <code>Engine::Initialize</code>. ZUI only sees what is explicitly fed to it — no global input state.</p>
+<hr />
+<h2 id="font-atlas">Font Atlas</h2>
+<p><strong>File:</strong> <code>ZEngine/ZEngine/UI/ZUIFont.h/.cpp</code></p>
+<p><code>ZUIFontAtlasBake</code> bakes three font sizes (Small / Body / Header) into a single RGBA texture atlas using FreeType, packs glyph rectangles via <code>stb_rect_pack</code>, and uploads to GPU via <code>RRM::UploadFontAtlas</code>. The <code>ZUIContext</code> holds the atlas handle; <code>ZUIPass</code> binds it as a texture.</p>
+<p><code>ZUIMeasureText(font, str, len, out_size)</code> computes text extents for <code>ZUISizeKind::Text</code> layout.</p>
+<hr />
+<h2 id="docking-system">Docking System</h2>
+<p><strong>Files:</strong> <code>ZUIPanel.h/.cpp</code>, <code>ZUIDockspace.h/.cpp</code>, <code>ZUIDockSerial.h/.cpp</code></p>
+<p>The docking system implements a VS Code-style split-tree model. Panels live in leaf nodes; split nodes divide space horizontally or vertically.</p>
+<pre><code>DockTree root
+  ├── Hierarchy       (leaf, 14% width)
+  ├── Center column
+  │    ├── Viewport   (leaf, central node, 78% height)
+  │    └── Bottom row
+  │         ├── Console   (leaf, 40% width)
+  │         └── Project   (leaf, 60% width)
+  └── Inspector       (leaf, 18% width)
+</code></pre>
+<p><strong><code>ZUIPanelManager</code></strong> owns the dock tree and all panels. <code>BuildUI</code> runs per frame:
+1. <code>PreDetectCloseEvents</code> — detects tab close clicks before layout
+2. Flush <code>PendingCloseKeys</code> — collapse dock nodes for closed panels
+3. <code>ZUIDockLayout</code> — solve panel rects from the split tree
+4. <code>BuildDockedPanel</code> for each visible panel
+5. <code>BuildDividerHitZones</code> + <code>BuildDividerVisuals</code> — resize handles</p>
+<p><strong>Layout persistence:</strong> <code>ZUIDockSerial</code> saves/loads the full dock tree (v4 format) to <code>ZodiacEngine/Settings/zui_layout.ini</code> via <code>EngineAssetsBackend</code>. The file is written when <code>LayoutDirty</code> is set (panel close, divider drag, resize).</p>
+<hr />
+<h2 id="render-graph-pass">Render-graph pass</h2>
+<p><strong>File:</strong> <code>ZEngine/ZEngine/Rendering/Renderers/ZUIPass.h/.cpp</code></p>
+<p><code>ZUIPass::PreparePayload(ctx, out, arena)</code>:
+1. Resets <code>ctx-&gt;DrawList</code>
+2. DFS walk of the box tree — emits draw commands for backgrounds, borders, text glyphs, icons, images
+3. Points <code>out-&gt;Vtx/Idx/Cmds</code> at the draw list (zero-copy view)</p>
+<p><code>ZUIPass::Register(...)</code> declares the frame-color read and swapchain write, then uploads vertex and index data to the active frame's GPU buffers. <code>RecordDraw(...)</code> runs within the render graph's dynamic-rendering scope and, for each command, sets the scissor, pushes <code>ZUIDrawPushConstant</code> (scale/translate/texIdx), and calls <code>DrawIndexed</code>.</p>
+<p><strong>Vertex format:</strong> <code>ZUIDrawVtx</code> — 20 bytes: <code>pos.xy</code> (float), <code>uv.xy</code> (float), <code>col</code> (RGBA8 packed).</p>
+<p><strong>Shaders:</strong> <code>zui_draw.vert</code> / <code>zui_draw.frag</code> — screen-space transform via push constant; SDF-based AA corner rounding; bindless texture slot.</p>
+<p><strong>GPU buffer limits:</strong> 65 536 vertices · 131 072 indices per frame slot.</p>
+<hr />
+<h2 id="inspiration">Inspiration</h2>
+<p>ZUI draws on ideas from three sources:</p>
+<ul>
+<li><strong><a href="https://github.com/ocornut/imgui">Dear ImGui</a></strong> (Omar Cornut) — the immediate-mode model, draw list design (<code>ZUIDrawList</code> mirrors <code>ImDrawList</code>), and widget interaction pattern.</li>
+<li><strong><a href="https://github.com/EpicGames/raddebugger">RAD Debugger UI</a></strong> (Ryan Fleury) — the retained single-struct box model, per-corner color system, size-kind constraint layout, and the Build → Layout → Interact phase separation.</li>
+<li><strong><a href="https://github.com/microsoft/vscode">VS Code</a></strong> — the split-tree docking model: binary split nodes, leaf panel slots, tab bars, and the central-node viewport passthrough concept.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../asset-manager/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Asset Manager">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Asset Manager
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../containers/" class="md-footer__link md-footer__link--next" aria-label="Next: Containers">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Containers
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

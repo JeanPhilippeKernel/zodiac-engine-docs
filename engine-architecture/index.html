@@ -1,0 +1,1744 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Open-source cross-platform 3D rendering engine written in C++20 with Vulkan">
+      
+      
+      
+        <link rel="canonical" href="https://jeanphilippekernel.github.io/zodiac-engine-docs/engine-architecture/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../memory-management/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="https://raw.githubusercontent.com/JeanPhilippeKernel/RendererEngine/main/ZEngine/docs/logo/WhiteAssetZE.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Engine Architecture - Zodiac Engine</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#engine-architecture" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Zodiac Engine" class="md-header__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="https://raw.githubusercontent.com/JeanPhilippeKernel/RendererEngine/main/ZEngine/docs/logo/WhiteAssetZE.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Zodiac Engine
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Engine Architecture
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="light-blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="light-blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Zodiac Engine" class="md-nav__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="https://raw.githubusercontent.com/JeanPhilippeKernel/RendererEngine/main/ZEngine/docs/logo/WhiteAssetZE.png" alt="logo">
+
+    </a>
+    Zodiac Engine
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Architecture
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#big-picture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Big Picture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#thread-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Thread Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#main-thread-per-frame-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Main Thread — Per-Frame Work
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#render-thread-per-frame-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Render Thread — Per-Frame Work
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cross-thread-communication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-Thread Communication
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cross-Thread Communication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-main-render-lock-free-mailbox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Main → Render: Lock-free mailbox
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-background-main-mainthreadscheduler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Background → Main: MainThreadScheduler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-asset-thread-render-thread-rrm-pending-queue" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Asset thread → Render thread: RRM pending queue
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ecs-and-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ECS and Simulation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ECS and Simulation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#two-tier-object-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two-tier object model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scene" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scene
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#actor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worldtick-system-scheduler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WorldTick — System Scheduler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worldcommands-deferred-mutations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WorldCommands — Deferred Mutations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ecs-render-synchronization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ECS → Render synchronization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#asset-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asset Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#virtual-file-system-vfs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Virtual File System (VFS)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initialization-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Initialization Order
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Initialization Order">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#packaged-engine-assets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Packaged engine assets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shutdown-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shutdown Order
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../memory-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rendering-domain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rendering Domain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../asset-manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zui-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ZUI System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../containers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Containers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#big-picture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Big Picture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#thread-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Thread Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#main-thread-per-frame-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Main Thread — Per-Frame Work
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#render-thread-per-frame-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Render Thread — Per-Frame Work
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cross-thread-communication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-Thread Communication
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cross-Thread Communication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-main-render-lock-free-mailbox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Main → Render: Lock-free mailbox
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-background-main-mainthreadscheduler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Background → Main: MainThreadScheduler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-asset-thread-render-thread-rrm-pending-queue" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Asset thread → Render thread: RRM pending queue
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ecs-and-simulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ECS and Simulation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ECS and Simulation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#two-tier-object-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two-tier object model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scene" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scene
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#actor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worldtick-system-scheduler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WorldTick — System Scheduler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#worldcommands-deferred-mutations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WorldCommands — Deferred Mutations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ecs-render-synchronization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ECS → Render synchronization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#asset-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Asset Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#virtual-file-system-vfs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Virtual File System (VFS)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initialization-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Initialization Order
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Initialization Order">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#packaged-engine-assets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Packaged engine assets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shutdown-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shutdown Order
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="engine-architecture">Engine Architecture</h1>
+<p>Authoritative reference for ZEngine's overall architecture — threads, communication, and how all subsystems fit together. Update it when a significant architectural change lands in <code>develop</code>.</p>
+<p>See also: <a href="../rendering-domain/">Rendering Domain</a> · <a href="../memory-management/">Memory Management</a> · <a href="../asset-manager/">Asset Manager</a> · <a href="../zui-system/">ZUI System</a></p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#big-picture">Big Picture</a></li>
+<li><a href="#thread-model">Thread Model</a></li>
+<li><a href="#main-thread-per-frame-work">Main Thread — Per-Frame Work</a></li>
+<li><a href="#render-thread-per-frame-work">Render Thread — Per-Frame Work</a></li>
+<li><a href="#cross-thread-communication">Cross-Thread Communication</a></li>
+<li><a href="#ecs-and-simulation">ECS and Simulation</a></li>
+<li><a href="#asset-pipeline">Asset Pipeline</a></li>
+<li><a href="#virtual-file-system-vfs">Virtual File System (VFS)</a></li>
+<li><a href="#initialization-order">Initialization Order</a></li>
+<li><a href="#shutdown-order">Shutdown Order</a></li>
+</ul>
+<hr />
+<h2 id="big-picture">Big Picture</h2>
+<pre><code class="language-mermaid">flowchart TD
+    main[&quot;Main Thread\nECS simulation\nInput / VFS tick\nImportCoordinator\nApp::Update / UI&quot;]
+    render[&quot;Render Thread\nRRM::BeginFrame\nRenderGraph::Execute\nSwapchain present\nRRM::EndFrame&quot;]
+    scheduler[&quot;MainThreadScheduler\n512 MPSC slots&quot;]
+    pool[&quot;ThreadPool workers\nGltfImporter\nAssimpImporter\nImportCoordinator jobs&quot;]
+
+    main --&gt;|&quot;mailbox write (lock-free)&quot;| render
+    pool --&gt;|&quot;Post(ctx, fn) when UI/main-thread work is needed&quot;| scheduler
+    scheduler --&gt;|&quot;Drain() — step 9 each frame&quot;| main
+    pool --&gt;|&quot;ImportCoordinator task → AssetManager/RRM queue&quot;| render
+</code></pre>
+<p><strong>Key design rules:</strong>
+- Main thread owns all ECS state, input, and UI logic.
+- Render thread owns all Vulkan command recording and submission.
+- Neither thread blocks on the other within a frame.
+- Background workers never touch Vulkan — GPU work is enqueued to <code>RenderResourceManager</code> and drained on the render thread.</p>
+<hr />
+<h2 id="thread-model">Thread Model</h2>
+<table>
+<thead>
+<tr>
+<th>Thread</th>
+<th>Count</th>
+<th>Launched by</th>
+<th>Joins at</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Main thread</td>
+<td>1</td>
+<td>OS entrypoint (<code>main()</code>)</td>
+<td>Process exit</td>
+</tr>
+<tr>
+<td>Render thread</td>
+<td>1</td>
+<td><code>Engine::Run()</code></td>
+<td><code>Engine::Deinitialize()</code></td>
+</tr>
+<tr>
+<td>ThreadPool workers</td>
+<td><code>hw_concurrency - 1</code></td>
+<td><code>ThreadPoolHelper::Initialize()</code></td>
+<td><code>ThreadPoolHelper::Shutdown()</code></td>
+</tr>
+</tbody>
+</table>
+<p>The render thread is launched <strong>before</strong> <code>MainThreadRun()</code> begins and joined <strong>first</strong> in teardown — before any GPU resource is touched.</p>
+<hr />
+<h2 id="main-thread-per-frame-work">Main Thread — Per-Frame Work</h2>
+<p><code>Engine::MainThreadRun()</code> — <code>ZEngine/ZEngine/Engine.cpp</code></p>
+<pre><code>loop (until s_close_requested):
+
+  1. PollEvent()                    GLFW platform event pump; events feed ZUIContext
+  2. VFSContext::Tick()             Drain FileWatcher debounce queue
+  3. skip frame if minimized
+  4. frame_timer.End()             Measure raw delta (clamped 250 ms)
+  5. accumulator.Accumulate(dt)
+
+  6. Fixed simulation (60 Hz, max 5 catch-up steps):
+       WorldTick::Tick(scene, fixed_dt, cmds)   ECS systems in DAG order
+       WorldCommands::Flush(scene)              Deferred structural mutations
+       ActorManager::Tick(fixed_dt)             Actor OnTick() callbacks
+       Scene::SnapshotTransforms()              PreviousPosition ← Position
+       accumulator.ConsumeStep()
+
+  7. alpha = accumulator.Alpha()    Interpolation factor for renderer
+
+  8. ImportCoordinator::Tick()      Dispatch pending import jobs to ThreadPool
+
+  9. MainThreadScheduler::Drain()   Execute callbacks posted by background threads
+
+ 10. g_app-&gt;OnUpdate(raw_dt)       Subclass update (Editor: viewport hover → camera gate)
+     CameraController→Update(dt)   After OnUpdate so hover state is current
+
+ 11. Build independent UI payload when an overlay slot is available:
+       BeginOverlayFrame → ZUIBeginFrame(ctx, dt)
+       OnRenderUI() → ZUILayer::Render() — build ZUI box tree
+       EndOverlayFrame → ZUIEndFrame (ZUILayoutSolve + ZUIInteractionPass)
+       FillOverlayPayload → ZUIPass::PreparePayload (DFS → draw list)
+       PublishOverlay(slot)
+      Then SyncECSToRenderScene(alpha) + PrepareScene and publish RenderFrameState.
+      The state mailbox chooses a free slot or replaces its oldest unread state; it is
+      deliberately latest-state rather than FIFO.
+
+ 12. FrameRateCap::Wait()          Applied unconditionally — including when mailbox is
+                                    full (buffer-full continue also calls Wait so the
+                                    main loop never spins at 100k+ Hz)
+</code></pre>
+<hr />
+<h2 id="render-thread-per-frame-work">Render Thread — Per-Frame Work</h2>
+<p><code>Engine::RenderThreadRun()</code> — <code>ZEngine/ZEngine/Engine.cpp</code></p>
+<pre><code>loop (until s_request_terminate):
+
+  1. Latest-state read (lock-free)    Take newest RenderFrameState; retain last if none
+
+  2. Swapchain::AcquireNextImage      Block on fence for in-flight slot
+
+  3. RRM::BeginFrame(frame_index)
+       FlushPendingUploads:
+         ├─ ResetGeometryBuffersInternal  (if scene-reload flag is set)
+         ├─ BeginBatchUpload
+         ├─ DoUploadMesh × N           All mesh uploads in ONE GPU submission
+         ├─ EndBatchUpload
+         └─ DoUploadTexture × M        Per-texture timeline upload
+
+  4. AppRenderPipeline::RenderScene
+       Snapshot RenderScene instances and rebuild per-frame mesh input
+       Resolve resident mesh offsets; upload TransformSB, DrawDataSB, culling input
+       (this currently runs every rendered frame; InstancesDirty is cleared here)
+
+  5. RenderGraph::Execute
+       DepthPrePass  → DrawIndirect   (all scene meshes, depth only)
+       GbufferPass   → DrawIndirect   (all scene meshes, full G-buffer)
+       LightingPass  → Draw(3)        (full-screen deferred lighting triangle)
+       Sky passes    → HDRI/analytic-sky bake, compose, or background as enabled
+       ToneMapping + GridPass → final FrameColor (builtin compatibility quad)
+       ZUIPass       → DrawIndexed    (overlay, targets swapchain)
+
+  6. Swapchain::Present               Submit + present, advance timeline semaphore
+
+  7. RRM::EndFrame(frame_index)       Drain DeferredFreeQueue for this slot
+
+  8. render_timer.End()               Sample wall-clock delta (includes vsync wait)
+     g_engine_ctx→SmoothedDeltaTime = render_timer.SmoothedDelta()
+                                       Written here so FPS display reflects true GPU rate
+</code></pre>
+<p>The render thread never writes ECS state. It receives copied camera/sky/resize configuration
+through <code>RenderFrameState</code>, plus independently retained ZUI payloads. Its <code>RenderScene*</code> is
+still a borrowed pointer, not the renderer-owned immutable scene snapshot required for
+production editor mutations.</p>
+<hr />
+<h2 id="cross-thread-communication">Cross-Thread Communication</h2>
+<p>Three distinct channels, each with a different mechanism.</p>
+<h3 id="1-main-render-lock-free-mailbox">1. Main → Render: Lock-free mailbox</h3>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant Main as Main Thread
+    participant State as RenderFrameState[3] slots
+    participant UI as OverlayPayload[3] slots
+    participant Render as Render Thread
+
+    Main-&gt;&gt;State: copy and publish newest RenderFrameState
+    Main-&gt;&gt;UI: publish completed ZUI payload when a slot is free
+    Render-&gt;&gt;State: claim newest Ready slot; release older unread slots
+    alt new state exists
+        Render-&gt;&gt;Render: retain newest state
+    else no new state
+        Render-&gt;&gt;Render: reuse retained state
+    end
+</code></pre>
+<p>State and UI each use three ownership-state slots (<code>Free</code>, <code>Writing</code>, <code>Ready</code>, <code>Reading</code>) with
+atomic acquire/release transitions. They are separate channels: a missed UI replacement does
+not block simulation or state publication.</p>
+<h3 id="2-background-main-mainthreadscheduler">2. Background → Main: MainThreadScheduler</h3>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant Worker as ThreadPool Worker
+    participant MTS as MainThreadScheduler
+    participant Main as Main Thread (step 9)
+
+    Worker-&gt;&gt;MTS: Post(ctx, fn) — fetch_add claims slot
+    Worker-&gt;&gt;MTS: write ctx + fn
+    Worker-&gt;&gt;MTS: ready[slot].store(true, release)
+    Main-&gt;&gt;MTS: Drain() — exchange write_cursor to 0
+    loop for each claimed slot
+        Main-&gt;&gt;MTS: spin on ready[i].load(acquire)
+        Main-&gt;&gt;Main: fn(ctx)
+        Main-&gt;&gt;MTS: ready[i].store(false)
+    end
+</code></pre>
+<p>512 arena-allocated slots, lock-free MPSC, no heap, C-style <code>Post(void* ctx, void (*fn)(void*))</code>.</p>
+<p><strong>Current users:</strong> editor panel/UI operations that must defer work out of the build/event
+callback, including asset-import and viewport drop flows.</p>
+<h3 id="3-asset-thread-render-thread-rrm-pending-queue">3. Asset thread → Render thread: RRM pending queue</h3>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant Asset as Asset Thread
+    participant AM as AssetManager
+    participant RRM as RenderResourceManager
+    participant GPU as GPU
+
+    Asset-&gt;&gt;AM: IngestMesh(mesh, hier)
+    AM-&gt;&gt;AM: AssetRegistry::SetState(Loaded)
+    AM-&gt;&gt;RRM: OnAssetReady callback
+    RRM-&gt;&gt;RRM: m_pending.push (m_pending_mutex)
+    Note over RRM: Next BeginFrame on render thread
+    RRM-&gt;&gt;RRM: FlushPendingUploads — drain m_pending[]
+    RRM-&gt;&gt;GPU: DoUploadMesh → vkCmdCopyBuffer
+</code></pre>
+<p><code>m_pending[MAX_PENDING=1024]</code> is a fixed array protected by <code>m_pending_mutex</code>. All Vulkan work
+stays on the render thread.</p>
+<hr />
+<h2 id="ecs-and-simulation">ECS and Simulation</h2>
+<p><strong>Files:</strong> <code>ZEngine/ZEngine/ECS/</code></p>
+<h3 id="two-tier-object-model">Two-tier object model</h3>
+<pre><code class="language-mermaid">flowchart TD
+    AM[&quot;ActorManager\nMAX_ACTORS = 1024\narena-backed HandleManager&quot;]
+    A[&quot;Actor (Tier 1)\nC++ object with vtable\nOwns EntityID\nOnCreate / OnTick / OnDestroy&quot;]
+    EID[&quot;EntityID\nindex (uint32) + generation (uint32)\nIsValid() = generation != 0&quot;]
+    SC[&quot;Scene\nEntityRegistry (MAX 65536)\nHash map from ComponentTypeID to IComponentStorage pointer&quot;]
+    CS[&quot;Component storage by component type\nsparse-set\nm_sparse[] + m_dense[] + m_dense_ids[]&quot;]
+    WT[&quot;WorldTick\nDAG scheduler\nMAX_SYSTEMS = 64&quot;]
+    WC[&quot;WorldCommands\ndeferred mutations\ninitial cap 256 commands&quot;]
+
+    AM --&gt;|&quot;Create by actor type allocates Actor\nassigns EntityID&quot;| A
+    A --&gt;|&quot;owns&quot;| EID
+    EID --&gt;|&quot;indexes&quot;| SC
+    SC --&gt;|&quot;stores components in&quot;| CS
+    WT --&gt;|&quot;drives&quot;| SC
+    WT --&gt;|&quot;writes deferred mutations to&quot;| WC
+    WC --&gt;|&quot;Flush() applies to&quot;| SC
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Type</th>
+<th>Used for</th>
+<th>Limit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>Actor</code> — C++ object with vtable, owns an <code>EntityID</code></td>
+<td>Player, camera, lights, scripted objects</td>
+<td>1 024</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Raw <code>EntityID</code> — data only, no vtable</td>
+<td>Foliage, particles, projectiles, bulk objects</td>
+<td>65 536</td>
+</tr>
+</tbody>
+</table>
+<p>Both tiers share the same <code>ComponentStorage&lt;T&gt;</code> sparse-set arrays. <code>Scene::ForEach&lt;Ts...&gt;()</code> and <code>Query&lt;Ts...&gt;</code> visit all alive entities regardless of tier.</p>
+<hr />
+<h3 id="components">Components</h3>
+<p>All components live in <code>ECS/Components/</code>, namespace <code>ZEngine::ECS::Components</code>. A <code>ComponentTypeID</code> (<code>uint32_t</code>) is assigned lazily at the first call to <code>ComponentTypeOf&lt;T&gt;()</code> via an atomic counter. Up to 64 component types are supported (one bit per type in the 64-bit <code>ArchetypeMask</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Key fields</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TransformComponent</code></td>
+<td>local <code>Position</code>, <code>Rotation</code>, <code>Scale</code>, <code>PreviousPosition</code>, derived <code>WorldTransform</code></td>
+<td>WorldTransform is propagated by HierarchySystem and is never directly authored. This component intentionally exceeds one cache line; do not claim a 64-byte limit.</td>
+</tr>
+<tr>
+<td><code>MeshComponent</code></td>
+<td><code>uuids::uuid MeshUUID</code>, runtime <code>uint32_t RenderInstanceId</code></td>
+<td><code>RenderInstanceId = UINT32_MAX</code> means no render instance is currently bound. TransformSyncSystem updates bound instances; load/create/delete binding reconstruction is an authoring lifecycle concern.</td>
+</tr>
+<tr>
+<td><code>CameraComponent</code></td>
+<td><code>FovY</code>, <code>Near</code>, <code>Far</code>, <code>AspectRatio</code>, <code>bool IsMain</code></td>
+<td>Exactly one entity should have <code>IsMain = true</code>.</td>
+</tr>
+<tr>
+<td><code>LightComponent</code></td>
+<td><code>Type</code> (Directional/Point/Spot), <code>Intensity</code>, <code>Range</code>, <code>SpotAngle</code>, <code>Color[3]</code></td>
+<td>Range and SpotAngle unused for Directional lights.</td>
+</tr>
+<tr>
+<td><code>MaterialComponent</code></td>
+<td><code>uuids::uuid MaterialUUID</code></td>
+<td>Per-instance material override. Absent = use mesh's baked material UUIDs.</td>
+</tr>
+<tr>
+<td><code>NameComponent</code></td>
+<td><code>char Value[128]</code></td>
+<td>Display name for Outliner and debug.</td>
+</tr>
+<tr>
+<td><code>RigidBodyComponent</code></td>
+<td><code>MotionType</code> (Static/Kinematic/Dynamic), <code>Mass</code>, <code>Friction</code>, <code>Restitution</code>, <code>uint32_t BodyID</code></td>
+<td><code>BodyID = UINT32_MAX</code> = inactive. Physics integration (Jolt) planned Sprint 6.</td>
+</tr>
+<tr>
+<td><code>UUIDComponent</code></td>
+<td><code>uuids::uuid Value</code></td>
+<td>Stable cross-session identity for scene serialization.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="scene">Scene</h3>
+<p><code>Scene</code> owns the entity registry and all component storages. All arena allocations go through the <code>ArenaAllocator*</code> provided at <code>Initialize</code>.</p>
+<pre><code class="language-cpp">// Entity lifecycle
+EntityID CreateEntity();
+void     DestroyEntity(EntityID id);   // removes from all storages
+bool     IsAlive(EntityID id) const;
+
+// Component access (all template, O(1) via sparse-set)
+template&lt;T&gt; void  AddComponent(EntityID id, T component);
+template&lt;T&gt; T*    GetComponent(EntityID id);
+template&lt;T&gt; bool  HasComponent(EntityID id) const;
+template&lt;T&gt; void  RemoveComponent(EntityID id);
+
+// Query — visits all alive entities that have all Ts
+template&lt;typename... Ts, typename Fn&gt;
+void ForEach(Fn&amp;&amp; fn);   // Fn signature: void(EntityID, Ts&amp;...)
+
+// Fixed-timestep interpolation support
+void SnapshotTransforms();                              // PreviousPosition ← Position
+void FillRenderableTransforms(float alpha,             // lerp Position by alpha
+    Array&lt;RenderableTransform&gt;&amp; out);
+</code></pre>
+<p><strong><code>ForEach</code> iteration model:</strong> iterates entity slots in the <code>EntityRegistry</code>, checks the <code>ArchetypeMask</code> against <code>(ComponentTypeOf&lt;T1&gt; | ComponentTypeOf&lt;T2&gt; | ...)</code>, and skips non-matching entities. Does not iterate component dense arrays directly. <code>Query&lt;Ts...&gt;</code> is a thin wrapper that pre-computes the mask at construction.</p>
+<hr />
+<h3 id="actor">Actor</h3>
+<p><code>Actor</code> is the Tier-1 entity class. It cannot be instantiated directly — only via <code>ActorManager::Create&lt;T&gt;()</code>.</p>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant App
+    participant AM as ActorManager
+    participant Scene
+
+    App-&gt;&gt;AM: Create PlayerActor
+    AM-&gt;&gt;Scene: CreateEntity() → EntityID
+    AM-&gt;&gt;AM: arena-alloc PlayerActor, assign EntityID + Scene*
+    AM-&gt;&gt;App: actor-&gt;OnCreate()   ← override to AddComponent()
+    AM--&gt;&gt;App: ActorHandle
+
+    App-&gt;&gt;AM: Destroy(handle)
+    AM-&gt;&gt;App: actor-&gt;OnDestroy()  ← override to clean up
+    AM-&gt;&gt;Scene: DestroyEntity(id)
+    AM-&gt;&gt;AM: explicit destructor, remove handle
+</code></pre>
+<p><strong>Virtual interface:</strong></p>
+<pre><code class="language-cpp">virtual void OnCreate()       {}   // called once after entity assigned; add components here
+virtual void OnDestroy()      {}   // called before entity destroyed
+virtual void OnTick(float dt) {}   // called every frame by ActorManager::Tick()
+</code></pre>
+<p><strong>Component helpers (inline on the Actor base):</strong></p>
+<pre><code class="language-cpp">template&lt;T&gt; void AddComponent(T c);
+template&lt;T&gt; T*   GetComponent();
+template&lt;T&gt; bool HasComponent() const;
+template&lt;T&gt; void RemoveComponent();
+</code></pre>
+<p>No default components are attached by the base class. A typical <code>OnCreate()</code> override looks like:</p>
+<pre><code class="language-cpp">void PlayerActor::OnCreate() {
+    AddComponent(TransformComponent{});
+    AddComponent(MeshComponent{ .MeshUUID = uuid });
+    AddComponent(NameComponent{ .Value = &quot;Player&quot; });
+}
+</code></pre>
+<hr />
+<h3 id="worldtick-system-scheduler">WorldTick — System Scheduler</h3>
+<p><code>WorldTick</code> builds a dependency DAG from registered systems (<code>SystemFn = void(*)(Scene&amp;, float, WorldCommands&amp;)</code>) and executes them in topological wave order. It ships no built-in systems — application code registers all systems.</p>
+<pre><code class="language-mermaid">flowchart TD
+    R[&quot;RegisterSystem(fn, deps)\ndeps: ReadMask, WriteMask, UsesCommands&quot;]
+    OB[&quot;OrderBefore(a, b)\ndeclare explicit ordering edge\nonly needed when masks conflict&quot;]
+    C[&quot;Commit()\nBuildEdges — detect mask conflicts\nTopologicalSort (Kahn)\nAssert: no cycles, no unresolved conflicts\nPre-allocate per-system staging WorldCommands&quot;]
+    W0[&quot;Wave — single system\nruns inline on main thread\nwrites to caller's WorldCommands&quot;]
+    W1[&quot;Wave — multiple systems\ndispatch to ThreadPool workers\neach writes to its own staging buffer&quot;]
+    B[&quot;Barrier\n100-spin yield then cv.wait_for (30s)&quot;]
+    M[&quot;Merge staging buffers\n(in wave order)\nfix up SpawnCallbackIndex offsets&quot;]
+    F[&quot;WorldCommands::Flush(scene)\napply SpawnEntity / DestroyEntity\nAddComponent / RemoveComponent&quot;]
+
+    R --&gt; OB --&gt; C
+    C --&gt; W0 --&gt; W1 --&gt; B --&gt; M --&gt; F
+    F --&gt;|&quot;next Tick()&quot;| W0
+</code></pre>
+<p><strong>Conflict rule:</strong> systems A and B conflict if any of these overlap: <code>A.WriteMask &amp; B.ReadMask</code>, <code>A.WriteMask &amp; B.WriteMask</code>, <code>A.ReadMask &amp; B.WriteMask</code>. Conflicting systems must have an explicit <code>OrderBefore</code> edge or <code>Commit()</code> asserts.</p>
+<hr />
+<h3 id="worldcommands-deferred-mutations">WorldCommands — Deferred Mutations</h3>
+<p>Structural scene mutations (<code>AddComponent</code>, <code>DestroyEntity</code>, etc.) cannot happen inside a parallel wave — they would race with other workers reading the same sparse-set arrays. Every mutation is buffered in <code>WorldCommands</code> and applied atomically after the wave barrier.</p>
+<pre><code class="language-mermaid">flowchart TD
+    PW[&quot;Parallel wave\nN workers each have own staging[i]&quot;]
+    S0[&quot;worker 0\nstaging[0].SpawnEntity(callback)\nstaging[0].AddComponent(id, comp)&quot;]
+    S1[&quot;worker 1\nstaging[1].DestroyEntity(id)\nstaging[1].RemoveComponent by type (id)&quot;]
+    B[&quot;Barrier — all workers complete&quot;]
+    M[&quot;Main thread: Merge staging[0..N]\nfix SpawnCallbackIndex offsets&quot;]
+    F[&quot;WorldCommands::Flush(scene)\napply in command order\nSpawnCallbacks invoked with new EntityID&quot;]
+
+    PW --&gt; S0 &amp; S1 --&gt; B --&gt; M --&gt; F
+</code></pre>
+<p><strong>Supported command kinds:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does in <code>Flush()</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SpawnEntity(callback)</code></td>
+<td>Calls <code>scene.CreateEntity()</code>; invokes optional <code>SpawnCallback(EntityID)</code> with the new id</td>
+</tr>
+<tr>
+<td><code>DestroyEntity(id)</code></td>
+<td>Deduplicates; guards for already-dead entity</td>
+</tr>
+<tr>
+<td><code>AddComponent&lt;T&gt;(id, T)</code></td>
+<td>Copies component (≤ 256 bytes) into fixed buffer; calls <code>scene.AddComponent</code></td>
+</tr>
+<tr>
+<td><code>RemoveComponent&lt;T&gt;(id)</code></td>
+<td>Stores type-erased apply-fn pointer; calls <code>scene.RemoveComponent&lt;T&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<p>Staging buffers are pre-allocated at <code>Commit()</code> (arena-backed, initial cap 256 commands per system) and reused every frame via <code>Clear()</code> — no heap after the first exercised frame.</p>
+<hr />
+<h3 id="ecs-render-synchronization">ECS → Render synchronization</h3>
+<p>HierarchySystem, TransformSyncSystem, and LightSyncSystem provide the current
+main-thread derived-state synchronization path. They do not make runtime render
+IDs serializable and do not replace the scene-load/create/delete binding lifecycle.</p>
+<pre><code class="language-mermaid">flowchart LR
+    TC[&quot;TransformComponent\n(ECS)&quot;]
+    MC[&quot;MeshComponent\nRenderInstanceId = UINT32_MAX&quot;]
+    FRT[&quot;HierarchySystem + TransformSyncSystem\nlocal TRS -&gt; WorldTransform -&gt; RenderScene&quot;]
+    RS[&quot;RenderScene::MeshInstance[]\nId, MeshUUID, Transform, Name&quot;]
+    DP[&quot;DrawScene → DrawIndirect&quot;]
+
+    TC --&gt;|&quot;exists&quot;| FRT
+    MC --&gt;|&quot;bound instance ID&quot;| RS
+    FRT --&gt;|&quot;updates existing instance transform&quot;| RS
+    RS --&gt; DP
+</code></pre>
+<p><strong>What exists:</strong>
+- HierarchySystem computes WorldTransform from local TransformComponent values.
+- TransformSyncSystem updates bound RenderScene mesh instance transforms.
+- LightSyncSystem updates RenderScene light data from ECS light/transform components.
+- MeshComponent::RenderInstanceId links a live ECS entity to a live RenderScene instance.</p>
+<p><strong>Authoring work still required:</strong>
+- Staged scene load/create/delete must rebuild mesh-instance bindings before publishing a
+  new scene instance.
+- RenderInstanceId remains runtime-only and is never serialized or stored in undo snapshots.
+- The render thread consumes immutable snapshots; it must not read mutable ECS data.</p>
+<hr />
+<h2 id="asset-pipeline">Asset Pipeline</h2>
+<pre><code class="language-mermaid">flowchart TD
+    src[&quot;Source file\n.glb / .fbx / .png / .hdr&quot;]
+    importer[&quot;GltfImporter / AssimpImporter\n(ThreadPool worker via ImportCoordinator)&quot;]
+    cooked[&quot;Cooked artifacts\n.zemesh · .zematerial · Assets/Textures/…&quot;]
+    ingest[&quot;AssetManager::IngestMesh\nAssetManager::IngestTextures\nAssetManager::IngestMaterial&quot;]
+    registry[&quot;AssetRegistry::SetState(Loaded)\n→ RRM::OnAssetReady → pending upload queue&quot;]
+    rrm[&quot;RRM::FlushPendingUploads\n(render thread, next BeginFrame)&quot;]
+    gpu[&quot;GPU global VB/IB\nTextureArray (bindless)&quot;]
+    pipeline[&quot;AppRenderPipeline::RenderScene\nper-frame instance snapshot\nsubmesh/culling input + DrawIndirect&quot;]
+
+    src --&gt; importer --&gt; cooked --&gt; ingest --&gt; registry --&gt; rrm --&gt; gpu --&gt; pipeline
+</code></pre>
+<p>On scene reload: <code>EditorScene::ExtractAsync</code> calls <code>RRM::ResetGeometryBuffers()</code> before ingestion;
+the render thread resets global buffer cursors to 0 so new geometry starts fresh.</p>
+<hr />
+<h2 id="virtual-file-system-vfs">Virtual File System (VFS)</h2>
+<p><strong>Files:</strong> <code>ZEngine/ZEngine/Core/VFS/</code></p>
+<pre><code class="language-mermaid">graph TD
+    ctx[&quot;VFSContext&quot;]
+    m1[&quot;Mount /ZodiacEngine\n→ VFSDiskBackend\n→ executable-dir/ZodiacEngine/\npriority = -1&quot;]
+    m2[&quot;Mount /\n→ VFSDiskBackend\n→ project root\npriority = 0&quot;]
+    path[&quot;VFSPath\nnormalized, immutable\nno-alloc value type&quot;]
+    scanner[&quot;VFSScanner\nasync directory walker\npopulates content browser cache&quot;]
+    watcher[&quot;VFSFileWatcher\nFSEvents / inotify / RDCW\ndebounced via VFSContext::Tick()&quot;]
+    meta[&quot;MetaFileIO\n.meta sidecars\nuuid · source path · artifact path&quot;]
+    reg[&quot;AssetRegistry\nuuid → SlotHandle + state\ntriggers RRM::OnAssetReady on Loaded&quot;]
+
+    ctx --&gt; m1 &amp; m2
+    ctx --&gt; scanner &amp; watcher &amp; meta &amp; reg
+    ctx --&gt; path
+</code></pre>
+<p><strong>FileWatcher → hot-reload flow:</strong></p>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant FW as VFSFileWatcher
+    participant CTX as VFSContext::Tick (main thread)
+    participant AR as AssetRegistry
+    participant IC as ImportCoordinator
+    participant TP as ThreadPool
+
+    FW-&gt;&gt;CTX: debounced change event
+    CTX-&gt;&gt;AR: OnAssetModified(path) → mark matching record/dependents stale
+    CTX-&gt;&gt;IC: Enqueue(path, Immediate)
+    IC-&gt;&gt;TP: dispatch reimport job (next Tick)
+</code></pre>
+<hr />
+<h2 id="initialization-order">Initialization Order</h2>
+<p><code>Engine::Initialize()</code> — <code>ZEngine/ZEngine/Engine.cpp</code></p>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant EP as EntryPoint
+    participant Win as GameWindow
+    participant Dev as VulkanDevice
+    participant VFS as VFSContext
+    participant AM as AssetManager
+    participant ECS as ECS (Scene · ActorManager · WorldTick)
+    participant IC as ImportCoordinator
+    participant RRM as RenderResourceManager
+    participant MTS as MainThreadScheduler
+
+    EP-&gt;&gt;Win: Initialize (GLFW + VkInstance + surface)
+    Win-&gt;&gt;Dev: Initialize (queues, VMA, bindless descriptors)
+    Dev-&gt;&gt;VFS: Initialize (mount table, disk backend)
+    VFS-&gt;&gt;AM: Initialize (UUID map, registry, 1,024 MiB arena + 256 MiB container slab)
+    AM-&gt;&gt;ECS: Initialize (Scene, ActorManager, WorldCommands, WorldTick)
+    ECS-&gt;&gt;IC: Initialize + register importers (Gltf, Assimp, EnvMap)
+    IC-&gt;&gt;RRM: Initialize (global VB/IB, texture timelines, upload pool)
+    RRM-&gt;&gt;AM: InitFallbackTexture (hot-pink 4×4 — requires RRM live)
+    AM-&gt;&gt;VFS: InitWatcher (FSEvents / inotify / RDCW)
+    VFS-&gt;&gt;MTS: Initialize (512 MPSC slots from Bootstrap owner)
+</code></pre>
+<p>Hard dependencies: Device before VFS (surface), RRM before fallback texture, watcher after working directory.</p>
+<h3 id="packaged-engine-assets">Packaged engine assets</h3>
+<p>Engine-owned files are resolved from <code>ZodiacEngine/</code> beside the executable, not
+from the process working directory. This keeps a Debug or installed package
+relocatable: it may be launched from the repository root, its output directory,
+or any other directory. Startup validates the package root before mounting it
+at <code>/ZodiacEngine</code>; all files under that directory then use the ordinary VFS
+lookup path, including shaders.</p>
+<p>Development tools and package tests may explicitly set <code>ZENGINE_ASSET_ROOT</code> to
+an alternate <code>ZodiacEngine</code> directory. The override takes precedence over the
+executable-relative package location; normal application launches should not
+need it.</p>
+<hr />
+<h2 id="shutdown-order">Shutdown Order</h2>
+<pre><code class="language-mermaid">flowchart TD
+    T[&quot;s_request_terminate = true&quot;]
+    RT[&quot;Join render thread\nNO GPU work after this&quot;]
+    MTS[&quot;MainThreadScheduler::Shutdown\ndiscard pending tasks&quot;]
+    ECS[&quot;ECS::ActorManager::Shutdown\nECS::Scene::Shutdown&quot;]
+    RRM[&quot;RRM::Shutdown\nQueueWaitAll · destroy upload pools · free global buffers&quot;]
+    AM[&quot;AssetManager::Shutdown&quot;]
+    ARP[&quot;AppRenderPipeline::Shutdown\nRenderGraph::Dispose (pipelines, framebuffers, callback passes)&quot;]
+    VFS[&quot;VFS::Shutdown&quot;]
+    DEV1[&quot;VulkanDevice::Deinitialize\nQueueWaitAll · first PendingFree drain\nSwapchainPtr→Dispose · CommandBufferMgr::Deinit\nsecond PendingFree drain&quot;]
+    WIN[&quot;Window::Deinitialize&quot;]
+    DEV2[&quot;VulkanDevice::Dispose\nfinal PendingFree drain\nGpuMem::Shutdown · vkDestroyDevice&quot;]
+
+    T --&gt; RT --&gt; MTS --&gt; ECS --&gt; RRM --&gt; AM --&gt; ARP --&gt; VFS --&gt; DEV1 --&gt; WIN --&gt; DEV2
+</code></pre>
+<p>See <a href="../rendering-domain/#shutdown-and-teardown">Rendering Domain — Shutdown</a> for the Vulkan object destruction rules.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Home
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../memory-management/" class="md-footer__link md-footer__link--next" aria-label="Next: Memory Management">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Memory Management
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

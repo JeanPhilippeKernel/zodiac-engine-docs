@@ -1,0 +1,1403 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Open-source cross-platform 3D rendering engine written in C++20 with Vulkan">
+      
+      
+      
+        <link rel="canonical" href="https://jeanphilippekernel.github.io/zodiac-engine-docs/asset-manager/">
+      
+      
+        <link rel="prev" href="../rendering-domain/">
+      
+      
+        <link rel="next" href="../zui-system/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="https://raw.githubusercontent.com/JeanPhilippeKernel/RendererEngine/main/ZEngine/docs/logo/WhiteAssetZE.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Asset Manager - Zodiac Engine</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#asset-manager" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Zodiac Engine" class="md-header__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="https://raw.githubusercontent.com/JeanPhilippeKernel/RendererEngine/main/ZEngine/docs/logo/WhiteAssetZE.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Zodiac Engine
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Asset Manager
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="light-blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="light-blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Zodiac Engine" class="md-nav__button md-logo" aria-label="Zodiac Engine" data-md-component="logo">
+      
+  <img src="https://raw.githubusercontent.com/JeanPhilippeKernel/RendererEngine/main/ZEngine/docs/logo/WhiteAssetZE.png" alt="logo">
+
+    </a>
+    Zodiac Engine
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/JeanPhilippeKernel/RendererEngine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JeanPhilippeKernel/RendererEngine
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../engine-architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Engine Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../memory-management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Memory Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rendering-domain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rendering Domain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset Manager
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Asset Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#position-in-the-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Position in the Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Memory Layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Structures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Structures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#flat-arrays-and-slot-indexing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flat arrays and slot indexing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meshmaterial-the-gpu-struct" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MeshMaterial — the GPU struct
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ingest-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ingest Pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ingest Pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deduplication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deduplication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ingestmesh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IngestMesh
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ingesttexture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IngestTexture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ingestmaterial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IngestMaterial
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gpu-material-binding-end-to-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GPU Material Binding — End to End
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lookup-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lookup API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#thread-safety" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Thread Safety
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initialization-order-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Initialization Order Contract
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#known-gaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known Gaps
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zui-system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ZUI System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../containers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Containers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../roadmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#position-in-the-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Position in the Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Memory Layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Data Structures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data Structures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#flat-arrays-and-slot-indexing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flat arrays and slot indexing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#meshmaterial-the-gpu-struct" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MeshMaterial — the GPU struct
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ingest-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ingest Pipeline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ingest Pipeline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deduplication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deduplication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ingestmesh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IngestMesh
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ingesttexture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IngestTexture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ingestmaterial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IngestMaterial
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gpu-material-binding-end-to-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GPU Material Binding — End to End
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lookup-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lookup API
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#thread-safety" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Thread Safety
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initialization-order-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Initialization Order Contract
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#known-gaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known Gaps
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="asset-manager">Asset Manager</h1>
+<p>Single authority over all CPU-side cooked asset data at runtime. Owns every mesh, material,
+texture, and node hierarchy ingested during a session, and owns the <code>GPUMeshMaterials</code> mirror
+that drives the <code>MatSB</code> storage buffer read by the G-buffer fragment shader every frame.</p>
+<p><strong>Status:</strong> Current runtime ownership reference. The manager has 1,024 MiB in the configured
+CPU profile and a 256 MiB TLSF container slab; its CPU assets are session-lifetime data. GPU
+geometry residency/eviction is a separate <code>RenderResourceManager</code> responsibility.</p>
+<p>See also: <a href="../engine-architecture/">Engine Architecture</a> · <a href="../rendering-domain/">Rendering Domain</a> · <a href="../memory-management/">Memory Management</a></p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#position-in-the-pipeline">Position in the Pipeline</a></li>
+<li><a href="#memory-layout">Memory Layout</a></li>
+<li><a href="#data-structures">Data Structures</a></li>
+<li><a href="#ingest-pipeline">Ingest Pipeline</a></li>
+<li><a href="#deduplication">Deduplication</a></li>
+<li><a href="#ingestmesh">IngestMesh</a></li>
+<li><a href="#ingesttexture">IngestTexture</a></li>
+<li><a href="#ingestmaterial">IngestMaterial</a></li>
+<li><a href="#gpu-material-binding-end-to-end">GPU Material Binding — End to End</a></li>
+<li><a href="#lookup-api">Lookup API</a></li>
+<li><a href="#thread-safety">Thread Safety</a></li>
+<li><a href="#initialization-order-contract">Initialization Order Contract</a></li>
+<li><a href="#known-gaps">Known Gaps</a></li>
+</ul>
+<hr />
+<h2 id="position-in-the-pipeline">Position in the Pipeline</h2>
+<pre><code class="language-mermaid">flowchart LR
+    disk[(Disk\n.zemesh / .zematerial\n.png textures)]
+    importers[&quot;Importers\nGltfImporter\nAssimpImporter&quot;]
+    codec[&quot;AssetCodec\nSerialize* / Deserialize*&quot;]
+    AM[&quot;AssetManager\nIngestMesh\nIngestTexture\nIngestMaterial&quot;]
+    RRM[&quot;RenderResourceManager\nSubmitTextureFile\nUpdateBuffer&quot;]
+    GPU[(&quot;GPU\nTextureArray\nMatSB · VertexSB&quot;)]
+    renderer[&quot;GraphicRenderer\nDrawScene&quot;]
+
+    disk --&gt;|cook-time| importers
+    disk --&gt;|load-time| codec
+    importers --&gt; codec
+    codec --&gt; AM
+    AM --&gt;|TextureHandle| RRM
+    RRM --&gt;|async GPU upload| GPU
+    AM --&gt;|GPUMeshMaterials| renderer
+    renderer --&gt;|UpdateBuffer every frame| GPU
+</code></pre>
+<p><strong>AssetManager does not</strong> stream assets in or out. Everything ingested lives for the lifetime
+of the session in a fixed arena. A future <code>StreamingManager</code> will sit above it and manage
+residency.</p>
+<hr />
+<h2 id="memory-layout">Memory Layout</h2>
+<p>The manager receives the 1,024 MiB <code>AssetManager</code> arena configured by <code>MemoryBudgetConfig</code>.
+The meshes, node hierarchies, materials, texture-handle map, and material-slot map use a 256 MiB
+TLSF slab so their variable-size growth can reclaim old blocks. <code>GPUMeshMaterials</code>, textures,
+and some maps remain arena-backed. This is explicit engine-owned allocation, not a claim that
+third-party import/decode code never uses another allocator.</p>
+<pre><code class="language-mermaid">graph TD
+    root[&quot;Configured CPU profile limit · 8 GiB&quot;]
+    asset[&quot;AssetManager arena · 1,024 MiB\n256 MiB TLSF container slab&quot;]
+
+    meshes[&quot;Meshes\nArray of AssetMesh · cap 5000&quot;]
+    hier[&quot;NodeHierarchies\nArray of AssetNodeHierarchy · cap 5000&quot;]
+    mats[&quot;Materials\nArray of AssetMaterial · cap 5000&quot;]
+    tex[&quot;Textures\nArray of AssetTexture · cap 5000&quot;]
+    gpu[&quot;GPUMeshMaterials\nArray of MeshMaterial · cap 5000\nmirrors Materials 1:1&quot;]
+
+    uuid_map[&quot;UUIDToTextureHandle\nHash map: uuid → TextureHandle&quot;]
+    hier_map[&quot;MeshToHierarchySlot\nHash map: MeshUUID → slot_index&quot;]
+    registry[&quot;AssetRegistry\nuuid → SlotHandle + AssetState&quot;]
+
+    root --&gt; asset
+    asset --&gt; meshes
+    asset --&gt; hier
+    asset --&gt; mats
+    asset --&gt; tex
+    asset --&gt; gpu
+    asset --&gt; uuid_map
+    asset --&gt; hier_map
+    asset --&gt; registry
+</code></pre>
+<hr />
+<h2 id="data-structures">Data Structures</h2>
+<h3 id="flat-arrays-and-slot-indexing">Flat arrays and slot indexing</h3>
+<p>Access to any asset is always by <strong>slot index</strong> extracted from an <code>AssetHandle</code>. The UUID is
+first resolved through <code>AssetRegistry</code> to an <code>AssetHandle</code>; the handle encodes the type and
+slot in a single <code>uint32_t</code>:</p>
+<pre><code>31      28 27                              0
+┌──────────┬─────────────────────────────────┐
+│  type(4) │         slot index (28)          │
+└──────────┴─────────────────────────────────┘
+</code></pre>
+<p><code>CreateHandle(slot, type)</code> and <code>ReadAssetHandleIndex(handle)</code> are the only encode/decode
+points — no caller should bit-shift manually.</p>
+<h3 id="meshmaterial-the-gpu-struct"><code>MeshMaterial</code> — the GPU struct</h3>
+<p><code>MeshMaterial</code> is uploaded verbatim to <code>MatSB</code> (set 0, binding 5) every frame via
+<code>RRM::UpdateBuffer</code>. It mirrors <code>AssetMaterial</code> but replaces UUID texture references with
+<strong>bindless <code>TextureArray</code> indices</strong>.</p>
+<pre><code>struct MeshMaterial {             // std140 · 96 bytes
+    gpuvec4  AmbientColor;
+    gpuvec4  EmissiveColor;
+    gpuvec4  AlbedoColor;
+    gpuvec4  SpecularColor;
+    gpuvec4  RoughnessColor;
+    gpuvec4  Factors;
+    uint64_t EmissiveMap;         // TextureArray index  OR  0xFFFFFFFF (INVALID_MAP_HANDLE)
+    uint64_t AlbedoMap;
+    uint64_t SpecularMap;
+    uint64_t NormalMap;
+    uint64_t OpacityMap;
+    uint64_t _padding;
+};
+</code></pre>
+<p>Fragment shader gate: <code>if (material.AlbedoMap &lt; INVALID_MAP_HANDLE)</code> — valid textures have
+small indices; unset slots hold <code>0xFFFFFFFF</code> and are skipped, falling back to the material
+color fields.</p>
+<hr />
+<h2 id="ingest-pipeline">Ingest Pipeline</h2>
+<h3 id="deduplication">Deduplication</h3>
+<p>Every <code>Ingest*</code> method calls <code>IsRegistered(uuid)</code> first. If the UUID is already in
+<code>AssetRegistry</code>, the call is a <strong>no-op</strong> — the asset is already resident.</p>
+<h3 id="ingestmesh">IngestMesh</h3>
+<pre><code class="language-mermaid">flowchart TD
+    A[&quot;IngestMesh(mesh, hierarchy)&quot;]
+    B{&quot;IsRegistered\nmesh.MeshUUID?&quot;}
+    C[&quot;return — already loaded&quot;]
+    D[&quot;Copy mesh vertices + indices + submeshes\ninto Arena · Meshes[slot]&quot;]
+    E[&quot;RegisterAsset MESH&quot;]
+    F[&quot;Copy hierarchy transforms + names\ninto Arena · NodeHierarchies[hier_slot]&quot;]
+    G[&quot;RegisterAsset MESH_HIERARCHY&quot;]
+    H[&quot;MeshToHierarchySlot[MeshUUID] = hier_slot\nO(1) lookup — no linear scan&quot;]
+    I[&quot;Registry.SetState → Loaded\n(fires hot-reload callbacks)&quot;]
+
+    A --&gt; B
+    B --&gt;|yes| C
+    B --&gt;|no| D --&gt; E --&gt; F --&gt; G --&gt; H --&gt; I
+</code></pre>
+<h3 id="ingesttexture">IngestTexture</h3>
+<p><code>IngestTexture(uuid, path)</code> is the <strong>single canonical texture upload point</strong>. Both
+<code>IngestTextures</code> (batch) and <code>IngestMaterial</code> (per-slot fallback) call it.</p>
+<pre><code class="language-mermaid">flowchart TD
+    A[&quot;IngestTexture(uuid, path)&quot;]
+    B{&quot;IsRegistered\nuuid?&quot;}
+    C[&quot;return existing handle\nfrom UUIDToTextureHandle&quot;]
+    D[&quot;Textures.push_use()\nreserve slot&quot;]
+    E{&quot;path empty?&quot;}
+    F[&quot;snprintf WorkingSpacePath + path\n→ abs_path\nRRM.SubmitTextureFile(abs_path)&quot;]
+    G{&quot;Handle\nvalid?&quot;}
+    H[&quot;ASSERT FallbackHandle.Valid()\nlog 'not found'\nHandle = FallbackHandle&quot;]
+    I[&quot;ASSERT FallbackHandle.Valid()\nlog 'no path — extraction failed'\nHandle = FallbackHandle&quot;]
+    J[&quot;RegisterAsset TEXTURE\nUUIDToTextureHandle[uuid] = Handle\nreturn Handle&quot;]
+
+    A --&gt; B
+    B --&gt;|yes| C
+    B --&gt;|no| D --&gt; E
+    E --&gt;|no| F --&gt; G
+    G --&gt;|valid| J
+    G --&gt;|invalid| H --&gt; J
+    E --&gt;|yes| I --&gt; J
+</code></pre>
+<p>The <code>ASSERT FallbackHandle.Valid()</code> enforces the startup invariant: <code>InitFallbackTexture()</code>
+must run before any ingest. A crash here means the initialization sequence is broken — not
+a recoverable error.</p>
+<h3 id="ingestmaterial">IngestMaterial</h3>
+<pre><code class="language-mermaid">flowchart TD
+    A[&quot;IngestMaterial(mat)&quot;]
+    B{&quot;IsRegistered\nmat.MaterialUUID?&quot;}
+    C[&quot;return — already loaded&quot;]
+    D[&quot;Materials.push(mat)\nGPUMeshMaterials.push_use()\nRegisterAsset MATERIAL&quot;]
+    E[&quot;Copy color fields\n(Albedo, Emissive, Roughness, Specular, Ambient, Factors)&quot;]
+    F[&quot;tex_handle(AlbedoTexUUID, AlbedoTexPath)&quot;]
+    G{&quot;UUID in\nUUIDToTextureHandle?&quot;}
+    H[&quot;return Handle.Index&quot;]
+    I{&quot;AlbedoTexPath\nempty?&quot;}
+    J[&quot;IngestTexture(uuid, path)\nreturn new Handle.Index\n— triggers GPU upload now&quot;]
+    K[&quot;return INVALID_MAP_HANDLE\n(shader skips this slot)&quot;]
+    L[&quot;gpu_mat.AlbedoMap = result\n↩ repeat for Emissive · Normal · Opacity · Specular&quot;]
+
+    A --&gt; B
+    B --&gt;|yes| C
+    B --&gt;|no| D --&gt; E --&gt; F --&gt; G
+    G --&gt;|yes| H --&gt; L
+    G --&gt;|no| I
+    I --&gt;|no| J --&gt; L
+    I --&gt;|yes| K --&gt; L
+</code></pre>
+<p>The path-fallback branch (<code>IngestTexture</code> called from inside <code>IngestMaterial</code>) is what makes
+<strong>scene reload</strong> and <strong>dragged-.zmesh</strong> work without a prior <code>IngestTextures</code> call: the material
+carries its own texture paths from the <code>.zematerial</code> JSON and can trigger GPU upload on demand.</p>
+<hr />
+<h2 id="gpu-material-binding-end-to-end">GPU Material Binding — End to End</h2>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant BG as Importer (background thread)
+    participant AM as AssetManager
+    participant RRM as RenderResourceManager
+    participant GPU as GPU
+    participant RT as GraphicRenderer (main thread)
+    participant FS as g_buffer.frag
+
+    BG-&gt;&gt;AM: IngestTextures([tex_0 .. tex_N])
+    AM-&gt;&gt;RRM: SubmitTextureFile(abs_path) per texture
+    RRM--&gt;&gt;AM: TextureHandle { Index = K }
+    AM-&gt;&gt;AM: UUIDToTextureHandle[uuid] = { Index = K }
+
+    BG-&gt;&gt;AM: IngestMaterial(mat)
+    AM-&gt;&gt;AM: tex_handle(AlbedoTexUUID) → K
+    AM-&gt;&gt;AM: GPUMeshMaterials[slot].AlbedoMap = K
+
+    BG-&gt;&gt;AM: IngestMesh(mesh, hier)
+    AM-&gt;&gt;AM: Meshes[slot] = mesh
+
+    Note over RT: Next frame — InstancesDirty = true
+
+    RT-&gt;&gt;AM: GetMeshAsset(MeshUUID) → &amp;Meshes[slot]
+    RT-&gt;&gt;AM: GetAsset for AssetMaterial (sub.MaterialUUID) → &amp;Materials[mat_slot]
+    RT-&gt;&gt;RT: alloc.MaterialId = mat_slot
+
+    RT-&gt;&gt;RRM: UpdateBuffer(MaterialBuffer, GPUMeshMaterials)
+    RRM-&gt;&gt;GPU: vmaMemcpy → MatSB[mat_slot].AlbedoMap = K
+
+    FS-&gt;&gt;GPU: mat = FetchMaterial(MaterialIdx)
+    FS-&gt;&gt;GPU: texture(TextureArray[mat.AlbedoMap], uv)
+    Note over FS: only if mat.AlbedoMap &lt; INVALID_MAP_HANDLE
+</code></pre>
+<hr />
+<h2 id="lookup-api">Lookup API</h2>
+<p><code>GetAsset&lt;T&gt;(key)</code> resolves a UUID or handle to a pointer into the flat arrays.
+Two key types are supported for each of the four asset types (8 specializations total):</p>
+<pre><code class="language-mermaid">graph LR
+    uuid[&quot;uuid key&quot;]
+    handle[&quot;AssetHandle key&quot;]
+    reg[&quot;AssetRegistry\nFindByUUID(uuid)&quot;]
+    sh[&quot;rec→SlotHandle&quot;]
+    idx[&quot;ReadAssetHandleIndex(h)&quot;]
+    arr[&quot;flat array\ne.g. Meshes[index]&quot;]
+    ptr[&quot;T* (or nullptr)&quot;]
+
+    uuid --&gt; reg --&gt; sh --&gt; handle
+    handle --&gt; idx --&gt; arr --&gt; ptr
+</code></pre>
+<p>If the UUID is not registered or the slot index is out of range, all paths return <code>nullptr</code>.</p>
+<hr />
+<h2 id="thread-safety">Thread Safety</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Thread-safe</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IngestMesh</code></td>
+<td>Yes</td>
+<td>Acquires <code>IngestMutex</code> (recursive)</td>
+</tr>
+<tr>
+<td><code>IngestTexture</code></td>
+<td>Yes</td>
+<td>Acquires <code>IngestMutex</code></td>
+</tr>
+<tr>
+<td><code>IngestTextures</code></td>
+<td>Yes</td>
+<td>Calls <code>IngestTexture</code> per element</td>
+</tr>
+<tr>
+<td><code>IngestMaterial</code></td>
+<td>Yes</td>
+<td>Acquires <code>IngestMutex</code>; may call <code>IngestTexture</code> (recursive lock)</td>
+</tr>
+<tr>
+<td><code>IsRegistered</code></td>
+<td>No standalone synchronization</td>
+<td>Caller must not race registry mutation.</td>
+</tr>
+<tr>
+<td><code>GetAsset&lt;T&gt;(uuid/handle)</code></td>
+<td>No standalone synchronization</td>
+<td>Safe after ingestion is quiescent or under the caller's synchronization.</td>
+</tr>
+<tr>
+<td><code>GetMeshNodeHierarchy</code></td>
+<td>No standalone synchronization</td>
+<td>O(1) lookup; does not acquire <code>IngestMutex</code>.</td>
+</tr>
+<tr>
+<td><code>TryGetMeshBounds</code></td>
+<td>Yes</td>
+<td>Acquires <code>IngestMutex</code> and copies the bounds.</td>
+</tr>
+<tr>
+<td><code>InitFallbackTexture</code></td>
+<td>Main thread only</td>
+<td>Called once during engine init</td>
+</tr>
+</tbody>
+</table>
+<p><code>IngestMutex</code> is <code>std::recursive_mutex</code> — <code>IngestMaterial</code> can call <code>IngestTexture</code> while
+holding the lock without deadlocking.</p>
+<hr />
+<h2 id="initialization-order-contract">Initialization Order Contract</h2>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant EP as EntryPoint
+    participant MM as MemoryManager
+    participant Log as Logger
+    participant Eng as Engine::Initialize
+    participant AM as AssetManager
+    participant RRM as RenderResourceManager
+
+    EP-&gt;&gt;MM: Initialize(ZGiga(8ULL), Editor())
+    Note over MM: ZGiga uses uint64_t — no overflow
+    EP-&gt;&gt;Log: Logger::Initialize(LoggingArena)
+    EP-&gt;&gt;Eng: app→Initialize(&amp;manager)
+    Eng-&gt;&gt;AM: AssetManager::Initialize(arena, device, ws_path)
+    Note over AM: FallbackTextureHandle is invalid here
+    Eng-&gt;&gt;RRM: RenderResourceManager::Initialize()
+    Eng-&gt;&gt;AM: AssetManager::InitFallbackTexture()
+    Note over AM: FallbackTextureHandle = RRM.GetOrCreateFallbackTexture()
+    Note over AM: Safe to call Ingest* from this point
+</code></pre>
+<p>Any <code>IngestTexture</code> call that reaches the fallback path before <code>InitFallbackTexture</code> fires:</p>
+<pre><code>ZENGINE_VALIDATE_ASSERT(FallbackTextureHandle.Valid(),
+    &quot;FallbackTextureHandle not initialized — InitFallbackTexture must be called before ingesting assets&quot;)
+</code></pre>
+<hr />
+<h2 id="known-gaps">Known Gaps</h2>
+<table>
+<thead>
+<tr>
+<th>Gap</th>
+<th>Tracking</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CPU-side cooked asset eviction — manager data remains session-lifetime</td>
+<td>Future streaming/asset residency policy</td>
+</tr>
+<tr>
+<td>GPU geometry residency/eviction policy</td>
+<td>Implemented separately in <code>RenderResourceManager</code>; do not infer CPU AssetManager eviction from it.</td>
+</tr>
+<tr>
+<td>Raster and environment-map import paths remain duplicated</td>
+<td><a href="https://github.com/JeanPhilippeKernel/RendererEngine/issues/750">#750</a></td>
+</tr>
+<tr>
+<td>Manual reimport from the content browser needs current ZUI-panel integration</td>
+<td><a href="https://github.com/JeanPhilippeKernel/RendererEngine/issues/602">#602</a></td>
+</tr>
+<tr>
+<td>Importer and ZUI regression-test scaffolding is absent</td>
+<td><a href="https://github.com/JeanPhilippeKernel/RendererEngine/issues/735">#735</a></td>
+</tr>
+<tr>
+<td>Initial scanner results do not yet enqueue an import batch</td>
+<td><code>VFSScanner</code> currently registers assets; watcher modifications enqueue immediate reimport.</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../rendering-domain/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Rendering Domain">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Rendering Domain
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../zui-system/" class="md-footer__link md-footer__link--next" aria-label="Next: ZUI System">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                ZUI System
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "navigation.footer", "search.suggest", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
